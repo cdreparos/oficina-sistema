@@ -3,8 +3,16 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Sistema de Oficina</title>
-  <link rel="stylesheet" href="style.css" />
+  <title>Sistema da Oficina</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; background: #f0f0f0; }
+    header { text-align: center; margin-bottom: 20px; }
+    .bloco { background: #fff; padding: 15px; margin-bottom: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+    ul { list-style: none; padding: 0; }
+    li { padding: 5px 0; border-bottom: 1px solid #ddd; }
+    button { padding: 10px 20px; border: none; border-radius: 5px; background: #007bff; color: #fff; cursor: pointer; }
+    button:hover { background: #0056b3; }
+  </style>
 </head>
 <body>
   <header>
@@ -16,28 +24,28 @@
       <h2>🗒️ Anotações</h2>
       <ul id="lista-anotacoes"></ul>
     </section>
+    <button id="btnNovaAnotacao">Adicionar Nova Anotação</button>
   </main>
-
-  <footer>
-    <button id="btnNovaAnotacao">Nova O.S.</button>
-  </footer>
 
   <!-- Firebase SDK -->
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 
   <script>
+    // Configuração do Firebase Realtime Database
     const firebaseConfig = {
       apiKey: "AIzaSyCyz4Nrvcnf0MF_99fLKPMsrJ9dIzuRHG4",
       authDomain: "oficina-sistema-cc2cd.firebaseapp.com",
+      databaseURL: "https://oficina-sistema-cc2cd-default-rtdb.firebaseio.com/",
       projectId: "oficina-sistema-cc2cd",
       storageBucket: "oficina-sistema-cc2cd.firebasestorage.app",
       messagingSenderId: "1034638142539",
       appId: "1:1034638142539:web:4b63c09b30b86838eff1ce"
     };
 
+    // Inicializa Firebase
     firebase.initializeApp(firebaseConfig);
-    const db = firebase.firestore();
+    const dbRef = firebase.database().ref("anotacoes");
   </script>
   <script src="script.js"></script>
 </body>
