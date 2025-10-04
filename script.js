@@ -1,15 +1,27 @@
-import { SUPABASE_URL, SUPABASE_KEY } from './config.js';
-
-const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-
-async function testarConexao() {
-  const { data, error } = await supabase.from('anotacoes').select('*');
-  if (error) {
-    console.error("❌ Erro ao conectar ao Supabase:", error.message);
-  } else {
-    console.log("✅ Conexão bem-sucedida!");
-    console.log("Anotações encontradas:", data);
-  }
+// Função para carregar anotações
+function carregarAnotacoes() {
+  const lista = document.getElementById("lista-anotacoes");
+  lista.innerHTML = "";
+  db.collection("anotacoes").get()
+    .then(snapshot => {
+      snapshot.forEach(doc => {
+        const li = document.createElement("li");
+        li.textContent = `${doc.data().titulo}: ${doc.data().conteudo}`;
+        lista.appendChild(li);
+      });
+    })
+    .catch(err => console.error("Erro ao acessar Firestore:", err));
 }
 
-testarConexao();
+// Botão para adicionar nova anotação
+document.getElementById("btnNovaAnotacao").addEventListener("click", () => {
+  const titulo = prompt("Título da anotação:");
+  const conteudo = prompt("Conteúdo:");
+  if (titulo && conteudo) {
+    db.collection("anotacoes").add({ titulo, conteudo })
+      .then(() => carregarAnotacoes());
+  }
+});
+
+// Carrega anotações ao iniciar
+carregarAnotacoes();
