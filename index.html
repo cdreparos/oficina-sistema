@@ -3,36 +3,480 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Sistema da Oficina</title>
+  <meta name="description" content="Sistema de gerenciamento para oficina de eletrodomésticos" />
+  <title>Sistema da Oficina - Dashboard</title>
+  
   <style>
-    body { font-family: Arial, sans-serif; margin: 20px; background: #f0f0f0; }
-    header { text-align: center; margin-bottom: 20px; }
-    .bloco { background: #fff; padding: 15px; margin-bottom: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
-    ul { list-style: none; padding: 0; }
-    li { padding: 5px 0; border-bottom: 1px solid #ddd; }
-    button { padding: 10px 20px; border: none; border-radius: 5px; background: #007bff; color: #fff; cursor: pointer; }
-    button:hover { background: #0056b3; }
+    /* Reset e configurações globais */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    /* Container principal */
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      background: #f8f9fa;
+      border-radius: 15px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+      overflow: hidden;
+    }
+
+    /* Cabeçalho */
+    header {
+      background: linear-gradient(135deg, #004aad 0%, #0066cc 100%);
+      color: white;
+      padding: 25px 30px;
+      text-align: center;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    header h1 {
+      font-size: 2rem;
+      font-weight: 600;
+      margin-bottom: 5px;
+    }
+
+    header p {
+      font-size: 0.95rem;
+      opacity: 0.9;
+    }
+
+    /* Grid da Dashboard */
+    main {
+      padding: 25px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 20px;
+    }
+
+    /* Blocos/Cards da Dashboard */
+    .bloco {
+      background: white;
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .bloco:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+    }
+
+    /* Barra colorida no topo de cada bloco */
+    .bloco::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+    }
+
+    .bloco h2 {
+      font-size: 1.3rem;
+      color: #2c3e50;
+      margin-bottom: 15px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .bloco h2 span {
+      font-size: 1.5rem;
+    }
+
+    /* Listas dentro dos blocos */
+    .bloco ul {
+      list-style: none;
+      max-height: 250px;
+      overflow-y: auto;
+    }
+
+    .bloco ul li {
+      padding: 10px;
+      margin-bottom: 8px;
+      background: #f8f9fa;
+      border-radius: 6px;
+      border-left: 3px solid #667eea;
+      font-size: 0.9rem;
+      color: #495057;
+      transition: background 0.2s;
+    }
+
+    .bloco ul li:hover {
+      background: #e9ecef;
+    }
+
+    .bloco ul:empty::after {
+      content: 'Nenhum item cadastrado ainda';
+      display: block;
+      padding: 20px;
+      text-align: center;
+      color: #adb5bd;
+      font-style: italic;
+    }
+
+    /* Botões de ação */
+    .btn-adicionar {
+      margin-top: 15px;
+      width: 100%;
+      padding: 12px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .btn-adicionar:hover {
+      transform: scale(1.02);
+      box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+    }
+
+    .btn-adicionar:active {
+      transform: scale(0.98);
+    }
+
+    /* Bloco de estatísticas rápidas */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .stat-item {
+      background: #f8f9fa;
+      padding: 15px;
+      border-radius: 8px;
+      text-align: center;
+    }
+
+    .stat-item .numero {
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: #667eea;
+      display: block;
+    }
+
+    .stat-item .label {
+      font-size: 0.85rem;
+      color: #6c757d;
+      margin-top: 5px;
+    }
+
+    /* Blocos especiais - ocupam mais espaço */
+    .bloco-destaque {
+      grid-column: span 2;
+    }
+
+    /* Footer com ações rápidas */
+    footer {
+      background: #2c3e50;
+      color: white;
+      padding: 20px 30px;
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 15px;
+    }
+
+    footer button {
+      background: white;
+      color: #2c3e50;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+      font-size: 0.9rem;
+    }
+
+    footer button:hover {
+      background: #667eea;
+      color: white;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+    }
+
+    /* Responsividade */
+    @media (max-width: 768px) {
+      body {
+        padding: 10px;
+      }
+
+      header h1 {
+        font-size: 1.5rem;
+      }
+
+      main {
+        grid-template-columns: 1fr;
+        padding: 15px;
+      }
+
+      .bloco-destaque {
+        grid-column: span 1;
+      }
+
+      footer {
+        flex-direction: column;
+      }
+
+      footer button {
+        width: 100%;
+      }
+    }
+
+    /* Scrollbar customizada */
+    .bloco ul::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    .bloco ul::-webkit-scrollbar-track {
+      background: #f1f1f1;
+      border-radius: 10px;
+    }
+
+    .bloco ul::-webkit-scrollbar-thumb {
+      background: #667eea;
+      border-radius: 10px;
+    }
+
+    .bloco ul::-webkit-scrollbar-thumb:hover {
+      background: #764ba2;
+    }
   </style>
 </head>
 <body>
-  <header>
-    <h1>Sistema da Oficina</h1>
-  </header>
+  <div class="container">
+    <!-- 
+      CABEÇALHO
+      Exibe o título do sistema e informações gerais
+    -->
+    <header>
+      <h1>🔧 Sistema de Gerenciamento - Oficina</h1>
+      <p>Controle completo de consertos, peças e finanças</p>
+    </header>
 
-  <main>
-    <section id="anotacoes" class="bloco">
-      <h2>🗒️ Anotações</h2>
-      <ul id="lista-anotacoes"></ul>
-    </section>
-    <button id="btnNovaAnotacao">Adicionar Nova Anotação</button>
-  </main>
+    <!-- 
+      DASHBOARD PRINCIPAL
+      Contém todos os blocos de gerenciamento da oficina
+      Cada bloco possui um ID único para manipulação via script.js
+    -->
+    <main>
+      
+      <!-- 
+        BLOCO 1: ANOTAÇÕES/LEMBRETES
+        ID: anotacoes
+        Propósito: Armazenar lembretes e anotações gerais da oficina
+        Firebase path: /anotacoes
+        Manipulação: script.js deve adicionar/listar/remover anotações
+      -->
+      <section id="anotacoes" class="bloco">
+        <h2><span>🗒️</span> Anotações e Lembretes</h2>
+        <ul id="lista-anotacoes">
+          <!-- Lista preenchida dinamicamente pelo script.js -->
+        </ul>
+        <button class="btn-adicionar" id="btnNovaAnotacao">+ Adicionar Anotação</button>
+      </section>
 
-  <!-- Firebase SDK -->
+      <!-- 
+        BLOCO 2: AGENDAMENTOS
+        ID: agendamentos
+        Propósito: Gerenciar agendamentos de clientes para consertos
+        Firebase path: /agendamentos
+        Dados: { cliente, telefone, data, hora, aparelho, problema }
+      -->
+      <section id="agendamentos" class="bloco">
+        <h2><span>📅</span> Agendamentos</h2>
+        <ul id="lista-agendamentos">
+          <!-- Lista preenchida dinamicamente -->
+        </ul>
+        <button class="btn-adicionar" id="btnNovoAgendamento">+ Novo Agendamento</button>
+      </section>
+
+      <!-- 
+        BLOCO 3: CONTAS A PAGAR
+        ID: contas-pagar
+        Propósito: Controlar contas e despesas da oficina
+        Firebase path: /contas_pagar
+        Dados: { descricao, valor, vencimento, status: "pendente" ou "pago" }
+      -->
+      <section id="contas-pagar" class="bloco">
+        <h2><span>💰</span> Contas a Pagar</h2>
+        <ul id="lista-contas-pagar">
+          <!-- Lista preenchida dinamicamente -->
+        </ul>
+        <button class="btn-adicionar" id="btnNovaConta">+ Adicionar Conta</button>
+      </section>
+
+      <!-- 
+        BLOCO 4: PEÇAS PARA PEDIR
+        ID: pecas-pedir
+        Propósito: Lista de peças que precisam ser encomendadas
+        Firebase path: /pecas_pedir
+        Dados: { nome_peca, quantidade, fornecedor, prioridade }
+      -->
+      <section id="pecas-pedir" class="bloco">
+        <h2><span>🔩</span> Peças para Pedir</h2>
+        <ul id="lista-pecas-pedir">
+          <!-- Lista preenchida dinamicamente -->
+        </ul>
+        <button class="btn-adicionar" id="btnNovaPeca">+ Adicionar Peça</button>
+      </section>
+
+      <!-- 
+        BLOCO 5: ORDENS DE SERVIÇO
+        ID: ordens-servico
+        Propósito: Gerenciar ordens de serviço abertas
+        Firebase path: /ordens_servico
+        Dados: { numero_os, cliente, aparelho, status, data_entrada, previsao }
+      -->
+      <section id="ordens-servico" class="bloco">
+        <h2><span>🛠️</span> Ordens de Serviço</h2>
+        <ul id="lista-ordens-servico">
+          <!-- Lista preenchida dinamicamente -->
+        </ul>
+        <button class="btn-adicionar" id="btnNovaOS">+ Nova Ordem de Serviço</button>
+      </section>
+
+      <!-- 
+        BLOCO 6: ESTOQUE DE PEÇAS
+        ID: estoque
+        Propósito: Controlar peças em estoque
+        Firebase path: /estoque
+        Dados: { nome_peca, quantidade, valor_unitario, localizacao }
+      -->
+      <section id="estoque" class="bloco">
+        <h2><span>📦</span> Estoque de Peças</h2>
+        <ul id="lista-estoque">
+          <!-- Lista preenchida dinamicamente -->
+        </ul>
+        <button class="btn-adicionar" id="btnAdicionarEstoque">+ Adicionar ao Estoque</button>
+      </section>
+
+      <!-- 
+        BLOCO 7: CLIENTES
+        ID: clientes
+        Propósito: Cadastro e histórico de clientes
+        Firebase path: /clientes
+        Dados: { nome, telefone, email, endereco, historico_servicos }
+      -->
+      <section id="clientes" class="bloco">
+        <h2><span>👥</span> Clientes</h2>
+        <ul id="lista-clientes">
+          <!-- Lista preenchida dinamicamente -->
+        </ul>
+        <button class="btn-adicionar" id="btnNovoCliente">+ Cadastrar Cliente</button>
+      </section>
+
+      <!-- 
+        BLOCO 8: VENDAS REALIZADAS
+        ID: vendas
+        Propósito: Registrar vendas de peças e serviços
+        Firebase path: /vendas
+        Dados: { data, cliente, itens[], valor_total, forma_pagamento }
+      -->
+      <section id="vendas" class="bloco">
+        <h2><span>💵</span> Vendas Realizadas</h2>
+        <ul id="lista-vendas">
+          <!-- Lista preenchida dinamicamente -->
+        </ul>
+        <button class="btn-adicionar" id="btnNovaVenda">+ Registrar Venda</button>
+      </section>
+
+      <!-- 
+        BLOCO 9: RESUMO FINANCEIRO (Destaque - ocupa 2 colunas)
+        ID: resumo-financeiro
+        Propósito: Exibir estatísticas financeiras rápidas
+        Firebase path: cálculos baseados em /vendas e /contas_pagar
+        Atualizado dinamicamente pelo script.js
+      -->
+      <section id="resumo-financeiro" class="bloco bloco-destaque">
+        <h2><span>📊</span> Resumo Financeiro</h2>
+        <div class="stats-grid">
+          <div class="stat-item">
+            <span class="numero" id="total-vendas-mes">R$ 0,00</span>
+            <span class="label">Vendas do Mês</span>
+          </div>
+          <div class="stat-item">
+            <span class="numero" id="total-contas-pendentes">R$ 0,00</span>
+            <span class="label">Contas Pendentes</span>
+          </div>
+          <div class="stat-item">
+            <span class="numero" id="total-os-abertas">0</span>
+            <span class="label">OS Abertas</span>
+          </div>
+          <div class="stat-item">
+            <span class="numero" id="total-agendamentos-hoje">0</span>
+            <span class="label">Agendamentos Hoje</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- 
+        BLOCO 10: RELATÓRIOS (Preparado para expansão futura)
+        ID: relatorios
+        Propósito: Área para gerar relatórios e análises
+        Futuro: Gráficos de faturamento, peças mais vendidas, etc.
+      -->
+      <section id="relatorios" class="bloco">
+        <h2><span>📈</span> Relatórios</h2>
+        <ul id="lista-relatorios">
+          <li>📄 Relatório Mensal - Em breve</li>
+          <li>📄 Análise de Vendas - Em breve</li>
+          <li>📄 Peças Mais Vendidas - Em breve</li>
+        </ul>
+        <button class="btn-adicionar" id="btnGerarRelatorio" disabled style="opacity: 0.5; cursor: not-allowed;">
+          🔒 Em Desenvolvimento
+        </button>
+      </section>
+
+    </main>
+
+    <!-- 
+      FOOTER - AÇÕES RÁPIDAS
+      Botões para funcionalidades gerais do sistema
+    -->
+    <footer>
+      <button id="btnBackup">💾 Fazer Backup</button>
+      <button id="btnConfiguracoes">⚙️ Configurações</button>
+      <button id="btnAjuda">❓ Ajuda</button>
+      <button id="btnSair">🚪 Sair</button>
+    </footer>
+  </div>
+
+  <!-- 
+    FIREBASE SDK
+    Carrega as bibliotecas do Firebase Realtime Database
+  -->
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 
+  <!-- 
+    CONFIGURAÇÃO DO FIREBASE
+    Inicializa a conexão com o Firebase Realtime Database
+  -->
   <script>
-    // Configuração do Firebase Realtime Database
     const firebaseConfig = {
       apiKey: "AIzaSyCyz4Nrvcnf0MF_99fLKPMsrJ9dIzuRHG4",
       authDomain: "oficina-sistema-cc2cd.firebaseapp.com",
@@ -45,8 +489,17 @@
 
     // Inicializa Firebase
     firebase.initializeApp(firebaseConfig);
-    const dbRef = firebase.database().ref("anotacoes");
+    
+    // Referência ao banco de dados - disponível globalmente para script.js
+    const database = firebase.database();
+    const dbRef = database.ref("anotacoes"); // Mantém compatibilidade com script.js existente
   </script>
+
+  <!-- 
+    SCRIPT EXTERNO
+    Carrega a lógica JavaScript do arquivo script.js
+    Este arquivo deve conter todas as funções de manipulação de dados
+  -->
   <script src="script.js"></script>
 </body>
 </html>
