@@ -1,27 +1,29 @@
-// Função para carregar anotações
+// Função para carregar anotações em tempo real
 function carregarAnotacoes() {
   const lista = document.getElementById("lista-anotacoes");
   lista.innerHTML = "";
-  db.collection("anotacoes").get()
-    .then(snapshot => {
-      snapshot.forEach(doc => {
+
+  dbRef.on("value", snapshot => {
+    lista.innerHTML = ""; // limpa a lista antes de atualizar
+    const dados = snapshot.val();
+    if (dados) {
+      Object.keys(dados).forEach(chave => {
         const li = document.createElement("li");
-        li.textContent = `${doc.data().titulo}: ${doc.data().conteudo}`;
+        li.textContent = `${dados[chave].titulo}: ${dados[chave].conteudo}`;
         lista.appendChild(li);
       });
-    })
-    .catch(err => console.error("Erro ao acessar Firestore:", err));
+    }
+  });
 }
 
 // Botão para adicionar nova anotação
 document.getElementById("btnNovaAnotacao").addEventListener("click", () => {
   const titulo = prompt("Título da anotação:");
-  const conteudo = prompt("Conteúdo:");
+  const conteudo = prompt("Conteúdo da anotação:");
   if (titulo && conteudo) {
-    db.collection("anotacoes").add({ titulo, conteudo })
-      .then(() => carregarAnotacoes());
+    dbRef.push({ titulo, conteudo });
   }
 });
 
-// Carrega anotações ao iniciar
+// Inicializa a lista
 carregarAnotacoes();
