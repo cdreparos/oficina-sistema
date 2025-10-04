@@ -15,404 +15,581 @@
     }
 
     body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #f0f2f5;
       min-height: 100vh;
-      padding: 20px;
+      padding: 0;
     }
 
     /* Container principal */
     .container {
+      max-width: 100%;
+      margin: 0 auto;
+      background: #f0f2f5;
+    }
+
+    /* Cabeçalho refinado */
+    header {
+      background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+      color: white;
+      padding: 30px 40px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .header-content {
       max-width: 1400px;
       margin: 0 auto;
-      background: #f8f9fa;
-      border-radius: 15px;
-      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
-      overflow: hidden;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
     }
 
-    /* Cabeçalho */
-    header {
-      background: linear-gradient(135deg, #004aad 0%, #0066cc 100%);
-      color: white;
-      padding: 25px 30px;
-      text-align: center;
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    }
-
-    header h1 {
-      font-size: 2rem;
-      font-weight: 600;
+    .header-left h1 {
+      font-size: 1.8rem;
+      font-weight: 700;
       margin-bottom: 5px;
+      letter-spacing: -0.5px;
     }
 
-    header p {
-      font-size: 0.95rem;
-      opacity: 0.9;
+    .header-left p {
+      font-size: 0.9rem;
+      opacity: 0.85;
+      font-weight: 300;
+    }
+
+    .header-right {
+      display: flex;
+      gap: 15px;
+      align-items: center;
+    }
+
+    .header-icon {
+      width: 40px;
+      height: 40px;
+      background: rgba(255, 255, 255, 0.15);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.3s;
+      backdrop-filter: blur(10px);
+    }
+
+    .header-icon:hover {
+      background: rgba(255, 255, 255, 0.25);
+      transform: translateY(-2px);
     }
 
     /* Grid da Dashboard */
     main {
-      padding: 25px;
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 30px 40px;
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-      gap: 20px;
+      grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+      gap: 24px;
     }
 
-    /* Blocos/Cards da Dashboard */
+    /* Blocos/Cards refinados */
     .bloco {
       background: white;
-      border-radius: 12px;
-      padding: 20px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      border-radius: 16px;
+      padding: 24px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+      transition: all 0.3s ease;
+      border: 1px solid #e5e7eb;
       position: relative;
-      overflow: hidden;
     }
 
     .bloco:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+      transform: translateY(-4px);
+      border-color: #3b82f6;
     }
 
-    /* Barra colorida no topo de cada bloco */
-    .bloco::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 4px;
-      background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
-    }
-
-    .bloco h2 {
-      font-size: 1.3rem;
-      color: #2c3e50;
-      margin-bottom: 15px;
+    .bloco-header {
       display: flex;
       align-items: center;
-      gap: 10px;
+      justify-content: space-between;
+      margin-bottom: 20px;
+      padding-bottom: 16px;
+      border-bottom: 2px solid #f3f4f6;
     }
 
-    .bloco h2 span {
-      font-size: 1.5rem;
+    .bloco-header h2 {
+      font-size: 1.1rem;
+      color: #1f2937;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .bloco-icon {
+      width: 40px;
+      height: 40px;
+      background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.3rem;
+    }
+
+    .bloco-badge {
+      background: #dbeafe;
+      color: #1e40af;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 600;
     }
 
     /* Listas dentro dos blocos */
     .bloco ul {
       list-style: none;
-      max-height: 250px;
+      max-height: 280px;
       overflow-y: auto;
+      margin: 0;
+      padding-right: 8px;
     }
 
     .bloco ul li {
-      padding: 10px;
-      margin-bottom: 8px;
-      background: #f8f9fa;
-      border-radius: 6px;
-      border-left: 3px solid #667eea;
+      padding: 14px 16px;
+      margin-bottom: 10px;
+      background: #f9fafb;
+      border-radius: 10px;
+      border-left: 3px solid #3b82f6;
       font-size: 0.9rem;
-      color: #495057;
-      transition: background 0.2s;
+      color: #374151;
+      transition: all 0.2s;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
     }
 
     .bloco ul li:hover {
-      background: #e9ecef;
+      background: #eff6ff;
+      border-left-color: #2563eb;
+      transform: translateX(4px);
     }
 
     .bloco ul:empty::after {
-      content: 'Nenhum item cadastrado ainda';
+      content: 'Nenhum item cadastrado';
       display: block;
-      padding: 20px;
+      padding: 40px 20px;
       text-align: center;
-      color: #adb5bd;
-      font-style: italic;
+      color: #9ca3af;
+      font-size: 0.9rem;
     }
 
-    /* Botões de ação */
+    /* Botões modernos */
     .btn-adicionar {
-      margin-top: 15px;
+      margin-top: 16px;
       width: 100%;
-      padding: 12px;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      padding: 14px;
+      background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
       color: white;
       border: none;
-      border-radius: 8px;
-      font-size: 0.95rem;
+      border-radius: 10px;
+      font-size: 0.9rem;
       font-weight: 600;
       cursor: pointer;
-      transition: transform 0.2s, box-shadow 0.2s;
+      transition: all 0.3s;
+      box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
     }
 
     .btn-adicionar:hover {
-      transform: scale(1.02);
-      box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(59, 130, 246, 0.4);
     }
 
     .btn-adicionar:active {
-      transform: scale(0.98);
+      transform: translateY(0);
     }
 
-    /* Bloco de estatísticas rápidas */
+    /* Cores específicas por tipo de bloco */
+    #anotacoes .bloco-icon { background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); }
+    #anotacoes ul li { border-left-color: #f59e0b; }
+    #anotacoes ul li:hover { background: #fef3c7; border-left-color: #d97706; }
+
+    #agendamentos .bloco-icon { background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%); }
+    #agendamentos ul li { border-left-color: #8b5cf6; }
+    #agendamentos ul li:hover { background: #f5f3ff; border-left-color: #7c3aed; }
+
+    #contas-pagar .bloco-icon { background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); }
+    #contas-pagar ul li { border-left-color: #ef4444; }
+    #contas-pagar ul li:hover { background: #fee2e2; border-left-color: #dc2626; }
+
+    #pecas-pedir .bloco-icon { background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%); }
+    #pecas-pedir ul li { border-left-color: #06b6d4; }
+    #pecas-pedir ul li:hover { background: #cffafe; border-left-color: #0891b2; }
+
+    #ordens-servico .bloco-icon { background: linear-gradient(135deg, #10b981 0%, #059669 100%); }
+    #ordens-servico ul li { border-left-color: #10b981; }
+    #ordens-servico ul li:hover { background: #d1fae5; border-left-color: #059669; }
+
+    #estoque .bloco-icon { background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%); }
+    #estoque ul li { border-left-color: #6366f1; }
+    #estoque ul li:hover { background: #e0e7ff; border-left-color: #4f46e5; }
+
+    #clientes .bloco-icon { background: linear-gradient(135deg, #ec4899 0%, #db2777 100%); }
+    #clientes ul li { border-left-color: #ec4899; }
+    #clientes ul li:hover { background: #fce7f3; border-left-color: #db2777; }
+
+    #vendas .bloco-icon { background: linear-gradient(135deg, #14b8a6 0%, #0d9488 100%); }
+    #vendas ul li { border-left-color: #14b8a6; }
+    #vendas ul li:hover { background: #ccfbf1; border-left-color: #0d9488; }
+
+    /* Resumo Financeiro - Card Especial */
+    #resumo-financeiro {
+      grid-column: span 2;
+      background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+      color: white;
+      border: none;
+    }
+
+    #resumo-financeiro .bloco-header {
+      border-bottom-color: rgba(255, 255, 255, 0.2);
+    }
+
+    #resumo-financeiro h2 {
+      color: white;
+    }
+
+    #resumo-financeiro .bloco-icon {
+      background: rgba(255, 255, 255, 0.2);
+      backdrop-filter: blur(10px);
+    }
+
     .stats-grid {
       display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 10px;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 16px;
       margin-top: 10px;
     }
 
     .stat-item {
-      background: #f8f9fa;
-      padding: 15px;
-      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.1);
+      padding: 20px;
+      border-radius: 12px;
       text-align: center;
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      transition: all 0.3s;
+    }
+
+    .stat-item:hover {
+      background: rgba(255, 255, 255, 0.15);
+      transform: scale(1.05);
     }
 
     .stat-item .numero {
-      font-size: 1.8rem;
-      font-weight: 700;
-      color: #667eea;
+      font-size: 2rem;
+      font-weight: 800;
+      color: white;
       display: block;
+      margin-bottom: 8px;
     }
 
     .stat-item .label {
       font-size: 0.85rem;
-      color: #6c757d;
-      margin-top: 5px;
+      color: rgba(255, 255, 255, 0.9);
+      font-weight: 500;
     }
 
-    /* Blocos especiais - ocupam mais espaço */
-    .bloco-destaque {
-      grid-column: span 2;
-    }
+    /* Relatórios */
+    #relatorios .bloco-icon { background: linear-gradient(135deg, #84cc16 0%, #65a30d 100%); }
+    #relatorios ul li { border-left-color: #84cc16; }
 
-    /* Footer com ações rápidas */
+    /* Footer moderno */
     footer {
-      background: #2c3e50;
-      color: white;
-      padding: 20px 30px;
+      background: white;
+      border-top: 1px solid #e5e7eb;
+      padding: 24px 40px;
       display: flex;
-      justify-content: space-around;
+      justify-content: center;
       align-items: center;
       flex-wrap: wrap;
-      gap: 15px;
+      gap: 16px;
+      margin-top: 40px;
     }
 
     footer button {
-      background: white;
-      color: #2c3e50;
+      background: #f3f4f6;
+      color: #1f2937;
       border: none;
       padding: 12px 24px;
-      border-radius: 8px;
+      border-radius: 10px;
       font-weight: 600;
       cursor: pointer;
       transition: all 0.3s;
       font-size: 0.9rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
     }
 
     footer button:hover {
-      background: #667eea;
+      background: #3b82f6;
       color: white;
       transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+      box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
     }
 
-    /* Responsividade */
+    /* Responsividade aprimorada */
+    @media (max-width: 1024px) {
+      #resumo-financeiro {
+        grid-column: span 1;
+      }
+    }
+
     @media (max-width: 768px) {
-      body {
-        padding: 10px;
+      header {
+        padding: 20px;
       }
 
-      header h1 {
-        font-size: 1.5rem;
+      .header-content {
+        flex-direction: column;
+        gap: 15px;
+      }
+
+      .header-right {
+        width: 100%;
+        justify-content: center;
       }
 
       main {
         grid-template-columns: 1fr;
-        padding: 15px;
+        padding: 20px;
+        gap: 20px;
       }
 
-      .bloco-destaque {
+      #resumo-financeiro {
         grid-column: span 1;
       }
 
+      .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
       footer {
+        padding: 20px;
         flex-direction: column;
       }
 
       footer button {
         width: 100%;
+        justify-content: center;
       }
     }
 
-    /* Scrollbar customizada */
+    /* Scrollbar customizada e refinada */
     .bloco ul::-webkit-scrollbar {
       width: 6px;
     }
 
     .bloco ul::-webkit-scrollbar-track {
-      background: #f1f1f1;
+      background: #f3f4f6;
       border-radius: 10px;
     }
 
     .bloco ul::-webkit-scrollbar-thumb {
-      background: #667eea;
+      background: #3b82f6;
       border-radius: 10px;
     }
 
     .bloco ul::-webkit-scrollbar-thumb:hover {
-      background: #764ba2;
+      background: #2563eb;
     }
+
+    /* Animações sutis */
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .bloco {
+      animation: fadeIn 0.5s ease-out;
+    }
+
+    .bloco:nth-child(1) { animation-delay: 0.05s; }
+    .bloco:nth-child(2) { animation-delay: 0.1s; }
+    .bloco:nth-child(3) { animation-delay: 0.15s; }
+    .bloco:nth-child(4) { animation-delay: 0.2s; }
+    .bloco:nth-child(5) { animation-delay: 0.25s; }
+    .bloco:nth-child(6) { animation-delay: 0.3s; }
+    .bloco:nth-child(7) { animation-delay: 0.35s; }
+    .bloco:nth-child(8) { animation-delay: 0.4s; }
+    .bloco:nth-child(9) { animation-delay: 0.45s; }
+    .bloco:nth-child(10) { animation-delay: 0.5s; }
   </style>
 </head>
 <body>
   <div class="container">
     <!-- 
-      CABEÇALHO
-      Exibe o título do sistema e informações gerais
+      CABEÇALHO APRIMORADO
+      Design mais limpo com ícones de ação rápida
     -->
     <header>
-      <h1>🔧 Sistema de Gerenciamento - Oficina</h1>
-      <p>Controle completo de consertos, peças e finanças</p>
+      <div class="header-content">
+        <div class="header-left">
+          <h1>🔧 Sistema de Gerenciamento - Oficina</h1>
+          <p>Controle completo de consertos, peças e finanças</p>
+        </div>
+        <div class="header-right">
+          <div class="header-icon" title="Notificações">🔔</div>
+          <div class="header-icon" title="Configurações">⚙️</div>
+          <div class="header-icon" title="Perfil">👤</div>
+        </div>
+      </div>
     </header>
 
     <!-- 
       DASHBOARD PRINCIPAL
-      Contém todos os blocos de gerenciamento da oficina
-      Cada bloco possui um ID único para manipulação via script.js
+      Design refinado com cores específicas por categoria
     -->
     <main>
       
-      <!-- 
-        BLOCO 1: ANOTAÇÕES/LEMBRETES
-        ID: anotacoes
-        Propósito: Armazenar lembretes e anotações gerais da oficina
-        Firebase path: /anotacoes
-        Manipulação: script.js deve adicionar/listar/remover anotações
-      -->
+      <!-- BLOCO 1: ANOTAÇÕES/LEMBRETES -->
       <section id="anotacoes" class="bloco">
-        <h2><span>🗒️</span> Anotações e Lembretes</h2>
+        <div class="bloco-header">
+          <h2>
+            <div class="bloco-icon">🗒️</div>
+            Anotações
+          </h2>
+          <span class="bloco-badge" id="badge-anotacoes">0</span>
+        </div>
         <ul id="lista-anotacoes">
           <!-- Lista preenchida dinamicamente pelo script.js -->
         </ul>
-        <button class="btn-adicionar" id="btnNovaAnotacao">+ Adicionar Anotação</button>
+        <button class="btn-adicionar" id="btnNovaAnotacao">+ Nova Anotação</button>
       </section>
 
-      <!-- 
-        BLOCO 2: AGENDAMENTOS
-        ID: agendamentos
-        Propósito: Gerenciar agendamentos de clientes para consertos
-        Firebase path: /agendamentos
-        Dados: { cliente, telefone, data, hora, aparelho, problema }
-      -->
+      <!-- BLOCO 2: AGENDAMENTOS -->
       <section id="agendamentos" class="bloco">
-        <h2><span>📅</span> Agendamentos</h2>
+        <div class="bloco-header">
+          <h2>
+            <div class="bloco-icon">📅</div>
+            Agendamentos
+          </h2>
+          <span class="bloco-badge" id="badge-agendamentos">0</span>
+        </div>
         <ul id="lista-agendamentos">
           <!-- Lista preenchida dinamicamente -->
         </ul>
         <button class="btn-adicionar" id="btnNovoAgendamento">+ Novo Agendamento</button>
       </section>
 
-      <!-- 
-        BLOCO 3: CONTAS A PAGAR
-        ID: contas-pagar
-        Propósito: Controlar contas e despesas da oficina
-        Firebase path: /contas_pagar
-        Dados: { descricao, valor, vencimento, status: "pendente" ou "pago" }
-      -->
+      <!-- BLOCO 3: CONTAS A PAGAR -->
       <section id="contas-pagar" class="bloco">
-        <h2><span>💰</span> Contas a Pagar</h2>
+        <div class="bloco-header">
+          <h2>
+            <div class="bloco-icon">💰</div>
+            Contas a Pagar
+          </h2>
+          <span class="bloco-badge" id="badge-contas">0</span>
+        </div>
         <ul id="lista-contas-pagar">
           <!-- Lista preenchida dinamicamente -->
         </ul>
-        <button class="btn-adicionar" id="btnNovaConta">+ Adicionar Conta</button>
+        <button class="btn-adicionar" id="btnNovaConta">+ Nova Conta</button>
       </section>
 
-      <!-- 
-        BLOCO 4: PEÇAS PARA PEDIR
-        ID: pecas-pedir
-        Propósito: Lista de peças que precisam ser encomendadas
-        Firebase path: /pecas_pedir
-        Dados: { nome_peca, quantidade, fornecedor, prioridade }
-      -->
+      <!-- BLOCO 4: PEÇAS PARA PEDIR -->
       <section id="pecas-pedir" class="bloco">
-        <h2><span>🔩</span> Peças para Pedir</h2>
+        <div class="bloco-header">
+          <h2>
+            <div class="bloco-icon">🔩</div>
+            Peças para Pedir
+          </h2>
+          <span class="bloco-badge" id="badge-pecas">0</span>
+        </div>
         <ul id="lista-pecas-pedir">
           <!-- Lista preenchida dinamicamente -->
         </ul>
         <button class="btn-adicionar" id="btnNovaPeca">+ Adicionar Peça</button>
       </section>
 
-      <!-- 
-        BLOCO 5: ORDENS DE SERVIÇO
-        ID: ordens-servico
-        Propósito: Gerenciar ordens de serviço abertas
-        Firebase path: /ordens_servico
-        Dados: { numero_os, cliente, aparelho, status, data_entrada, previsao }
-      -->
+      <!-- BLOCO 5: ORDENS DE SERVIÇO -->
       <section id="ordens-servico" class="bloco">
-        <h2><span>🛠️</span> Ordens de Serviço</h2>
+        <div class="bloco-header">
+          <h2>
+            <div class="bloco-icon">🛠️</div>
+            Ordens de Serviço
+          </h2>
+          <span class="bloco-badge" id="badge-os">0</span>
+        </div>
         <ul id="lista-ordens-servico">
           <!-- Lista preenchida dinamicamente -->
         </ul>
-        <button class="btn-adicionar" id="btnNovaOS">+ Nova Ordem de Serviço</button>
+        <button class="btn-adicionar" id="btnNovaOS">+ Nova OS</button>
       </section>
 
-      <!-- 
-        BLOCO 6: ESTOQUE DE PEÇAS
-        ID: estoque
-        Propósito: Controlar peças em estoque
-        Firebase path: /estoque
-        Dados: { nome_peca, quantidade, valor_unitario, localizacao }
-      -->
+      <!-- BLOCO 6: ESTOQUE DE PEÇAS -->
       <section id="estoque" class="bloco">
-        <h2><span>📦</span> Estoque de Peças</h2>
+        <div class="bloco-header">
+          <h2>
+            <div class="bloco-icon">📦</div>
+            Estoque
+          </h2>
+          <span class="bloco-badge" id="badge-estoque">0</span>
+        </div>
         <ul id="lista-estoque">
           <!-- Lista preenchida dinamicamente -->
         </ul>
-        <button class="btn-adicionar" id="btnAdicionarEstoque">+ Adicionar ao Estoque</button>
+        <button class="btn-adicionar" id="btnAdicionarEstoque">+ Adicionar Item</button>
       </section>
 
-      <!-- 
-        BLOCO 7: CLIENTES
-        ID: clientes
-        Propósito: Cadastro e histórico de clientes
-        Firebase path: /clientes
-        Dados: { nome, telefone, email, endereco, historico_servicos }
-      -->
+      <!-- BLOCO 7: CLIENTES -->
       <section id="clientes" class="bloco">
-        <h2><span>👥</span> Clientes</h2>
+        <div class="bloco-header">
+          <h2>
+            <div class="bloco-icon">👥</div>
+            Clientes
+          </h2>
+          <span class="bloco-badge" id="badge-clientes">0</span>
+        </div>
         <ul id="lista-clientes">
           <!-- Lista preenchida dinamicamente -->
         </ul>
         <button class="btn-adicionar" id="btnNovoCliente">+ Cadastrar Cliente</button>
       </section>
 
-      <!-- 
-        BLOCO 8: VENDAS REALIZADAS
-        ID: vendas
-        Propósito: Registrar vendas de peças e serviços
-        Firebase path: /vendas
-        Dados: { data, cliente, itens[], valor_total, forma_pagamento }
-      -->
+      <!-- BLOCO 8: VENDAS REALIZADAS -->
       <section id="vendas" class="bloco">
-        <h2><span>💵</span> Vendas Realizadas</h2>
+        <div class="bloco-header">
+          <h2>
+            <div class="bloco-icon">💵</div>
+            Vendas
+          </h2>
+          <span class="bloco-badge" id="badge-vendas">0</span>
+        </div>
         <ul id="lista-vendas">
           <!-- Lista preenchida dinamicamente -->
         </ul>
         <button class="btn-adicionar" id="btnNovaVenda">+ Registrar Venda</button>
       </section>
 
-      <!-- 
-        BLOCO 9: RESUMO FINANCEIRO (Destaque - ocupa 2 colunas)
-        ID: resumo-financeiro
-        Propósito: Exibir estatísticas financeiras rápidas
-        Firebase path: cálculos baseados em /vendas e /contas_pagar
-        Atualizado dinamicamente pelo script.js
-      -->
-      <section id="resumo-financeiro" class="bloco bloco-destaque">
-        <h2><span>📊</span> Resumo Financeiro</h2>
+      <!-- BLOCO 9: RESUMO FINANCEIRO (Card Premium) -->
+      <section id="resumo-financeiro" class="bloco">
+        <div class="bloco-header">
+          <h2>
+            <div class="bloco-icon">📊</div>
+            Resumo Financeiro
+          </h2>
+        </div>
         <div class="stats-grid">
           <div class="stat-item">
             <span class="numero" id="total-vendas-mes">R$ 0,00</span>
@@ -433,49 +610,51 @@
         </div>
       </section>
 
-      <!-- 
-        BLOCO 10: RELATÓRIOS (Preparado para expansão futura)
-        ID: relatorios
-        Propósito: Área para gerar relatórios e análises
-        Futuro: Gráficos de faturamento, peças mais vendidas, etc.
-      -->
+      <!-- BLOCO 10: RELATÓRIOS -->
       <section id="relatorios" class="bloco">
-        <h2><span>📈</span> Relatórios</h2>
+        <div class="bloco-header">
+          <h2>
+            <div class="bloco-icon">📈</div>
+            Relatórios
+          </h2>
+        </div>
         <ul id="lista-relatorios">
-          <li>📄 Relatório Mensal - Em breve</li>
-          <li>📄 Análise de Vendas - Em breve</li>
-          <li>📄 Peças Mais Vendidas - Em breve</li>
+          <li>📄 Relatório Mensal</li>
+          <li>📊 Análise de Vendas</li>
+          <li>🔧 Serviços Realizados</li>
+          <li>💰 Fluxo de Caixa</li>
         </ul>
-        <button class="btn-adicionar" id="btnGerarRelatorio" disabled style="opacity: 0.5; cursor: not-allowed;">
-          🔒 Em Desenvolvimento
-        </button>
+        <button class="btn-adicionar" id="btnGerarRelatorio">📥 Gerar Relatório</button>
       </section>
 
     </main>
 
-    <!-- 
-      FOOTER - AÇÕES RÁPIDAS
-      Botões para funcionalidades gerais do sistema
-    -->
+    <!-- FOOTER MODERNO -->
     <footer>
-      <button id="btnBackup">💾 Fazer Backup</button>
-      <button id="btnConfiguracoes">⚙️ Configurações</button>
-      <button id="btnAjuda">❓ Ajuda</button>
-      <button id="btnSair">🚪 Sair</button>
+      <button id="btnBackup">
+        <span>💾</span>
+        <span>Backup</span>
+      </button>
+      <button id="btnConfiguracoes">
+        <span>⚙️</span>
+        <span>Configurações</span>
+      </button>
+      <button id="btnAjuda">
+        <span>❓</span>
+        <span>Ajuda</span>
+      </button>
+      <button id="btnSair">
+        <span>🚪</span>
+        <span>Sair</span>
+      </button>
     </footer>
   </div>
 
-  <!-- 
-    FIREBASE SDK
-    Carrega as bibliotecas do Firebase Realtime Database
-  -->
+  <!-- FIREBASE SDK -->
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 
-  <!-- 
-    CONFIGURAÇÃO DO FIREBASE
-    Inicializa a conexão com o Firebase Realtime Database
-  -->
+  <!-- CONFIGURAÇÃO DO FIREBASE -->
   <script>
     const firebaseConfig = {
       apiKey: "AIzaSyCyz4Nrvcnf0MF_99fLKPMsrJ9dIzuRHG4",
@@ -490,16 +669,12 @@
     // Inicializa Firebase
     firebase.initializeApp(firebaseConfig);
     
-    // Referência ao banco de dados - disponível globalmente para script.js
+    // Referência ao banco de dados
     const database = firebase.database();
-    const dbRef = database.ref("anotacoes"); // Mantém compatibilidade com script.js existente
+    const dbRef = database.ref("anotacoes");
   </script>
 
-  <!-- 
-    SCRIPT EXTERNO
-    Carrega a lógica JavaScript do arquivo script.js
-    Este arquivo deve conter todas as funções de manipulação de dados
-  -->
+  <!-- SCRIPT EXTERNO -->
   <script src="script.js"></script>
 </body>
 </html>
