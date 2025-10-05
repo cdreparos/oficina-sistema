@@ -1,0 +1,1298 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Peças para Pedir - SIGO Casa dos Reparos</title>
+  
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #f0f2f5;
+      min-height: 100vh;
+    }
+
+    /* Header */
+    header {
+      background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+      color: white;
+      padding: 30px 40px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .header-content {
+      max-width: 1400px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .header-left h1 {
+      font-size: 1.8rem;
+      font-weight: 700;
+      margin-bottom: 5px;
+    }
+
+    .header-left p {
+      font-size: 0.9rem;
+      opacity: 0.85;
+    }
+
+    .btn-voltar {
+      background: rgba(255, 255, 255, 0.15);
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 10px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+      backdrop-filter: blur(10px);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-voltar:hover {
+      background: rgba(255, 255, 255, 0.25);
+      transform: translateY(-2px);
+    }
+
+    /* Container */
+    .container {
+      max-width: 1400px;
+      margin: 30px auto;
+      padding: 0 40px;
+    }
+
+    /* Barra de ações */
+    .actions-bar {
+      background: white;
+      padding: 20px 30px;
+      border-radius: 16px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+      margin-bottom: 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+
+    .filter-tabs {
+      display: flex;
+      gap: 8px;
+      background: #f3f4f6;
+      padding: 4px;
+      border-radius: 10px;
+    }
+
+    .filter-tab {
+      padding: 10px 20px;
+      border: none;
+      background: transparent;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.3s;
+      color: #6b7280;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .filter-tab.active {
+      background: white;
+      color: #06b6d4;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .filter-badge {
+      background: #06b6d4;
+      color: white;
+      padding: 2px 8px;
+      border-radius: 12px;
+      font-size: 0.75rem;
+      font-weight: 700;
+    }
+
+    .filter-tab.active .filter-badge {
+      background: #06b6d4;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%);
+      color: white;
+      border: none;
+      padding: 14px 28px;
+      border-radius: 10px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+      box-shadow: 0 4px 12px rgba(6, 182, 212, 0.3);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(6, 182, 212, 0.4);
+    }
+
+    /* Estatísticas */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 20px;
+      margin-bottom: 24px;
+    }
+
+    .stat-card {
+      background: white;
+      border-radius: 16px;
+      padding: 24px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+      border-left: 4px solid #06b6d4;
+    }
+
+    .stat-card.oficina {
+      border-left-color: #f59e0b;
+    }
+
+    .stat-card.loja {
+      border-left-color: #10b981;
+    }
+
+    .stat-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .stat-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      background: #cffafe;
+    }
+
+    .stat-card.oficina .stat-icon {
+      background: #fef3c7;
+    }
+
+    .stat-card.loja .stat-icon {
+      background: #d1fae5;
+    }
+
+    .stat-label {
+      font-size: 0.9rem;
+      color: #6b7280;
+      margin-bottom: 8px;
+    }
+
+    .stat-value {
+      font-size: 2rem;
+      font-weight: 800;
+      color: #06b6d4;
+    }
+
+    .stat-card.oficina .stat-value {
+      color: #f59e0b;
+    }
+
+    .stat-card.loja .stat-value {
+      color: #10b981;
+    }
+
+    /* Grid de peças */
+    .pecas-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+      gap: 20px;
+    }
+
+    /* Card de peça */
+    .peca-card {
+      background: white;
+      border-radius: 16px;
+      padding: 20px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+      border: 1px solid #e5e7eb;
+      transition: all 0.3s;
+      position: relative;
+    }
+
+    .peca-card:hover {
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+      transform: translateY(-4px);
+      border-color: #06b6d4;
+    }
+
+    .peca-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 16px;
+    }
+
+    .peca-title {
+      flex: 1;
+    }
+
+    .peca-title h3 {
+      font-size: 1.1rem;
+      color: #1f2937;
+      margin-bottom: 4px;
+    }
+
+    .peca-codigo {
+      font-size: 0.8rem;
+      color: #9ca3af;
+    }
+
+    .peca-prioridade {
+      padding: 6px 12px;
+      border-radius: 12px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+
+    .prioridade-urgente {
+      background: #fee2e2;
+      color: #991b1b;
+    }
+
+    .prioridade-normal {
+      background: #fef3c7;
+      color: #92400e;
+    }
+
+    .prioridade-baixa {
+      background: #e0e7ff;
+      color: #3730a3;
+    }
+
+    .peca-details {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .detail-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 0.9rem;
+    }
+
+    .detail-icon {
+      width: 32px;
+      height: 32px;
+      background: #f3f4f6;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+      flex-shrink: 0;
+    }
+
+    .detail-text {
+      color: #374151;
+      flex: 1;
+    }
+
+    .detail-text strong {
+      color: #1f2937;
+      display: block;
+      margin-bottom: 2px;
+    }
+
+    .destino-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+
+    .destino-oficina {
+      background: #fef3c7;
+      color: #92400e;
+    }
+
+    .destino-loja {
+      background: #d1fae5;
+      color: #065f46;
+    }
+
+    .peca-status {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 12px;
+      background: #f9fafb;
+      border-radius: 8px;
+      margin-bottom: 16px;
+    }
+
+    .status-indicator {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      animation: pulse 2s infinite;
+    }
+
+    .status-pendente .status-indicator {
+      background: #f59e0b;
+    }
+
+    .status-pedido .status-indicator {
+      background: #3b82f6;
+    }
+
+    .status-recebido .status-indicator {
+      background: #10b981;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+
+    .peca-actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    .btn-action {
+      flex: 1;
+      padding: 10px;
+      border: none;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+      font-size: 0.85rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    .btn-edit {
+      background: #dbeafe;
+      color: #1e40af;
+    }
+
+    .btn-edit:hover {
+      background: #3b82f6;
+      color: white;
+    }
+
+    .btn-complete {
+      background: #d1fae5;
+      color: #065f46;
+    }
+
+    .btn-complete:hover {
+      background: #10b981;
+      color: white;
+    }
+
+    .btn-delete {
+      background: #fee2e2;
+      color: #991b1b;
+    }
+
+    .btn-delete:hover {
+      background: #ef4444;
+      color: white;
+    }
+
+    /* Modal */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(4px);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .modal.active {
+      display: flex;
+    }
+
+    .modal-content {
+      background: white;
+      border-radius: 20px;
+      padding: 32px;
+      max-width: 600px;
+      width: 100%;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      animation: modalSlideIn 0.3s ease-out;
+    }
+
+    @keyframes modalSlideIn {
+      from {
+        opacity: 0;
+        transform: translateY(-30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+      padding-bottom: 16px;
+      border-bottom: 2px solid #f3f4f6;
+    }
+
+    .modal-header h2 {
+      font-size: 1.5rem;
+      color: #1f2937;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .btn-close {
+      background: #f3f4f6;
+      border: none;
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 1.2rem;
+      transition: all 0.3s;
+    }
+
+    .btn-close:hover {
+      background: #e5e7eb;
+      transform: rotate(90deg);
+    }
+
+    /* Formulário */
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 600;
+      color: #374151;
+      font-size: 0.9rem;
+    }
+
+    .form-group input,
+    .form-group textarea,
+    .form-group select {
+      width: 100%;
+      padding: 12px 16px;
+      border: 2px solid #e5e7eb;
+      border-radius: 10px;
+      font-size: 0.95rem;
+      transition: all 0.3s;
+      font-family: inherit;
+    }
+
+    .form-group input:focus,
+    .form-group textarea:focus,
+    .form-group select:focus {
+      outline: none;
+      border-color: #06b6d4;
+      box-shadow: 0 0 0 3px rgba(6, 182, 212, 0.1);
+    }
+
+    .form-group textarea {
+      resize: vertical;
+      min-height: 80px;
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+    }
+
+    /* Destino Radio Buttons */
+    .destino-options {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      margin-top: 8px;
+    }
+
+    .destino-option {
+      position: relative;
+    }
+
+    .destino-option input[type="radio"] {
+      position: absolute;
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .destino-label {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 16px;
+      border: 2px solid #e5e7eb;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 0.3s;
+      font-weight: 600;
+      color: #6b7280;
+    }
+
+    .destino-option input[type="radio"]:checked + .destino-label {
+      border-color: #06b6d4;
+      background: #cffafe;
+      color: #0891b2;
+    }
+
+    .destino-label.oficina-label:hover {
+      border-color: #f59e0b;
+      background: #fef3c7;
+    }
+
+    .destino-label.loja-label:hover {
+      border-color: #10b981;
+      background: #d1fae5;
+    }
+
+    .form-actions {
+      display: flex;
+      gap: 12px;
+      margin-top: 28px;
+    }
+
+    .btn-submit {
+      flex: 1;
+      padding: 14px;
+      background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%);
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .btn-submit:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(6, 182, 212, 0.4);
+    }
+
+    .btn-cancel {
+      flex: 1;
+      padding: 14px;
+      background: #f3f4f6;
+      color: #374151;
+      border: none;
+      border-radius: 10px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .btn-cancel:hover {
+      background: #e5e7eb;
+    }
+
+    /* Estado vazio */
+    .empty-state {
+      text-align: center;
+      padding: 80px 20px;
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+    }
+
+    .empty-state-icon {
+      font-size: 4rem;
+      margin-bottom: 20px;
+      opacity: 0.5;
+    }
+
+    .empty-state h3 {
+      font-size: 1.5rem;
+      color: #374151;
+      margin-bottom: 12px;
+    }
+
+    .empty-state p {
+      color: #6b7280;
+      margin-bottom: 24px;
+    }
+
+    /* Responsividade */
+    @media (max-width: 768px) {
+      .container {
+        padding: 0 20px;
+      }
+
+      header {
+        padding: 20px;
+      }
+
+      .header-content {
+        flex-direction: column;
+        gap: 15px;
+      }
+
+      .actions-bar {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .filter-tabs {
+        width: 100%;
+      }
+
+      .stats-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .pecas-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .form-row,
+      .destino-options {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Scrollbar */
+    .modal-content::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    .modal-content::-webkit-scrollbar-track {
+      background: #f3f4f6;
+      border-radius: 10px;
+    }
+
+    .modal-content::-webkit-scrollbar-thumb {
+      background: #06b6d4;
+      border-radius: 10px;
+    }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <header>
+    <div class="header-content">
+      <div class="header-left">
+        <h1>🔩 Peças para Pedir</h1>
+        <p>Gerencie solicitações de peças para Oficina e Loja</p>
+      </div>
+      <button class="btn-voltar" onclick="window.location.href='painel.html'">
+        <span>←</span>
+        <span>Voltar</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Container Principal -->
+  <div class="container">
+    
+    <!-- Barra de Ações -->
+    <div class="actions-bar">
+      <div class="filter-tabs">
+        <button class="filter-tab active" data-filter="todos">
+          Todos
+          <span class="filter-badge" id="badge-todos">0</span>
+        </button>
+        <button class="filter-tab" data-filter="oficina">
+          🔧 Oficina
+          <span class="filter-badge" id="badge-oficina">0</span>
+        </button>
+        <button class="filter-tab" data-filter="loja">
+          🏪 Loja
+          <span class="filter-badge" id="badge-loja">0</span>
+        </button>
+      </div>
+      <button class="btn-primary" id="btnNovaPeca">
+        <span>➕</span>
+        <span>Nova Solicitação</span>
+      </button>
+    </div>
+
+    <!-- Estatísticas -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-header">
+          <div class="stat-icon">📦</div>
+        </div>
+        <div class="stat-label">Total de Solicitações</div>
+        <div class="stat-value" id="stat-total">0</div>
+      </div>
+
+      <div class="stat-card oficina">
+        <div class="stat-header">
+          <div class="stat-icon">🔧</div>
+        </div>
+        <div class="stat-label">Peças para Oficina</div>
+        <div class="stat-value" id="stat-oficina">0</div>
+      </div>
+
+      <div class="stat-card loja">
+        <div class="stat-header">
+          <div class="stat-icon">🏪</div>
+        </div>
+        <div class="stat-label">Peças para Loja</div>
+        <div class="stat-value" id="stat-loja">0</div>
+      </div>
+    </div>
+
+    <!-- Grid de Peças -->
+    <div id="pecasContainer">
+      <div class="pecas-grid" id="pecasGrid">
+        <!-- Peças serão inseridas aqui -->
+      </div>
+
+      <!-- Estado Vazio -->
+      <div class="empty-state" id="emptyState" style="display: none;">
+        <div class="empty-state-icon">🔩</div>
+        <h3>Nenhuma solicitação cadastrada</h3>
+        <p>Comece adicionando sua primeira solicitação de peça</p>
+        <button class="btn-primary" onclick="abrirModal()">
+          <span>➕</span>
+          <span>Nova Solicitação</span>
+        </button>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Modal de Solicitação -->
+  <div class="modal" id="modalPeca">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>
+          <span id="modalIcon">➕</span>
+          <span id="modalTitle">Nova Solicitação</span>
+        </h2>
+        <button class="btn-close" onclick="fecharModal()">✕</button>
+      </div>
+
+      <form id="formPeca" onsubmit="salvarPeca(event)">
+        <input type="hidden" id="pecaId" />
+
+        <div class="form-group">
+          <label for="nomePeca">Nome da Peça *</label>
+          <input 
+            type="text" 
+            id="nomePeca" 
+            required 
+            placeholder="Ex: Resistência 220V"
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="descricaoPeca">Descrição</label>
+          <textarea 
+            id="descricaoPeca" 
+            placeholder="Detalhes técnicos, especificações..."
+          ></textarea>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="quantidadePeca">Quantidade *</label>
+            <input 
+              type="number" 
+              id="quantidadePeca" 
+              required 
+              min="1"
+              value="1"
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="valorEstimado">Valor Estimado (R$)</label>
+            <input 
+              type="number" 
+              id="valorEstimado" 
+              step="0.01"
+              min="0"
+              placeholder="0,00"
+            />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Destino da Peça *</label>
+          <div class="destino-options">
+            <div class="destino-option">
+              <input type="radio" id="destinoOficina" name="destino" value="oficina" required>
+              <label for="destinoOficina" class="destino-label oficina-label">
+                <span>🔧</span>
+                <span>Oficina</span>
+              </label>
+            </div>
+            <div class="destino-option">
+              <input type="radio" id="destinoLoja" name="destino" value="loja">
+              <label for="destinoLoja" class="destino-label loja-label">
+                <span>🏪</span>
+                <span>Loja</span>
+              </label>
+            </div>
+          </div>
+          <small style="color: #6b7280; display: block; margin-top: 8px;">
+            💡 Oficina: Entra como mão de obra | Loja: Entra como venda de peça
+          </small>
+        </div>
+
+        <div class="form-group">
+          <label for="prioridadePeca">Prioridade *</label>
+          <select id="prioridadePeca" required>
+            <option value="normal">Normal</option>
+            <option value="urgente">Urgente</option>
+            <option value="baixa">Baixa</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="fornecedorPeca">Fornecedor</label>
+          <input 
+            type="text" 
+            id="fornecedorPeca" 
+            placeholder="Nome do fornecedor"
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="contatoFornecedor">Contato do Fornecedor</label>
+          <input 
+            type="text" 
+            id="contatoFornecedor" 
+            placeholder="Telefone ou e-mail"
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="statusPeca">Status *</label>
+          <select id="statusPeca" required>
+            <option value="pendente">Pendente</option>
+            <option value="pedido">Pedido Realizado</option>
+            <option value="recebido">Recebido</option>
+            <option value="cancelado">Cancelado</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="observacoesPeca">Observações</label>
+          <textarea 
+            id="observacoesPeca" 
+            placeholder="Informações adicionais..."
+          ></textarea>
+        </div>
+
+        <div class="form-actions">
+          <button type="button" class="btn-cancel" onclick="fecharModal()">
+            Cancelar
+          </button>
+          <button type="submit" class="btn-submit">
+            Salvar Solicitação
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+
+  <script>
+    // Configuração Firebase
+    const firebaseConfig = {
+      apiKey: "AIzaSyCyz4Nrvcnf0MF_99fLKPMsrJ9dIzuRHG4",
+      authDomain: "oficina-sistema-cc2cd.firebaseapp.com",
+      databaseURL: "https://oficina-sistema-cc2cd-default-rtdb.firebaseio.com/",
+      projectId: "oficina-sistema-cc2cd",
+      storageBucket: "oficina-sistema-cc2cd.appspot.com",
+      messagingSenderId: "1034638142539",
+      appId: "1:1034638142539:web:4b63c09b30b86838eff1ce"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const database = firebase.database();
+    const pecasRef = database.ref("pecas_pedir");
+
+    // Proteção da página
+    auth.onAuthStateChanged(user => {
+      if (!user) {
+        window.location.href = 'index.html';
+      }
+    });
+
+    // Variáveis globais
+    let pecasData = {};
+    let editandoId = null;
+    let filtroAtual = 'todos';
+
+    // Carregar peças em tempo real
+    pecasRef.on("value", snapshot => {
+      pecasData = snapshot.val() || {};
+      atualizarEstatisticas();
+      renderizarPecas();
+    });
+
+    // Atualizar estatísticas
+    function atualizarEstatisticas() {
+      const pecasArray = Object.values(pecasData);
+      const total = pecasArray.length;
+      const oficina = pecasArray.filter(p => p.destino === 'oficina').length;
+      const loja = pecasArray.filter(p => p.destino === 'loja').length;
+
+      document.getElementById('stat-total').textContent = total;
+      document.getElementById('stat-oficina').textContent = oficina;
+      document.getElementById('stat-loja').textContent = loja;
+
+      document.getElementById('badge-todos').textContent = total;
+      document.getElementById('badge-oficina').textContent = oficina;
+      document.getElementById('badge-loja').textContent = loja;
+    }
+
+    // Renderizar peças
+    function renderizarPecas() {
+      const grid = document.getElementById('pecasGrid');
+      const emptyState = document.getElementById('emptyState');
+
+      grid.innerHTML = '';
+
+      const pecasArray = Object.entries(pecasData).map(([id, data]) => ({
+        id,
+        ...data
+      }));
+
+      // Filtrar por destino
+      const pecasFiltradas = filtroAtual === 'todos' 
+        ? pecasArray 
+        : pecasArray.filter(p => p.destino === filtroAtual);
+
+      if (pecasFiltradas.length === 0) {
+        emptyState.style.display = 'block';
+        grid.style.display = 'none';
+        return;
+      }
+
+      emptyState.style.display = 'none';
+      grid.style.display = 'grid';
+
+      // Ordenar por prioridade e data
+      pecasFiltradas.sort((a, b) => {
+        const prioridadeOrder = { urgente: 0, normal: 1, baixa: 2 };
+        const prioA = prioridadeOrder[a.prioridade] || 1;
+        const prioB = prioridadeOrder[b.prioridade] || 1;
+        
+        if (prioA !== prioB) return prioA - prioB;
+        
+        return new Date(b.dataSolicitacao) - new Date(a.dataSolicitacao);
+      });
+
+      pecasFiltradas.forEach(peca => {
+        const card = document.createElement('div');
+        card.className = 'peca-card';
+        
+        const statusTexto = {
+          pendente: 'Pendente',
+          pedido: 'Pedido Realizado',
+          recebido: 'Recebido',
+          cancelado: 'Cancelado'
+        };
+
+        const destinoIcon = peca.destino === 'oficina' ? '🔧' : '🏪';
+        const destinoClass = peca.destino === 'oficina' ? 'destino-oficina' : 'destino-loja';
+        const destinoTexto = peca.destino === 'oficina' ? 'Oficina' : 'Loja';
+
+        card.innerHTML = `
+          <div class="peca-header">
+            <div class="peca-title">
+              <h3>${peca.nomePeca}</h3>
+              <div class="peca-codigo">Solicitado em ${new Date(peca.dataSolicitacao).toLocaleDateString()}</div>
+            </div>
+            <div class="peca-prioridade prioridade-${peca.prioridade}">
+              ${peca.prioridade}
+            </div>
+          </div>
+
+          ${peca.descricaoPeca ? `
+          <div class="detail-row">
+            <div class="detail-icon">📝</div>
+            <div class="detail-text">${peca.descricaoPeca}</div>
+          </div>
+          ` : ''}
+
+          <div class="peca-details">
+            <div class="detail-row">
+              <div class="detail-icon">📦</div>
+              <div class="detail-text">
+                <strong>Quantidade</strong>
+                ${peca.quantidade} ${peca.quantidade > 1 ? 'unidades' : 'unidade'}
+              </div>
+            </div>
+
+            ${peca.valorEstimado ? `
+            <div class="detail-row">
+              <div class="detail-icon">💰</div>
+              <div class="detail-text">
+                <strong>Valor Estimado</strong>
+                R$ ${parseFloat(peca.valorEstimado).toFixed(2).replace('.', ',')}
+              </div>
+            </div>
+            ` : ''}
+
+            <div class="detail-row">
+              <div class="detail-icon">${destinoIcon}</div>
+              <div class="detail-text">
+                <span class="destino-badge ${destinoClass}">
+                  ${destinoIcon} ${destinoTexto}
+                </span>
+              </div>
+            </div>
+
+            ${peca.fornecedorPeca ? `
+            <div class="detail-row">
+              <div class="detail-icon">🏭</div>
+              <div class="detail-text">
+                <strong>${peca.fornecedorPeca}</strong>
+                ${peca.contatoFornecedor ? `<br><small>${peca.contatoFornecedor}</small>` : ''}
+              </div>
+            </div>
+            ` : ''}
+          </div>
+
+          <div class="peca-status status-${peca.statusPeca}">
+            <div class="status-indicator"></div>
+            <span>${statusTexto[peca.statusPeca]}</span>
+          </div>
+
+          <div class="peca-actions">
+            <button class="btn-action btn-edit" onclick="editarPeca('${peca.id}')">
+              <span>✏️</span>
+              <span>Editar</span>
+            </button>
+            ${peca.statusPeca !== 'recebido' ? `
+            <button class="btn-action btn-complete" onclick="marcarRecebida('${peca.id}')">
+              <span>✓</span>
+              <span>Recebido</span>
+            </button>
+            ` : ''}
+            <button class="btn-action btn-delete" onclick="excluirPeca('${peca.id}', '${peca.nomePeca}')">
+              <span>🗑️</span>
+              <span>Excluir</span>
+            </button>
+          </div>
+        `;
+        
+        grid.appendChild(card);
+      });
+    }
+
+    // Filtros
+    document.querySelectorAll('.filter-tab').forEach(tab => {
+      tab.addEventListener('click', function() {
+        document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+        this.classList.add('active');
+        filtroAtual = this.dataset.filter;
+        renderizarPecas();
+      });
+    });
+
+    // Abrir modal para nova peça
+    document.getElementById('btnNovaPeca').addEventListener('click', abrirModal);
+
+    function abrirModal() {
+      editandoId = null;
+      document.getElementById('modalTitle').textContent = 'Nova Solicitação';
+      document.getElementById('modalIcon').textContent = '➕';
+      document.getElementById('formPeca').reset();
+      document.getElementById('pecaId').value = '';
+      document.getElementById('modalPeca').classList.add('active');
+    }
+
+    // Fechar modal
+    function fecharModal() {
+      document.getElementById('modalPeca').classList.remove('active');
+      document.getElementById('formPeca').reset();
+      editandoId = null;
+    }
+
+    // Editar peça
+    function editarPeca(id) {
+      editandoId = id;
+      const peca = pecasData[id];
+      
+      document.getElementById('modalTitle').textContent = 'Editar Solicitação';
+      document.getElementById('modalIcon').textContent = '✏️';
+      document.getElementById('pecaId').value = id;
+      document.getElementById('nomePeca').value = peca.nomePeca;
+      document.getElementById('descricaoPeca').value = peca.descricaoPeca || '';
+      document.getElementById('quantidadePeca').value = peca.quantidade;
+      document.getElementById('valorEstimado').value = peca.valorEstimado || '';
+      document.getElementById('prioridadePeca').value = peca.prioridade;
+      document.getElementById('fornecedorPeca').value = peca.fornecedorPeca || '';
+      document.getElementById('contatoFornecedor').value = peca.contatoFornecedor || '';
+      document.getElementById('statusPeca').value = peca.statusPeca;
+      document.getElementById('observacoesPeca').value = peca.observacoesPeca || '';
+
+      // Marcar destino
+      if (peca.destino === 'oficina') {
+        document.getElementById('destinoOficina').checked = true;
+      } else {
+        document.getElementById('destinoLoja').checked = true;
+      }
+
+      document.getElementById('modalPeca').classList.add('active');
+    }
+
+    // Salvar peça
+    function salvarPeca(event) {
+      event.preventDefault();
+
+      const destino = document.querySelector('input[name="destino"]:checked').value;
+
+      const pecaData = {
+        nomePeca: document.getElementById('nomePeca').value,
+        descricaoPeca: document.getElementById('descricaoPeca').value,
+        quantidade: parseInt(document.getElementById('quantidadePeca').value),
+        valorEstimado: document.getElementById('valorEstimado').value,
+        destino: destino,
+        prioridade: document.getElementById('prioridadePeca').value,
+        fornecedorPeca: document.getElementById('fornecedorPeca').value,
+        contatoFornecedor: document.getElementById('contatoFornecedor').value,
+        statusPeca: document.getElementById('statusPeca').value,
+        observacoesPeca: document.getElementById('observacoesPeca').value,
+        solicitadoPor: auth.currentUser.email,
+        dataSolicitacao: editandoId ? pecasData[editandoId].dataSolicitacao : new Date().toISOString(),
+        dataAtualizacao: new Date().toISOString()
+      };
+
+      if (editandoId) {
+        pecasRef.child(editandoId).update(pecaData)
+          .then(() => {
+            alert('Solicitação atualizada com sucesso!');
+            fecharModal();
+          })
+          .catch(error => {
+            alert('Erro ao atualizar solicitação: ' + error.message);
+          });
+      } else {
+        pecasRef.push(pecaData)
+          .then(() => {
+            alert('Solicitação cadastrada com sucesso!');
+            fecharModal();
+          })
+          .catch(error => {
+            alert('Erro ao cadastrar solicitação: ' + error.message);
+          });
+      }
+    }
+
+    // Marcar como recebida
+    function marcarRecebida(id) {
+      const peca = pecasData[id];
+      
+      if (confirm(`Marcar "${peca.nomePeca}" como recebida?`)) {
+        pecasRef.child(id).update({
+          statusPeca: 'recebido',
+          dataRecebimento: new Date().toISOString()
+        })
+        .then(() => {
+          alert('Peça marcada como recebida!');
+        })
+        .catch(error => {
+          alert('Erro ao atualizar status: ' + error.message);
+        });
+      }
+    }
+
+    // Excluir peça
+    function excluirPeca(id, nome) {
+      const confirmacao = confirm(
+        `⚠️ ATENÇÃO!\n\nDeseja realmente excluir a solicitação:\n"${nome}"?\n\nEsta ação não pode ser desfeita!`
+      );
+      
+      if (confirmacao) {
+        pecasRef.child(id).remove()
+          .then(() => {
+            alert('Solicitação excluída com sucesso!');
+          })
+          .catch(error => {
+            alert('Erro ao excluir solicitação: ' + error.message);
+          });
+      }
+    }
+
+    // Fechar modal ao clicar fora
+    document.getElementById('modalPeca').addEventListener('click', function(e) {
+      if (e.target === this) {
+        fecharModal();
+      }
+    });
+
+    // Atalhos de teclado
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') {
+        fecharModal();
+      }
+      if (e.ctrlKey && e.key === 'n') {
+        e.preventDefault();
+        abrirModal();
+      }
+    });
+
+    // Formatação de valor
+    document.getElementById('valorEstimado').addEventListener('blur', function() {
+      if (this.value) {
+        this.value = parseFloat(this.value).toFixed(2);
+      }
+    });
+
+    console.log('Sistema de Peças para Pedir - SIGO Casa dos Reparos');
+    console.log('Sistema de controle Oficina/Loja inicializado');
+  </script>
+</body>
+</html>
