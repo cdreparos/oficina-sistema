@@ -1,0 +1,1830 @@
+<div class="form-group">
+              <label for="dataEntrada">Data Entrada *</label>
+              <input 
+                type="date" 
+                id="dataEntrada" 
+                required
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="prazoEntrega">Prazo Entrega</label>
+              <input 
+                type="date" 
+                id="prazoEntrega"
+              />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="observacoes">Observações</label>
+            <textarea 
+              id="observacoes" 
+              placeholder="Observações gerais sobre o serviço..."
+            ></textarea>
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button type="button" class="btn-cancel" onclick="fecharModal()">
+            Cancelar
+          </button>
+          <button type="submit" class="btn-submit">
+            Salvar OS
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal de Adicionar Peça -->
+  <div class="modal" id="modalPeca">
+    <div class="modal-content modal-peca">
+      <div class="modal-header">
+        <h2>🔩 Adicionar Peça</h2>
+        <button class="btn-close" onclick="fecharModalPeca()">✕</button>
+      </div>
+
+      <form id="formPeca" onsubmit="adicionarPeca(event)">
+        <div class="form-group">
+          <label for="nomePeca">Nome da Peça *</label>
+          <input 
+            type="text" 
+            id="nomePeca" 
+            required 
+            placeholder="Ex: Resistência 220V"
+          />
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="quantidadePeca">Quantidade *</label>
+            <input 
+              type="number" 
+              id="quantidadePeca" 
+              required 
+              min="1"
+              value="1"
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="valorPeca">Valor Unit. (R$) *</label>
+            <input 
+              type="number" 
+              id="valorPeca" 
+              required
+              step="0.01"
+              min="0"
+            />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Origem da Peça *</label>
+          <div class="destino-options" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-top: 8px;">
+            <div style="position: relative;">
+              <input type="radio" id="origemOficina" name="origem" value="oficina" required style="position: absolute; opacity: 0;">
+              <label for="origemOficina" style="display: flex; align-items: center; justify-content: center; gap: 8px; padding: 12px; border: 2px solid #e5e7eb; border-radius: 10px; cursor: pointer; transition: all 0.3s; font-weight: 600;">
+                <span>🔧</span>
+                <span>Oficina</span>
+              </label>
+            </div>
+            <div style="position: relative;">
+              <input type="radio" id="origemLoja" name="origem" value="loja" style="position: absolute; opacity: 0;">
+              <label for="origemLoja" style="display: flex; align-items: center; justify-content: center; gap: 8px; padding: 12px; border: 2px solid #e5e7eb; border-radius: 10px; cursor: pointer; transition: all 0.3s; font-weight: 600;">
+                <span>🏪</span>
+                <span>Loja</span>
+              </label>
+            </div>
+          </div>
+          <small style="color: #6b7280; display: block; margin-top: 8px;">
+            💡 Oficina: Soma na mão de obra | Loja: Soma nas peças vendidas
+          </small>
+        </div>
+
+        <div class="form-actions">
+          <button type="button" class="btn-cancel" onclick="fecharModalPeca()">
+            Cancelar
+          </button>
+          <button type="submit" class="btn-submit">
+            Adicionar
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal de Relatório de Garantia -->
+  <div class="modal" id="modalRelatorio">
+    <div class="modal-content" style="max-width: 850px;">
+      <div class="modal-header">
+        <h2>📄 Relatório de Garantia</h2>
+        <div style="display: flex; gap: 10px;">
+          <button class="btn-action btn-print" onclick="window.print()" style="padding: 10px 20px;">
+            🖨️ Imprimir
+          </button>
+          <button class="btn-close" onclick="fecharModalRelatorio()">✕</button>
+        </div>
+      </div>
+
+      <div class="relatorio-garantia" id="relatorioContent">
+        <!-- Conteúdo do relatório será gerado aqui -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+
+  <script>
+    // Configuração Firebase
+    const firebaseConfig = {
+      apiKey: "AIzaSyCyz4Nrvcnf0MF_99fLKPMsrJ9dIzuRHG4",
+      authDomain: "oficina-sistema-cc2cd.firebaseapp.com",
+      databaseURL: "https://oficina-sistema-cc2cd-default-rtdb.firebaseio.com/",
+      projectId: "oficina-sistema-cc2cd",
+      storageBucket: "oficina-sistema-cc2cd.appspot.com",
+      messagingSenderId: "1034638142539",
+      appId: "1:1034638142539:web:4b63c09b30b86838eff1ce"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const database = firebase.database();
+    const osRef = database.ref("ordens_servico");
+    const clientesRef = database.ref("clientes");
+    const configRef = database.ref("configuracoes/garantia");
+
+    // Proteção da página
+    auth.onAuthStateChanged(user => {
+      if (!user) {
+        window.location.href = 'index.html';
+      }
+    });
+
+    // Variáveis globais
+    let osData = {};
+    let clientesData = {};
+    let configGarantia = {
+      diasGarantia: 90,
+      textoGarantia: "De acordo com o Código de Defesa do Consumidor (CDC), Lei nº 8.078/90, este serviço possui garantia legal de 90 (noventa) dias contra defeitos de execução, contados a partir da data de conclusão do serviço.",
+      observacoesGarantia: "A garantia não cobre danos causados por mau uso, queda, umidade excessiva ou interferência de terceiros. Válida apenas mediante apresentação desta via."
+    };
+    let editandoId = null;
+    let filtroAtual = 'todas';
+    let pecasTemp = [];
+    let proximoNumeroOS = 1;
+
+    // Carregar configurações de garantia
+    configRef.on("value", snapshot => {
+      if (snapshot.val()) {
+        configGarantia = snapshot.val();
+      }
+    });
+
+    // Carregar OS em tempo real
+    osRef.on("value", snapshot => {
+      osData = snapshot.val() || {};
+      calcularProximoNumero();
+      renderizarOS();
+    });
+
+    // Carregar clientes
+    clientesRef.on("value", snapshot => {
+      clientesData = snapshot.val() || {};
+    });
+
+    // Calcular próximo número de OS
+    function calcularProximoNumero() {
+      const numeros = Object.values(osData).map(os => parseInt(os.numeroOS) || 0);
+      proximoNumeroOS = numeros.length > 0 ? Math.max(...numeros) + 1 : 1;
+    }
+
+    // Renderizar OS
+    function renderizarOS() {
+      const grid = document.getElementById('osGrid');
+      const emptyState = document.getElementById('emptyState');
+
+      grid.innerHTML = '';
+
+      const osArray = Object.entries(osData).map(([id, data]) => ({
+        id,
+        ...data
+      }));
+
+      // Filtrar por status
+      const osFiltradas = filtroAtual === 'todas' 
+        ? osArray 
+        : osArray.filter(os => os.statusOS === filtroAtual);
+
+      if (osFiltradas.length === 0) {
+        emptyState.style.display = 'block';
+        grid.style.display = 'none';
+        return;
+      }
+
+      emptyState.style.display = 'none';
+      grid.style.display = 'grid';
+
+      // Ordenar por número OS (decrescente)
+      osFiltradas.sort((a, b) => parseInt(b.numeroOS) - parseInt(a.numeroOS));
+
+      osFiltradas.forEach(os => {
+        const card = document.createElement('div');
+        card.className = 'os-card';
+
+        const statusTexto = {
+          aguardando: 'Aguardando',
+          em_andamento: 'Em Andamento',
+          concluido: 'Concluído',
+          entregue: 'Entregue'
+        };
+
+        const dataEntrada = new Date(os.dataEntrada).toLocaleDateString();
+        const prazo = os.prazoEntrega ? new Date(os.prazoEntrega).toLocaleDateString() : 'Não definido';
+
+        card.innerHTML = `
+          <div class="os-header">
+            <div class="os-numero">OS #${String(os.numeroOS).padStart(4, '0')}</div>
+            <div class="os-status status-${os.statusOS}">
+              ${statusTexto[os.statusOS]}
+            </div>
+          </div>
+
+          <div class="os-cliente">${os.clienteNome}</div>
+          <div class="os-aparelho">${os.aparelho}${os.marca ? ` - ${os.marca}` : ''}</div>
+
+          <div class="os-details">
+            <div class="detail-row">
+              <div class="detail-icon">📅</div>
+              <span>Entrada: ${dataEntrada}</span>
+            </div>
+            <div class="detail-row">
+              <div class="detail-icon">⏰</div>
+              <span>Prazo: ${prazo}</span>
+            </div>
+            <div class="detail-row">
+              <div class="detail-icon">🔧</div>
+              <span>${os.defeitoRelatado.substring(0, 50)}${os.defeitoRelatado.length > 50 ? '...' : ''}</span>
+            </div>
+          </div>
+
+          <div class="os-valor">
+            <div class="os-valor-label">Valor Total</div>
+            <div class="os-valor-total">R$ ${parseFloat(os.valorTotalFinal || 0).toFixed(2).replace('.', ',')}</div>
+          </div>
+
+          <div class="os-actions">
+            <button class="btn-action btn-view" onclick="visualizarOS('${os.id}')">
+              👁️ Ver
+            </button>
+            <button class="btn-action btn-edit" onclick="editarOS('${os.id}')">
+              ✏️ Editar
+            </button>
+            <button class="btn-action btn-print" onclick="gerarRelatorioGarantia('${os.id}')">
+              📄 Garantia
+            </button>
+          </div>
+        `;
+
+        grid.appendChild(card);
+      });
+    }
+
+    // Filtros
+    document.querySelectorAll('.filter-tab').forEach(tab => {
+      tab.addEventListener('click', function() {
+        document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+        this.classList.add('active');
+        filtroAtual = this.dataset.filter;
+        renderizarOS();
+      });
+    });
+
+    // Busca de clientes
+    document.getElementById('clienteNome').addEventListener('input', function() {
+      const termo = this.value.toLowerCase();
+      const suggestions = document.getElementById('clienteSuggestions');
+      
+      if (termo.length < 2) {
+        suggestions.classList.remove('show');
+        return;
+      }
+
+      const clientesFiltrados = Object.entries(clientesData)
+        .filter(([id, cliente]) => cliente.nome.toLowerCase().includes(termo))
+        .slice(0, 5);
+
+      if (clientesFiltrados.length === 0) {
+        suggestions.classList.remove('show');
+        return;
+      }
+
+      suggestions.innerHTML = '';
+      clientesFiltrados.forEach(([id, cliente]) => {
+        const item = document.createElement('div');
+        item.className = 'cliente-suggestion-item';
+        item.innerHTML = `
+          <strong>${cliente.nome}</strong>
+          <small>${cliente.telefone}</small>
+        `;
+        item.addEventListener('click', () => {
+          document.getElementById('clienteNome').value = cliente.nome;
+          document.getElementById('clienteId').value = id;
+          document.getElementById('telefoneCliente').value = cliente.telefone;
+          suggestions.classList.remove('show');
+        });
+        suggestions.appendChild(item);
+      });
+
+      suggestions.classList.add('show');
+    });
+
+    // Abrir modal para nova OS
+    document.getElementById('btnNovaOS').addEventListener('click', () => {
+      editandoId = null;
+      pecasTemp = [];
+      document.getElementById('modalTitle').textContent = 'Nova Ordem de Serviço';
+      document.getElementById('modalIcon').textContent = '➕';
+      document.getElementById('formOS').reset();
+      document.getElementById('osId').value = '';
+      document.getElementById('numeroOS').value = proximoNumeroOS;
+      document.getElementById('clienteId').value = '';
+      
+      // Data de entrada = hoje
+      document.getElementById('dataEntrada').value = new Date().toISOString().split('T')[0];
+      
+      renderizarPecas();
+      calcularTotais();
+      document.getElementById('modalOS').classList.add('active');
+    });
+
+    // Fechar modais
+    function fecharModal() {
+      document.getElementById('modalOS').classList.remove('active');
+      editandoId = null;
+      pecasTemp = [];
+    }
+
+    function fecharModalPeca() {
+      document.getElementById('modalPeca').classList.remove('active');
+      document.getElementById('formPeca').reset();
+    }
+
+    function fecharModalRelatorio() {
+      document.getElementById('modalRelatorio').classList.remove('active');
+    }
+
+    // Gerenciar peças
+    document.getElementById('btnAddPeca').addEventListener('click', () => {
+      document.getElementById('modalPeca').classList.add('active');
+    });
+
+    function adicionarPeca(event) {
+      event.preventDefault();
+      
+      const origem = document.querySelector('input[name="origem"]:checked').value;
+      
+      const peca = {
+        nome: document.getElementById('nomePeca').value,
+        quantidade: parseInt(document.getElementById('quantidadePeca').value),
+        valorUnitario: parseFloat(document.getElementById('valorPeca').value),
+        origem: origem
+      };
+      
+      pecasTemp.push(peca);
+      renderizarPecas();
+      calcularTotais();
+      fecharModalPeca();
+    }
+
+    function renderizarPecas() {
+      const lista = document.getElementById('pecasList');
+      lista.innerHTML = '';
+      
+      if (pecasTemp.length === 0) {
+        lista.innerHTML = '<p style="text-align: center; color: #9ca3af; padding: 20px;">Nenhuma peça adicionada</p>';
+        return;
+      }
+      
+      pecasTemp.forEach((peca, index) => {
+        const item = document.createElement('div');
+        item.className = 'peca-item';
+        
+        const subtotal = peca.quantidade * peca.valorUnitario;
+        const origemClass = peca.origem === 'oficina' ? 'origem-oficina' : 'origem-loja';
+        const origemIcon = peca.origem === 'oficina' ? '🔧' : '🏪';
+        const origemTexto = peca.origem === 'oficina' ? 'Oficina' : 'Loja';
+        
+        item.innerHTML = `
+          <div class="peca-info">
+            <strong>${peca.nome}</strong>
+            <small>${peca.quantidade}x R$ ${peca.valorUnitario.toFixed(2).replace('.', ',')} = R$ ${subtotal.toFixed(2).replace('.', ',')}</small>
+          </div>
+          <span class="peca-origem ${origemClass}">${origemIcon} ${origemTexto}</span>
+          <span class="peca-valor">R$ ${subtotal.toFixed(2).replace('.', ',')}</span>
+          <button type="button" class="btn-remove-peca" onclick="removerPeca(${index})">✕</button>
+        `;
+        
+        lista.appendChild(item);
+      });
+    }
+
+    function removerPeca(index) {
+      if (confirm('Remover esta peça?')) {
+        pecasTemp.splice(index, 1);
+        renderizarPecas();
+        calcularTotais();
+      }
+    }
+
+    // Calcular totais
+    function calcularTotais() {
+      const maoObra = parseFloat(document.getElementById('valorMaoObra').value) || 0;
+      const desconto = parseFloat(document.getElementById('desconto').value) || 0;
+      
+      // Separar peças por origem
+      const pecasLoja = pecasTemp.filter(p => p.origem === 'loja');
+      const pecasOficina = pecasTemp.filter(p => p.origem === 'oficina');
+      
+      const totalPecasLoja = pecasLoja.reduce((sum, p) => sum + (p.quantidade * p.valorUnitario), 0);
+      const totalPecasOficina = pecasOficina.reduce((sum, p) => sum + (p.quantidade * p.valorUnitario), 0);
+      const totalMaoObraFinal = maoObra + totalPecasOficina;
+      const totalGeral = totalPecasLoja + totalMaoObraFinal - desconto;
+      
+      document.getElementById('totalPecasLoja').textContent = `R$ ${totalPecasLoja.toFixed(2).replace('.', ',')}`;
+      document.getElementById('totalMaoObra').textContent = `R$ ${totalMaoObraFinal.toFixed(2).replace('.', ',')}`;
+      document.getElementById('valorDesconto').textContent = `- R$ ${desconto.toFixed(2).replace('.', ',')}`;
+      document.getElementById('valorTotalFinal').textContent = `R$ ${totalGeral.toFixed(2).replace('.', ',')}`;
+    }
+
+    // Atualizar totais em tempo real
+    document.getElementById('valorMaoObra').addEventListener('input', calcularTotais);
+    document.getElementById('desconto').addEventListener('input', calcularTotais);
+
+    // Editar OS
+    function editarOS(id) {
+      editandoId = id;
+      const os = osData[id];
+      
+      document.getElementById('modalTitle').textContent = 'Editar Ordem de Serviço';
+      document.getElementById('modalIcon').textContent = '✏️';
+      document.getElementById('osId').value = id;
+      document.getElementById('numeroOS').value = os.numeroOS;
+      document.getElementById('clienteNome').value = os.clienteNome;
+      document.getElementById('clienteId').value = os.clienteId || '';
+      document.getElementById('telefoneCliente').value = os.telefoneCliente;
+      document.getElementById('aparelho').value = os.aparelho;
+      document.getElementById('marca').value = os.marca || '';
+      document.getElementById('modelo').value = os.modelo || '';
+      document.getElementById('numeroSerie').value = os.numeroSerie || '';
+      document.getElementById('defeitoRelatado').value = os.defeitoRelatado;
+      document.getElementById('diagnostico').value = os.diagnostico || '';
+      document.getElementById('valorMaoObra').value = os.valorMaoObra || 0;
+      document.getElementById('desconto').value = os.desconto || 0;
+      document.getElementById('statusOS').value = os.statusOS;
+      document.getElementById('dataEntrada').value = os.dataEntrada;
+      document.getElementById('prazoEntrega').value = os.prazoEntrega || '';
+      document.getElementById('observacoes').value = os.observacoes || '';
+      
+      pecasTemp = os.pecas || [];
+      renderizarPecas();
+      calcularTotais();
+      
+      document.getElementById('modalOS').classList.add('active');
+    }
+
+    // Visualizar OS
+    function visualizarOS(id) {
+      editarOS(id);
+      document.getElementById('modalTitle').textContent = 'Visualizar Ordem de Serviço';
+      document.getElementById('modalIcon').textContent = '👁️';
+      
+      // Desabilitar todos os campos
+      document.querySelectorAll('#formOS input, #formOS textarea, #formOS select, #formOS button[type="button"]').forEach(el => {
+        el.disabled = true;
+      });
+      
+      document.querySelector('.btn-submit').style.display = 'none';
+    }
+
+    // Salvar OS
+    function salvarOS(event) {
+      event.preventDefault();
+
+      const maoObra = parseFloat(document.getElementById('valorMaoObra').value) || 0;
+      const desconto = parseFloat(document.getElementById('desconto').value) || 0;
+      
+      const pecasLoja = pecasTemp.filter(p => p.origem === 'loja');
+      const pecasOficina = pecasTemp.filter(p => p.origem === 'oficina');
+      
+      const totalPecasLoja = pecasLoja.reduce((sum, p) => sum + (p.quantidade * p.valorUnitario), 0);
+      const totalPecasOficina = pecasOficina.reduce((sum, p) => sum + (p.quantidade * p.valorUnitario), 0);
+      const totalMaoObra = maoObra + totalPecasOficina;
+      const totalFinal = totalPecasLoja + totalMaoObra - desconto;
+
+      const osDataObj = {
+        numeroOS: editandoId ? osData[editandoId].numeroOS : proximoNumeroOS,
+        clienteId: document.getElementById('clienteId').value,
+        clienteNome: document.getElementById('clienteNome').value,
+        telefoneCliente: document.getElementById('telefoneCliente').value,
+        aparelho: document.getElementById('aparelho').value,
+        marca: document.getElementById('marca').value,
+        modelo: document.getElementById('modelo').value,
+        numeroSerie: document.getElementById('numeroSerie').value,
+        defeitoRelatado: document.getElementById('defeitoRelatado').value,
+        diagnostico: document.getElementById('diagnostico').value,
+        pecas: pecasTemp,
+        valorPecasLoja: totalPecasLoja,
+        valorPecasOficina: totalPecasOficina,
+        valorMaoObra: maoObra,
+        valorTotalMaoObra: totalMaoObra,
+        desconto: desconto,
+        valorTotalFinal: totalFinal,
+        statusOS: document.getElementById('statusOS').value,
+        dataEntrada: document.getElementById('dataEntrada').value,
+        prazoEntrega: document.getElementById('prazoEntrega').value,
+        observacoes: document.getElementById('observacoes').value,
+        tecnicoResponsavel: auth.currentUser.email,
+        criadoEm: editandoId ? osData[editandoId].criadoEm : new Date().toISOString(),
+        atualizadoEm: new Date().toISOString()
+      };
+
+      if (editandoId) {
+        osRef.child(editandoId).update(osDataObj)
+          .then(() => {
+            alert('OS atualizada com sucesso!');
+            fecharModal();
+          })
+          .catch(error => {
+            alert('Erro ao atualizar OS: ' + error.message);
+          });
+      } else {
+        osRef.push(osDataObj)
+          .then(() => {
+            alert('OS cadastrada com sucesso!');
+            fecharModal();
+          })
+          .catch(error => {
+            alert('Erro ao cadastrar OS: ' + error.message);
+          });
+      }
+    }
+
+    // Gerar Relatório de Garantia
+    function gerarRelatorioGarantia(id) {
+      const os = osData[id];
+      const dataAtual = new Date().toLocaleString('pt-BR');
+      const dataEntrada = new Date(os.dataEntrada).toLocaleDateString('pt-BR');
+      const dataGarantia = new Date(os.dataEntrada);
+      dataGarantia.setDate(dataGarantia.getDate() + (configGarantia.diasGarantia || 90));
+      
+      const relatorioHTML = `
+        <div class="relatorio-header">
+          <div class="relatorio-title">SIGO - CASA DOS REPAROS</div>
+          <div>Relatório de Garantia de Serviço</div>
+          <div style="font-size: 0.9rem; margin-top: 10px;">Emitido em: ${dataAtual}</div>
+        </div>
+
+        <div class="relatorio-section">
+          <div class="relatorio-section-title">IDENTIFICAÇÃO DO SERVIÇO</div>
+          <div class="relatorio-line">
+            <span>Ordem de Serviço Nº:</span>
+            <span><strong>${String(os.numeroOS).padStart(4, '0')}</strong></span>
+          </div>
+          <div class="relatorio-line">
+            <span>Data de Entrada:</span>
+            <span>${dataEntrada}</span>
+          </div>
+          <div class="relatorio-line">
+            <span>Status:</span>
+            <span>${os.statusOS === 'concluido' ? 'CONCLUÍDO' : os.statusOS.toUpperCase()}</span>
+          </div>
+        </div>
+
+        <div class="relatorio-section">
+          <div class="relatorio-section-title">DADOS DO CLIENTE</div>
+          <div class="relatorio-line">
+            <span>Nome:</span>
+            <span>${os.clienteNome}</span>
+          </div>
+          <div class="relatorio-line">
+            <span>Telefone:</span>
+            <span>${os.telefoneCliente}</span>
+          </div>
+        </div>
+
+        <div class="relatorio-section">
+          <div class="relatorio-section-title">EQUIPAMENTO REPARADO</div>
+          <div class="relatorio-line">
+            <span>Aparelho:</span>
+            <span>${os.aparelho}</span>
+          </div>
+          ${os.marca ? `
+          <div class="relatorio-line">
+            <span>Marca/Modelo:</span>
+            <span>${os.marca}${os.modelo ? ' / ' + os.modelo : ''}</span>
+          </div>
+          ` : ''}
+          ${os.numeroSerie ? `
+          <div class="relatorio-line">
+            <span>Número de Série:</span>
+            <span>${os.numeroSerie}</span>
+          </div>
+          ` : ''}
+          <div class="relatorio-line">
+            <span>Defeito Relatado:</span>
+            <span>${os.defeitoRelatado}</span>
+          </div>
+          ${os.diagnostico ? `
+          <div class="relatorio-line">
+            <span>Diagnóstico:</span>
+            <span>${os.diagnostico}</span>
+          </div>
+          ` : ''}
+        </div>
+
+        ${os.pecas && os.pecas.length > 0 ? `
+        <div class="relatorio-section">
+          <div class="relatorio-section-title">PEÇAS UTILIZADAS</div>
+          ${os.pecas.map(peca => `
+            <div class="relatorio-line">
+              <span>${peca.nome} (${peca.quantidade}x)</span>
+              <span>R$ ${(peca.quantidade * peca.valorUnitario).toFixed(2).replace('.', ',')}</span>
+            </div>
+          `).join('')}
+        </div>
+        ` : ''}
+
+        <div class="relatorio-section">
+          <div class="relatorio-section-title">VALORES DO SERVIÇO</div>
+          ${os.valorPecasLoja > 0 ? `
+          <div class="relatorio-line">
+            <span>Peças (Loja):</span>
+            <span>R$ ${os.valorPecasLoja.toFixed(2).replace('.', ',')}</span>
+          </div>
+          ` : ''}
+          <div class="relatorio-line">
+            <span>Mão de Obra${os.valorPecasOficina > 0 ? ' (inc. peças oficina)' : ''}:</span>
+            <span>R$ ${os.valorTotalMaoObra.toFixed(2).replace('.', ',')}</span>
+          </div>
+          ${os.desconto > 0 ? `
+          <div class="relatorio-line">
+            <span>Desconto:</span>
+            <span>- R$ ${os.desconto.toFixed(2).replace('.', ',')}</span>
+          </div>
+          ` : ''}
+          <div class="relatorio-line" style="border-top: 2px solid #000; padding-top: 8px; margin-top: 8px; font-weight: bold;">
+            <span>VALOR TOTAL:</span>
+            <span>R$ ${os.valorTotalFinal.toFixed(2).replace('.', ',')}</span>
+          </div>
+        </div>
+
+        <div class="relatorio-section">
+          <div class="relatorio-section-title">GARANTIA DO SERVIÇO</div>
+          <div style="line-height: 1.6; text-align: justify;">
+            <p style="margin-bottom: 12px;">
+              <strong>Período de Garantia:</strong> ${configGarantia.diasGarantia} dias
+              <br>
+              <strong>Válida até:</strong> ${dataGarantia.toLocaleDateString('pt-BR')}
+            </p>
+            <p style="margin-bottom: 12px;">
+              ${configGarantia.textoGarantia}
+            </p>
+            <p style="margin-bottom: 12px; font-size: 0.9rem;">
+              <strong>Observações Importantes:</strong><br>
+              ${configGarantia.observacoesGarantia}
+            </p>
+          </div>
+        </div>
+
+        <div class="relatorio-footer">
+          <div style="margin-bottom: 40px;">
+            _____________________________________________<br>
+            Assinatura do Cliente
+          </div>
+          
+          <div style="font-size: 0.8rem; color: #666;">
+            <strong>SIGO - Casa dos Reparos</strong><br>
+            Sistema Integrado de Gerenciamento de Oficina<br>
+            Este documento comprova a realização do serviço e assegura os direitos de garantia.<br>
+            Guarde este documento em local seguro.
+          </div>
+        </div>
+      `;
+      
+      document.getElementById('relatorioContent').innerHTML = relatorioHTML;
+      document.getElementById('modalRelatorio').classList.add('active');
+    }
+
+    // Fechar sugestões ao clicar fora
+    document.addEventListener('click', (e) => {
+      if (!e.target.closest('.cliente-search')) {
+        document.getElementById('clienteSuggestions').classList.remove('show');
+      }
+    });
+
+    // Fechar modais ao clicar fora
+    document.getElementById('modalOS').addEventListener('click', function(e) {
+      if (e.target === this) fecharModal();
+    });
+
+    document.getElementById('modalPeca').addEventListener('click', function(e) {
+      if (e.target === this) fecharModalPeca();
+    });
+
+    document.getElementById('modalRelatorio').addEventListener('click', function(e) {
+      if (e.target === this) fecharModalRelatorio();
+    });
+
+    // Máscara de telefone
+    document.getElementById('telefoneCliente').addEventListener('input', function(e) {
+      let value = e.target.value.replace(/\D/g, '');
+      if (value.length <= 11) {
+        value = value.replace(/^(\d{2})(\d)/g, '($1) $2');
+        value = value.replace(/(\d)(\d{4})$/, '$1-$2');
+      }
+      e.target.value = value;
+    });
+
+    // Estilo dinâmico para radio buttons de origem
+    document.querySelectorAll('input[name="origem"]').forEach(radio => {
+      radio.addEventListener('change', function() {
+        document.querySelectorAll('label[for^="origem"]').forEach(label => {
+          label.style.borderColor = '#e5e7eb';
+          label.style.background = 'transparent';
+          label.style.color = '#6b7280';
+        });
+        
+        const label = document.querySelector(`label[for="${this.id}"]`);
+        if (this.value === 'oficina') {
+          label.style.borderColor = '#f59e0b';
+          label.style.background = '#fef3c7';
+          label.style.color = '#92400e';
+        } else {
+          label.style.borderColor = '#10b981';
+          label.style.background = '#d1fae5';
+          label.style.color = '#065f46';
+        }
+      });
+    });
+
+    // Atalhos de teclado
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') {
+        fecharModal();
+        fecharModalPeca();
+        fecharModalRelatorio();
+      }
+      if (e.ctrlKey && e.key === 'n') {
+        e.preventDefault();
+        document.getElementById('btnNovaOS').click();
+      }
+      if (e.ctrlKey && e.key === 'p') {
+        e.preventDefault();
+        if (document.getElementById('modalRelatorio').classList.contains('active')) {
+          window.print();
+        }
+      }
+    });
+
+    // Inicializar configuração padrão de garantia se não existir
+    configRef.once('value', snapshot => {
+      if (!snapshot.val()) {
+        configRef.set({
+          diasGarantia: 90,
+          textoGarantia: "De acordo com o Código de Defesa do Consumidor (CDC), Lei nº 8.078/90, este serviço possui garantia legal de 90 (noventa) dias contra defeitos de execução, contados a partir da data de conclusão do serviço.",
+          observacoesGarantia: "A garantia não cobre danos causados por mau uso, queda, umidade excessiva ou interferência de terceiros. Válida apenas mediante apresentação desta via."
+        });
+      }
+    });
+
+    console.log('Sistema de Ordens de Serviço - SIGO Casa dos Reparos');
+    console.log('Sistema de controle Oficina/Loja para peças inicializado');
+  </script>
+</body>
+</html><!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ordens de Serviço - SIGO Casa dos Reparos</title>
+  
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #f0f2f5;
+      min-height: 100vh;
+    }
+
+    /* Header */
+    header {
+      background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+      color: white;
+      padding: 30px 40px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .header-content {
+      max-width: 1400px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .header-left h1 {
+      font-size: 1.8rem;
+      font-weight: 700;
+      margin-bottom: 5px;
+    }
+
+    .header-left p {
+      font-size: 0.9rem;
+      opacity: 0.85;
+    }
+
+    .btn-voltar {
+      background: rgba(255, 255, 255, 0.15);
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 10px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+      backdrop-filter: blur(10px);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-voltar:hover {
+      background: rgba(255, 255, 255, 0.25);
+      transform: translateY(-2px);
+    }
+
+    /* Container */
+    .container {
+      max-width: 1400px;
+      margin: 30px auto;
+      padding: 0 40px;
+    }
+
+    /* Barra de ações */
+    .actions-bar {
+      background: white;
+      padding: 20px 30px;
+      border-radius: 16px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+      margin-bottom: 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+
+    .filter-tabs {
+      display: flex;
+      gap: 8px;
+      background: #f3f4f6;
+      padding: 4px;
+      border-radius: 10px;
+      flex-wrap: wrap;
+    }
+
+    .filter-tab {
+      padding: 10px 20px;
+      border: none;
+      background: transparent;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.3s;
+      color: #6b7280;
+      font-size: 0.85rem;
+    }
+
+    .filter-tab.active {
+      background: white;
+      color: #10b981;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+      color: white;
+      border: none;
+      padding: 14px 28px;
+      border-radius: 10px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(16, 185, 129, 0.4);
+    }
+
+    /* Grid de OS */
+    .os-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+      gap: 20px;
+    }
+
+    /* Card de OS */
+    .os-card {
+      background: white;
+      border-radius: 16px;
+      padding: 24px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+      border: 1px solid #e5e7eb;
+      transition: all 0.3s;
+      position: relative;
+    }
+
+    .os-card:hover {
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+      transform: translateY(-4px);
+      border-color: #10b981;
+    }
+
+    .os-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 16px;
+      padding-bottom: 16px;
+      border-bottom: 2px solid #f3f4f6;
+    }
+
+    .os-numero {
+      font-size: 1.4rem;
+      font-weight: 800;
+      color: #10b981;
+    }
+
+    .os-status {
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+
+    .status-aguardando {
+      background: #fef3c7;
+      color: #92400e;
+    }
+
+    .status-em_andamento {
+      background: #dbeafe;
+      color: #1e40af;
+    }
+
+    .status-concluido {
+      background: #d1fae5;
+      color: #065f46;
+    }
+
+    .status-entregue {
+      background: #e0e7ff;
+      color: #3730a3;
+    }
+
+    .os-cliente {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: #1f2937;
+      margin-bottom: 8px;
+    }
+
+    .os-aparelho {
+      color: #6b7280;
+      font-size: 0.9rem;
+      margin-bottom: 16px;
+    }
+
+    .os-details {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+
+    .detail-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 0.85rem;
+      color: #374151;
+    }
+
+    .detail-icon {
+      width: 28px;
+      height: 28px;
+      background: #f3f4f6;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.9rem;
+    }
+
+    .os-valor {
+      background: #f9fafb;
+      padding: 12px;
+      border-radius: 10px;
+      margin-bottom: 16px;
+      text-align: center;
+    }
+
+    .os-valor-label {
+      font-size: 0.75rem;
+      color: #6b7280;
+      margin-bottom: 4px;
+    }
+
+    .os-valor-total {
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: #10b981;
+    }
+
+    .os-actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    .btn-action {
+      flex: 1;
+      padding: 10px;
+      border: none;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+      font-size: 0.8rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    .btn-view {
+      background: #e0e7ff;
+      color: #3730a3;
+    }
+
+    .btn-view:hover {
+      background: #6366f1;
+      color: white;
+    }
+
+    .btn-edit {
+      background: #dbeafe;
+      color: #1e40af;
+    }
+
+    .btn-edit:hover {
+      background: #3b82f6;
+      color: white;
+    }
+
+    .btn-print {
+      background: #d1fae5;
+      color: #065f46;
+    }
+
+    .btn-print:hover {
+      background: #10b981;
+      color: white;
+    }
+
+    /* Modal */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(4px);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .modal.active {
+      display: flex;
+    }
+
+    .modal-content {
+      background: white;
+      border-radius: 20px;
+      padding: 32px;
+      max-width: 900px;
+      width: 100%;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+      padding-bottom: 16px;
+      border-bottom: 2px solid #f3f4f6;
+    }
+
+    .modal-header h2 {
+      font-size: 1.5rem;
+      color: #1f2937;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .btn-close {
+      background: #f3f4f6;
+      border: none;
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 1.2rem;
+      transition: all 0.3s;
+    }
+
+    .btn-close:hover {
+      background: #e5e7eb;
+      transform: rotate(90deg);
+    }
+
+    /* Formulário */
+    .form-section {
+      margin-bottom: 32px;
+    }
+
+    .form-section-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #1f2937;
+      margin-bottom: 16px;
+      padding-bottom: 12px;
+      border-bottom: 2px solid #f3f4f6;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 600;
+      color: #374151;
+      font-size: 0.9rem;
+    }
+
+    .form-group input,
+    .form-group textarea,
+    .form-group select {
+      width: 100%;
+      padding: 12px 16px;
+      border: 2px solid #e5e7eb;
+      border-radius: 10px;
+      font-size: 0.95rem;
+      transition: all 0.3s;
+      font-family: inherit;
+    }
+
+    .form-group input:focus,
+    .form-group textarea:focus,
+    .form-group select:focus {
+      outline: none;
+      border-color: #10b981;
+      box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+    }
+
+    .form-group textarea {
+      resize: vertical;
+      min-height: 80px;
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+    }
+
+    .form-row-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
+
+    /* Seção de Peças */
+    .pecas-section {
+      background: #f9fafb;
+      padding: 20px;
+      border-radius: 12px;
+      margin-bottom: 20px;
+    }
+
+    .pecas-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    .pecas-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .peca-item {
+      background: white;
+      padding: 16px;
+      border-radius: 10px;
+      border: 1px solid #e5e7eb;
+      display: grid;
+      grid-template-columns: 1fr auto auto auto;
+      gap: 16px;
+      align-items: center;
+    }
+
+    .peca-info {
+      font-size: 0.9rem;
+    }
+
+    .peca-info strong {
+      display: block;
+      color: #1f2937;
+      margin-bottom: 4px;
+    }
+
+    .peca-origem {
+      padding: 4px 10px;
+      border-radius: 12px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+
+    .origem-oficina {
+      background: #fef3c7;
+      color: #92400e;
+    }
+
+    .origem-loja {
+      background: #d1fae5;
+      color: #065f46;
+    }
+
+    .peca-valor {
+      font-weight: 700;
+      color: #10b981;
+    }
+
+    .btn-remove-peca {
+      background: #fee2e2;
+      color: #991b1b;
+      border: none;
+      padding: 8px 12px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 0.8rem;
+      transition: all 0.3s;
+    }
+
+    .btn-remove-peca:hover {
+      background: #ef4444;
+      color: white;
+    }
+
+    .btn-add-peca {
+      width: 100%;
+      padding: 12px;
+      background: #dbeafe;
+      color: #1e40af;
+      border: 2px dashed #3b82f6;
+      border-radius: 10px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .btn-add-peca:hover {
+      background: #3b82f6;
+      color: white;
+      border-style: solid;
+    }
+
+    /* Resumo Financeiro */
+    .resumo-financeiro {
+      background: #f9fafb;
+      padding: 20px;
+      border-radius: 12px;
+      margin-bottom: 20px;
+    }
+
+    .resumo-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 0;
+      border-bottom: 1px solid #e5e7eb;
+    }
+
+    .resumo-item:last-child {
+      border-bottom: none;
+      padding-top: 16px;
+      margin-top: 8px;
+      border-top: 2px solid #10b981;
+    }
+
+    .resumo-label {
+      font-weight: 600;
+      color: #374151;
+    }
+
+    .resumo-valor {
+      font-weight: 700;
+      color: #10b981;
+      font-size: 1.1rem;
+    }
+
+    .resumo-item:last-child .resumo-valor {
+      font-size: 1.5rem;
+    }
+
+    .form-actions {
+      display: flex;
+      gap: 12px;
+      margin-top: 28px;
+    }
+
+    .btn-submit {
+      flex: 1;
+      padding: 14px;
+      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .btn-submit:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(16, 185, 129, 0.4);
+    }
+
+    .btn-cancel {
+      flex: 1;
+      padding: 14px;
+      background: #f3f4f6;
+      color: #374151;
+      border: none;
+      border-radius: 10px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .btn-cancel:hover {
+      background: #e5e7eb;
+    }
+
+    /* Modal de Adicionar Peça */
+    .modal-peca {
+      max-width: 500px;
+    }
+
+    /* Busca de Cliente */
+    .cliente-search {
+      position: relative;
+    }
+
+    .cliente-suggestions {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      background: white;
+      border: 2px solid #e5e7eb;
+      border-top: none;
+      border-radius: 0 0 10px 10px;
+      max-height: 200px;
+      overflow-y: auto;
+      z-index: 10;
+      display: none;
+    }
+
+    .cliente-suggestions.show {
+      display: block;
+    }
+
+    .cliente-suggestion-item {
+      padding: 12px 16px;
+      cursor: pointer;
+      transition: background 0.2s;
+      border-bottom: 1px solid #f3f4f6;
+    }
+
+    .cliente-suggestion-item:hover {
+      background: #f9fafb;
+    }
+
+    /* Estado vazio */
+    .empty-state {
+      text-align: center;
+      padding: 80px 20px;
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+    }
+
+    .empty-state-icon {
+      font-size: 4rem;
+      margin-bottom: 20px;
+      opacity: 0.5;
+    }
+
+    /* Relatório de Garantia */
+    .relatorio-garantia {
+      background: white;
+      padding: 40px;
+      max-width: 800px;
+      margin: 0 auto;
+      font-family: 'Courier New', monospace;
+    }
+
+    .relatorio-header {
+      text-align: center;
+      border-bottom: 3px double #000;
+      padding-bottom: 20px;
+      margin-bottom: 30px;
+    }
+
+    .relatorio-title {
+      font-size: 1.5rem;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+
+    .relatorio-section {
+      margin-bottom: 25px;
+    }
+
+    .relatorio-section-title {
+      font-weight: bold;
+      border-bottom: 1px solid #000;
+      padding-bottom: 5px;
+      margin-bottom: 10px;
+    }
+
+    .relatorio-line {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 8px;
+    }
+
+    .relatorio-footer {
+      border-top: 3px double #000;
+      padding-top: 20px;
+      margin-top: 30px;
+      text-align: center;
+      font-size: 0.85rem;
+    }
+
+    @media print {
+      body * {
+        visibility: hidden;
+      }
+      .relatorio-garantia,
+      .relatorio-garantia * {
+        visibility: visible;
+      }
+      .relatorio-garantia {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+      }
+      .btn-close,
+      .modal-header button {
+        display: none !important;
+      }
+    }
+
+    /* Responsividade */
+    @media (max-width: 768px) {
+      .container {
+        padding: 0 20px;
+      }
+
+      .os-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .form-row,
+      .form-row-3 {
+        grid-template-columns: 1fr;
+      }
+
+      .peca-item {
+        grid-template-columns: 1fr;
+        gap: 12px;
+      }
+
+      .filter-tabs {
+        width: 100%;
+      }
+
+      .actions-bar {
+        flex-direction: column;
+        align-items: stretch;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <header>
+    <div class="header-content">
+      <div class="header-left">
+        <h1>🛠️ Ordens de Serviço</h1>
+        <p>Gerenciamento completo de consertos e reparos</p>
+      </div>
+      <button class="btn-voltar" onclick="window.location.href='painel.html'">
+        <span>←</span>
+        <span>Voltar</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Container Principal -->
+  <div class="container">
+    
+    <!-- Barra de Ações -->
+    <div class="actions-bar">
+      <div class="filter-tabs">
+        <button class="filter-tab active" data-filter="todas">Todas</button>
+        <button class="filter-tab" data-filter="aguardando">Aguardando</button>
+        <button class="filter-tab" data-filter="em_andamento">Em Andamento</button>
+        <button class="filter-tab" data-filter="concluido">Concluído</button>
+        <button class="filter-tab" data-filter="entregue">Entregue</button>
+      </div>
+      <button class="btn-primary" id="btnNovaOS">
+        <span>➕</span>
+        <span>Nova OS</span>
+      </button>
+    </div>
+
+    <!-- Grid de OS -->
+    <div id="osContainer">
+      <div class="os-grid" id="osGrid">
+        <!-- OS serão inseridas aqui -->
+      </div>
+
+      <!-- Estado Vazio -->
+      <div class="empty-state" id="emptyState" style="display: none;">
+        <div class="empty-state-icon">🛠️</div>
+        <h3>Nenhuma ordem de serviço cadastrada</h3>
+        <p>Comece criando sua primeira OS</p>
+        <button class="btn-primary" onclick="abrirModal()">
+          <span>➕</span>
+          <span>Nova Ordem de Serviço</span>
+        </button>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Modal de OS -->
+  <div class="modal" id="modalOS">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>
+          <span id="modalIcon">➕</span>
+          <span id="modalTitle">Nova Ordem de Serviço</span>
+        </h2>
+        <button class="btn-close" onclick="fecharModal()">✕</button>
+      </div>
+
+      <form id="formOS" onsubmit="salvarOS(event)">
+        <input type="hidden" id="osId" />
+        <input type="hidden" id="numeroOS" />
+
+        <!-- Dados do Cliente -->
+        <div class="form-section">
+          <div class="form-section-title">
+            <span>👤</span>
+            <span>Dados do Cliente</span>
+          </div>
+
+          <div class="form-group cliente-search">
+            <label for="clienteNome">Cliente *</label>
+            <input 
+              type="text" 
+              id="clienteNome" 
+              required 
+              placeholder="Digite o nome do cliente..."
+              autocomplete="off"
+            />
+            <div class="cliente-suggestions" id="clienteSuggestions"></div>
+            <input type="hidden" id="clienteId" />
+          </div>
+
+          <div class="form-group">
+            <label for="telefoneCliente">Telefone *</label>
+            <input 
+              type="tel" 
+              id="telefoneCliente" 
+              required 
+              placeholder="(00) 00000-0000"
+            />
+          </div>
+        </div>
+
+        <!-- Dados do Aparelho -->
+        <div class="form-section">
+          <div class="form-section-title">
+            <span>🔧</span>
+            <span>Dados do Aparelho</span>
+          </div>
+
+          <div class="form-row-3">
+            <div class="form-group">
+              <label for="aparelho">Aparelho *</label>
+              <input 
+                type="text" 
+                id="aparelho" 
+                required 
+                placeholder="Ex: Lavadora"
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="marca">Marca</label>
+              <input 
+                type="text" 
+                id="marca" 
+                placeholder="Ex: Brastemp"
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="modelo">Modelo</label>
+              <input 
+                type="text" 
+                id="modelo" 
+                placeholder="Ex: BWK12A"
+              />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="numeroSerie">Número de Série</label>
+            <input 
+              type="text" 
+              id="numeroSerie" 
+              placeholder="Opcional"
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="defeitoRelatado">Defeito Relatado *</label>
+            <textarea 
+              id="defeitoRelatado" 
+              required
+              placeholder="Descreva o problema relatado pelo cliente..."
+            ></textarea>
+          </div>
+
+          <div class="form-group">
+            <label for="diagnostico">Diagnóstico Técnico</label>
+            <textarea 
+              id="diagnostico" 
+              placeholder="Diagnóstico após análise técnica..."
+            ></textarea>
+          </div>
+        </div>
+
+        <!-- Peças Utilizadas -->
+        <div class="form-section">
+          <div class="form-section-title">
+            <span>🔩</span>
+            <span>Peças Utilizadas</span>
+          </div>
+
+          <div class="pecas-section">
+            <div class="pecas-list" id="pecasList">
+              <!-- Peças serão adicionadas aqui -->
+            </div>
+            <button type="button" class="btn-add-peca" id="btnAddPeca">
+              ➕ Adicionar Peça
+            </button>
+          </div>
+        </div>
+
+        <!-- Valores -->
+        <div class="form-section">
+          <div class="form-section-title">
+            <span>💰</span>
+            <span>Valores</span>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="valorMaoObra">Mão de Obra (R$) *</label>
+              <input 
+                type="number" 
+                id="valorMaoObra" 
+                required
+                step="0.01"
+                min="0"
+                value="0"
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="desconto">Desconto (R$)</label>
+              <input 
+                type="number" 
+                id="desconto" 
+                step="0.01"
+                min="0"
+                value="0"
+              />
+            </div>
+          </div>
+
+          <div class="resumo-financeiro" id="resumoFinanceiro">
+            <div class="resumo-item">
+              <span class="resumo-label">Peças (Loja):</span>
+              <span class="resumo-valor" id="totalPecasLoja">R$ 0,00</span>
+            </div>
+            <div class="resumo-item">
+              <span class="resumo-label">Peças (Oficina) + Mão de Obra:</span>
+              <span class="resumo-valor" id="totalMaoObra">R$ 0,00</span>
+            </div>
+            <div class="resumo-item">
+              <span class="resumo-label">Desconto:</span>
+              <span class="resumo-valor" id="valorDesconto">- R$ 0,00</span>
+            </div>
+            <div class="resumo-item">
+              <span class="resumo-label">TOTAL:</span>
+              <span class="resumo-valor" id="valorTotalFinal">R$ 0,00</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Status e Prazos -->
+        <div class="form-section">
+          <div class="form-section-title">
+            <span>📋</span>
+            <span>Status e Prazos</span>
+          </div>
+
+          <div class="form-row-3">
+            <div class="form-group">
+              <label for="statusOS">Status *</label>
+              <select id="statusOS" required>
+                <option value="aguardando">Aguardando</option>
+                <option value="em_andamento">Em Andamento</option>
+                <option value="concluido">Concluído</option>
+                <option value="entregue">Entregue</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="dataEntrada">Data Entrada *</label
