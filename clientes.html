@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Gerenciamento de Clientes - Oficina</title>
+  <title>Gerenciamento de Clientes - SIGO</title>
   
   <style>
     /* Reset e configurações globais */
@@ -331,7 +331,7 @@
       background: white;
       border-radius: 20px;
       padding: 32px;
-      max-width: 600px;
+      max-width: 700px;
       width: 100%;
       max-height: 90vh;
       overflow-y: auto;
@@ -397,6 +397,12 @@
       font-weight: 600;
       color: #374151;
       font-size: 0.9rem;
+    }
+
+    .form-group label .optional {
+      color: #9ca3af;
+      font-weight: 400;
+      font-size: 0.85rem;
     }
 
     .form-group input,
@@ -471,6 +477,96 @@
       background: #e5e7eb;
     }
 
+    /* Gerenciamento de Aparelhos */
+    .aparelhos-section {
+      background: #f9fafb;
+      padding: 16px;
+      border-radius: 12px;
+      margin-bottom: 16px;
+    }
+
+    .aparelhos-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .aparelhos-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-bottom: 12px;
+      max-height: 200px;
+      overflow-y: auto;
+    }
+
+    .aparelho-item {
+      background: white;
+      padding: 12px;
+      border-radius: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border: 1px solid #e5e7eb;
+    }
+
+    .aparelho-info {
+      font-size: 0.9rem;
+      color: #374151;
+    }
+
+    .aparelho-info strong {
+      color: #1f2937;
+      display: block;
+      margin-bottom: 4px;
+    }
+
+    .aparelho-info small {
+      color: #6b7280;
+    }
+
+    .btn-remove-aparelho {
+      background: #fee2e2;
+      color: #991b1b;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.8rem;
+      transition: all 0.3s;
+    }
+
+    .btn-remove-aparelho:hover {
+      background: #ef4444;
+      color: white;
+    }
+
+    .btn-add-aparelho {
+      width: 100%;
+      padding: 10px;
+      background: #dbeafe;
+      color: #1e40af;
+      border: 2px dashed #3b82f6;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .btn-add-aparelho:hover {
+      background: #3b82f6;
+      color: white;
+      border-style: solid;
+    }
+
+    /* Loading e mensagens */
+    .loading {
+      color: #9ca3af;
+      font-size: 0.9rem;
+      font-style: italic;
+    }
+
     /* Estado vazio */
     .empty-state {
       text-align: center;
@@ -535,18 +631,41 @@
     }
 
     /* Scrollbar customizada */
-    .modal-content::-webkit-scrollbar {
+    .modal-content::-webkit-scrollbar,
+    .aparelhos-list::-webkit-scrollbar {
       width: 8px;
     }
 
-    .modal-content::-webkit-scrollbar-track {
+    .modal-content::-webkit-scrollbar-track,
+    .aparelhos-list::-webkit-scrollbar-track {
       background: #f3f4f6;
       border-radius: 10px;
     }
 
-    .modal-content::-webkit-scrollbar-thumb {
+    .modal-content::-webkit-scrollbar-thumb,
+    .aparelhos-list::-webkit-scrollbar-thumb {
       background: #ec4899;
       border-radius: 10px;
+    }
+
+    /* Modal de senha */
+    .password-modal {
+      max-width: 400px;
+    }
+
+    .password-input-group {
+      margin: 20px 0;
+    }
+
+    .password-error {
+      color: #ef4444;
+      font-size: 0.85rem;
+      margin-top: 8px;
+      display: none;
+    }
+
+    .password-error.show {
+      display: block;
     }
   </style>
 </head>
@@ -558,7 +677,7 @@
         <h1>👥 Gerenciamento de Clientes</h1>
         <p>Cadastre e gerencie todos os seus clientes</p>
       </div>
-      <button class="btn-voltar" onclick="window.location.href='index.html'">
+      <button class="btn-voltar" onclick="window.location.href='painel.html'">
         <span>←</span>
         <span>Voltar</span>
       </button>
@@ -603,7 +722,7 @@
 
   </div>
 
-  <!-- Modal de Cadastro/Edição -->
+  <!-- Modal de Cadastro/Edição/Visualização -->
   <div class="modal" id="modalCliente">
     <div class="modal-content">
       <div class="modal-header">
@@ -616,6 +735,7 @@
 
       <form id="formCliente" onsubmit="salvarCliente(event)">
         <input type="hidden" id="clienteId" />
+        <input type="hidden" id="modoVisualizacao" value="false" />
 
         <div class="form-group">
           <label for="nomeCliente">Nome Completo *</label>
@@ -639,7 +759,7 @@
           </div>
 
           <div class="form-group">
-            <label for="cpfCliente">CPF</label>
+            <label for="cpfCliente">CPF <span class="optional">(opcional)</span></label>
             <input 
               type="text" 
               id="cpfCliente" 
@@ -649,7 +769,7 @@
         </div>
 
         <div class="form-group">
-          <label for="emailCliente">E-mail</label>
+          <label for="emailCliente">E-mail <span class="optional">(opcional)</span></label>
           <input 
             type="email" 
             id="emailCliente" 
@@ -657,39 +777,85 @@
           />
         </div>
 
-        <div class="form-group">
-          <label for="enderecoCliente">Endereço Completo *</label>
-          <input 
-            type="text" 
-            id="enderecoCliente" 
-            required 
-            placeholder="Rua, número, bairro, cidade"
-          />
-        </div>
-
         <div class="form-row">
           <div class="form-group">
-            <label for="cepCliente">CEP</label>
+            <label for="cepCliente">CEP <span class="optional">(opcional)</span></label>
             <input 
               type="text" 
               id="cepCliente" 
               placeholder="00000-000"
             />
+            <span class="loading" id="cepLoading" style="display: none;">Buscando endereço...</span>
           </div>
 
           <div class="form-group">
-            <label for="cidadeCliente">Cidade</label>
+            <label for="cidadeCliente">Cidade <span class="optional">(opcional)</span></label>
             <input 
               type="text" 
               id="cidadeCliente" 
               placeholder="Ex: São Paulo"
+              readonly
             />
           </div>
         </div>
 
         <div class="form-group">
-          <label for="aparelhosCliente">Aparelhos que Possui</label>
-          <select id="aparelhosCliente" multiple size="4">
+          <label for="enderecoCliente">Endereço Completo <span class="optional">(opcional)</span></label>
+          <input 
+            type="text" 
+            id="enderecoCliente" 
+            placeholder="Rua, número, bairro"
+          />
+        </div>
+
+        <!-- Seção de Aparelhos -->
+        <div class="aparelhos-section">
+          <div class="aparelhos-header">
+            <label style="margin: 0;">🔧 Aparelhos do Cliente</label>
+          </div>
+          
+          <div class="aparelhos-list" id="aparelhosList">
+            <!-- Aparelhos serão adicionados aqui -->
+          </div>
+
+          <button type="button" class="btn-add-aparelho" id="btnAddAparelho">
+            ➕ Adicionar Aparelho
+          </button>
+        </div>
+
+        <div class="form-group">
+          <label for="observacoesCliente">Observações <span class="optional">(opcional)</span></label>
+          <textarea 
+            id="observacoesCliente" 
+            placeholder="Informações adicionais sobre o cliente..."
+          ></textarea>
+        </div>
+
+        <div class="form-actions" id="formActions">
+          <button type="button" class="btn-cancel" onclick="fecharModal()">
+            Cancelar
+          </button>
+          <button type="submit" class="btn-submit" id="btnSubmit">
+            Salvar Cliente
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal de Adicionar Aparelho -->
+  <div class="modal" id="modalAparelho">
+    <div class="modal-content" style="max-width: 500px;">
+      <div class="modal-header">
+        <h2>🔧 Adicionar Aparelho</h2>
+        <button class="btn-close" onclick="fecharModalAparelho()">✕</button>
+      </div>
+
+      <form id="formAparelho" onsubmit="adicionarAparelho(event)">
+        <div class="form-group">
+          <label for="tipoAparelho">Tipo de Aparelho *</label>
+          <select id="tipoAparelho" required>
+            <option value="">Selecione...</option>
             <option value="Lavadora">Lavadora de Roupas</option>
             <option value="Geladeira">Geladeira/Refrigerador</option>
             <option value="Fogao">Fogão</option>
@@ -698,38 +864,161 @@
             <option value="Freezer">Freezer</option>
             <option value="Lava-louças">Lava-louças</option>
             <option value="Secadora">Secadora de Roupas</option>
+            <option value="Outro">Outro</option>
           </select>
-          <small style="color: #6b7280; font-size: 0.8rem; display: block; margin-top: 4px;">
-            Segure Ctrl (Cmd no Mac) para selecionar múltiplos itens
-          </small>
         </div>
 
         <div class="form-group">
-          <label for="observacoesCliente">Observações</label>
-          <textarea 
-            id="observacoesCliente" 
-            placeholder="Informações adicionais sobre o cliente..."
-          ></textarea>
+          <label for="marcaAparelho">Marca *</label>
+          <input 
+            type="text" 
+            id="marcaAparelho" 
+            required 
+            placeholder="Ex: Brastemp, Electrolux..."
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="modeloAparelho">Modelo <span class="optional">(opcional)</span></label>
+          <input 
+            type="text" 
+            id="modeloAparelho" 
+            placeholder="Ex: BWK12A, RE31..."
+          />
         </div>
 
         <div class="form-actions">
-          <button type="button" class="btn-cancel" onclick="fecharModal()">
+          <button type="button" class="btn-cancel" onclick="fecharModalAparelho()">
             Cancelar
           </button>
           <button type="submit" class="btn-submit">
-            Salvar Cliente
+            Adicionar
           </button>
         </div>
       </form>
     </div>
   </div>
 
+  <!-- Modal de Confirmação de Senha para Exclusão -->
+  <div class="modal" id="modalSenha">
+    <div class="modal-content password-modal">
+      <div class="modal-header">
+        <h2>🔒 Confirmação de Exclusão</h2>
+        <button class="btn-close" onclick="fecharModalSenha()">✕</button>
+      </div>
+
+      <p style="color: #6b7280; margin-bottom: 20px;">
+        Para excluir este cliente, digite sua senha de login:
+      </p>
+
+      <form id="formSenha" onsubmit="confirmarExclusaoComSenha(event)">
+        <div class="password-input-group">
+          <label for="senhaExclusao">Senha *</label>
+          <input 
+            type="password" 
+            id="senhaExclusao" 
+            required 
+            placeholder="Digite sua senha"
+            style="width: 100%; padding: 12px; border: 2px solid #e5e7eb; border-radius: 10px;"
+          />
+          <div class="password-error" id="senhaError">Senha incorreta. Tente novamente.</div>
+        </div>
+
+        <div class="form-actions">
+          <button type="button" class="btn-cancel" onclick="fecharModalSenha()">
+            Cancelar
+          </button>
+          <button type="submit" class="btn-submit" style="background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);">
+            Confirmar Exclusão
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Firebase SDK -->
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 
-  <script src="script.js"></script>
+  <!-- Configuração Firebase -->
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyCyz4Nrvcnf0MF_99fLKPMsrJ9dIzuRHG4",
+      authDomain: "oficina-sistema-cc2cd.firebaseapp.com",
+      databaseURL: "https://oficina-sistema-cc2cd-default-rtdb.firebaseio.com/",
+      projectId: "oficina-sistema-cc2cd",
+      storageBucket: "oficina-sistema-cc2cd.appspot.com",
+      messagingSenderId: "1034638142539",
+      appId: "1:1034638142539:web:4b63c09b30b86838eff1ce"
+    };
 
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const database = firebase.database();
+    const clientesRef = database.ref("clientes");
+
+    // Variáveis globais
+    let clientesData = {};
+    let editandoId = null;
+    let aparelhosTemp = [];
+    let clienteParaExcluir = null;
+
+    // Proteção da página
+    auth.onAuthStateChanged(user => {
+      if (!user) {
+        window.location.href = 'index.html';
+      }
+    });
+
+    // Carregar clientes em tempo real
+    clientesRef.on("value", snapshot => {
+      clientesData = snapshot.val() || {};
+      renderizarClientes();
+    });
+
+    // Renderizar clientes na grid
+    function renderizarClientes() {
+      const grid = document.getElementById("clientesGrid");
+      const emptyState = document.getElementById("emptyState");
+      const searchTerm = document.getElementById("searchInput").value.toLowerCase();
+
+      grid.innerHTML = "";
+
+      const clientesArray = Object.entries(clientesData).map(([id, data]) => ({
+        id,
+        ...data
+      }));
+
+      // Filtrar clientes
+      const clientesFiltrados = clientesArray.filter(cliente => {
+        const nome = (cliente.nome || "").toLowerCase();
+        const telefone = (cliente.telefone || "").toLowerCase();
+        const endereco = (cliente.endereco || "").toLowerCase();
+        return nome.includes(searchTerm) || telefone.includes(searchTerm) || endereco.includes(searchTerm);
+      });
+
+      if (clientesFiltrados.length === 0) {
+        emptyState.style.display = "block";
+        grid.style.display = "none";
+        return;
+      }
+
+      emptyState.style.display = "none";
+      grid.style.display = "grid";
+
+      clientesFiltrados.forEach(cliente => {
+        const iniciais = cliente.nome.split(" ").map(n => n[0]).join("").substring(0, 2).toUpperCase();
+        const totalAparelhos = cliente.aparelhos ? cliente.aparelhos.length : 0;
+        const aparelhosTexto = totalAparelhos > 0 
+          ? `${totalAparelhos} aparelho${totalAparelhos > 1 ? 's' : ''}`
+          : "Nenhum aparelho";
+        const totalServicos = cliente.historicoServicos || 0;
+        const dataCadastro = cliente.dataCadastro ? new Date(cliente.dataCadastro).toLocaleDateString() : "N/A";
+
+        const card = document.createElement("div");
+        card.className = "cliente-card";
+        card.innerHTML = `
           <div class="cliente-header">
             <div class="cliente-avatar">${iniciais}</div>
             <div class="cliente-info">
@@ -743,10 +1032,12 @@
               <div class="detail-icon">📱</div>
               <span>${cliente.telefone}</span>
             </div>
+            ${cliente.endereco ? `
             <div class="detail-item">
               <div class="detail-icon">📍</div>
               <span>${cliente.endereco}</span>
             </div>
+            ` : ''}
             ${cliente.email ? `
             <div class="detail-item">
               <div class="detail-icon">✉️</div>
@@ -755,7 +1046,7 @@
             ` : ''}
             <div class="detail-item">
               <div class="detail-icon">🔧</div>
-              <span>${aparelhos}</span>
+              <span>${aparelhosTexto}</span>
             </div>
           </div>
 
@@ -779,7 +1070,7 @@
               <span>✏️</span>
               <span>Editar</span>
             </button>
-            <button class="btn-action btn-delete" onclick="confirmarExclusao('${cliente.id}', '${cliente.nome}')">
+            <button class="btn-action btn-delete" onclick="solicitarExclusao('${cliente.id}', '${cliente.nome}')">
               <span>🗑️</span>
               <span>Excluir</span>
             </button>
@@ -792,10 +1083,20 @@
     // Abrir modal para novo cliente
     function abrirModal() {
       editandoId = null;
+      aparelhosTemp = [];
       document.getElementById("modalTitle").textContent = "Novo Cliente";
       document.getElementById("modalIcon").textContent = "➕";
       document.getElementById("formCliente").reset();
       document.getElementById("clienteId").value = "";
+      document.getElementById("modoVisualizacao").value = "false";
+      document.getElementById("cidadeCliente").removeAttribute("readonly");
+      document.getElementById("btnSubmit").style.display = "block";
+      document.getElementById("btnAddAparelho").style.display = "block";
+      
+      // Habilitar todos os campos
+      habilitarCampos(true);
+      
+      renderizarAparelhos();
       document.getElementById("modalCliente").classList.add("active");
     }
 
@@ -804,6 +1105,47 @@
       document.getElementById("modalCliente").classList.remove("active");
       document.getElementById("formCliente").reset();
       editandoId = null;
+      aparelhosTemp = [];
+    }
+
+    // Habilitar/desabilitar campos do formulário
+    function habilitarCampos(habilitar) {
+      const campos = document.querySelectorAll("#formCliente input, #formCliente textarea, #formCliente select");
+      campos.forEach(campo => {
+        if (habilitar) {
+          campo.removeAttribute("readonly");
+          campo.removeAttribute("disabled");
+        } else {
+          if (campo.id !== "cidadeCliente") { // Cidade sempre readonly
+            campo.setAttribute("readonly", "true");
+          }
+        }
+      });
+    }
+
+    // Visualizar cliente (modo somente leitura)
+    function visualizarCliente(id) {
+      editandoId = id;
+      const cliente = clientesData[id];
+      
+      document.getElementById("modalTitle").textContent = "Visualizar Cliente";
+      document.getElementById("modalIcon").textContent = "👁️";
+      document.getElementById("modoVisualizacao").value = "true";
+      
+      preencherFormulario(cliente, id);
+      
+      // Desabilitar campos
+      habilitarCampos(false);
+      
+      // Esconder botões de ação
+      document.getElementById("btnSubmit").style.display = "none";
+      document.getElementById("btnAddAparelho").style.display = "none";
+      
+      // Esconder botões de remover aparelho
+      const botoesRemover = document.querySelectorAll(".btn-remove-aparelho");
+      botoesRemover.forEach(btn => btn.style.display = "none");
+      
+      document.getElementById("modalCliente").classList.add("active");
     }
 
     // Editar cliente
@@ -813,6 +1155,23 @@
       
       document.getElementById("modalTitle").textContent = "Editar Cliente";
       document.getElementById("modalIcon").textContent = "✏️";
+      document.getElementById("modoVisualizacao").value = "false";
+      
+      preencherFormulario(cliente, id);
+      
+      // Habilitar campos
+      habilitarCampos(true);
+      document.getElementById("cidadeCliente").setAttribute("readonly", "true");
+      
+      // Mostrar botões de ação
+      document.getElementById("btnSubmit").style.display = "block";
+      document.getElementById("btnAddAparelho").style.display = "block";
+      
+      document.getElementById("modalCliente").classList.add("active");
+    }
+
+    // Preencher formulário com dados do cliente
+    function preencherFormulario(cliente, id) {
       document.getElementById("clienteId").value = id;
       document.getElementById("nomeCliente").value = cliente.nome || "";
       document.getElementById("telefoneCliente").value = cliente.telefone || "";
@@ -823,22 +1182,13 @@
       document.getElementById("cidadeCliente").value = cliente.cidade || "";
       document.getElementById("observacoesCliente").value = cliente.observacoes || "";
 
-      // Selecionar aparelhos
-      const select = document.getElementById("aparelhosCliente");
-      Array.from(select.options).forEach(option => {
-        option.selected = cliente.aparelhos && cliente.aparelhos.includes(option.value);
-      });
-
-      document.getElementById("modalCliente").classList.add("active");
+      aparelhosTemp = cliente.aparelhos || [];
+      renderizarAparelhos();
     }
 
     // Salvar cliente
     function salvarCliente(event) {
       event.preventDefault();
-
-      const aparelhosSelecionados = Array.from(
-        document.getElementById("aparelhosCliente").selectedOptions
-      ).map(option => option.value);
 
       const clienteData = {
         nome: document.getElementById("nomeCliente").value,
@@ -848,7 +1198,7 @@
         endereco: document.getElementById("enderecoCliente").value,
         cep: document.getElementById("cepCliente").value,
         cidade: document.getElementById("cidadeCliente").value,
-        aparelhos: aparelhosSelecionados,
+        aparelhos: aparelhosTemp,
         observacoes: document.getElementById("observacoesCliente").value,
         historicoServicos: editandoId ? clientesData[editandoId].historicoServicos || 0 : 0,
         dataCadastro: editandoId ? clientesData[editandoId].dataCadastro : new Date().toISOString(),
@@ -856,7 +1206,6 @@
       };
 
       if (editandoId) {
-        // Atualizar cliente existente
         clientesRef.child(editandoId).update(clienteData)
           .then(() => {
             alert("Cliente atualizado com sucesso!");
@@ -866,7 +1215,6 @@
             alert("Erro ao atualizar cliente: " + error.message);
           });
       } else {
-        // Criar novo cliente
         clientesRef.push(clienteData)
           .then(() => {
             alert("Cliente cadastrado com sucesso!");
@@ -878,74 +1226,163 @@
       }
     }
 
-    // Visualizar cliente (modal de detalhes)
-    function visualizarCliente(id) {
-      const cliente = clientesData[id];
-      const aparelhos = cliente.aparelhos ? cliente.aparelhos.join(", ") : "Não informado";
+    // Buscar CEP na API ViaCEP
+    document.getElementById("cepCliente").addEventListener("blur", async function() {
+      const cep = this.value.replace(/\D/g, "");
       
-      const detalhes = `
-═══════════════════════════════════
-        DETALHES DO CLIENTE
-═══════════════════════════════════
-
-👤 Nome: ${cliente.nome}
-📱 Telefone: ${cliente.telefone}
-${cliente.cpf ? `🆔 CPF: ${cliente.cpf}` : ''}
-${cliente.email ? `✉️ E-mail: ${cliente.email}` : ''}
-
-📍 Endereço: ${cliente.endereco}
-${cliente.cep ? `📮 CEP: ${cliente.cep}` : ''}
-${cliente.cidade ? `🏙️ Cidade: ${cliente.cidade}` : ''}
-
-🔧 Aparelhos: ${aparelhos}
-
-${cliente.observacoes ? `📝 Observações:\n${cliente.observacoes}` : ''}
-
-📊 Total de Serviços: ${cliente.historicoServicos || 0}
-📅 Cadastrado em: ${new Date(cliente.dataCadastro).toLocaleString()}
-${cliente.dataAtualizacao ? `🔄 Última atualização: ${new Date(cliente.dataAtualizacao).toLocaleString()}` : ''}
-
-═══════════════════════════════════
-      `;
+      if (cep.length !== 8) return;
       
-      alert(detalhes);
+      const loading = document.getElementById("cepLoading");
+      const cidadeInput = document.getElementById("cidadeCliente");
+      const enderecoInput = document.getElementById("enderecoCliente");
+      
+      loading.style.display = "block";
+      
+      try {
+        const response = await fetch(`https://viacep.com.br/ws/${cep}/json/`);
+        const data = await response.json();
+        
+        if (data.erro) {
+          alert("CEP não encontrado!");
+          loading.style.display = "none";
+          return;
+        }
+        
+        // Preenche cidade automaticamente
+        cidadeInput.value = `${data.localidade} - ${data.uf}`;
+        
+        // Sugere endereço se não estiver preenchido
+        if (!enderecoInput.value && data.logradouro) {
+          enderecoInput.value = `${data.logradouro}, ${data.bairro}`;
+        }
+        
+        loading.style.display = "none";
+      } catch (error) {
+        console.error("Erro ao buscar CEP:", error);
+        alert("Erro ao buscar CEP. Verifique sua conexão.");
+        loading.style.display = "none";
+      }
+    });
+
+    // Gerenciamento de Aparelhos
+    function renderizarAparelhos() {
+      const lista = document.getElementById("aparelhosList");
+      lista.innerHTML = "";
+      
+      if (aparelhosTemp.length === 0) {
+        lista.innerHTML = '<p style="text-align: center; color: #9ca3af; padding: 20px;">Nenhum aparelho cadastrado</p>';
+        return;
+      }
+      
+      const modoVisualizacao = document.getElementById("modoVisualizacao").value === "true";
+      
+      aparelhosTemp.forEach((aparelho, index) => {
+        const item = document.createElement("div");
+        item.className = "aparelho-item";
+        item.innerHTML = `
+          <div class="aparelho-info">
+            <strong>${aparelho.tipo}</strong>
+            <small>${aparelho.marca}${aparelho.modelo ? ` - ${aparelho.modelo}` : ''}</small>
+          </div>
+          ${!modoVisualizacao ? `
+            <button type="button" class="btn-remove-aparelho" onclick="removerAparelho(${index})">
+              ✕ Remover
+            </button>
+          ` : ''}
+        `;
+        lista.appendChild(item);
+      });
     }
 
-    // Confirmar exclusão
-    function confirmarExclusao(id, nome) {
-      const confirmacao = confirm(
-        `⚠️ ATENÇÃO!\n\nDeseja realmente excluir o cliente:\n"${nome}"?\n\nEsta ação não pode ser desfeita!`
-      );
-      
-      if (confirmacao) {
-        excluirCliente(id);
+    function removerAparelho(index) {
+      if (confirm("Deseja remover este aparelho?")) {
+        aparelhosTemp.splice(index, 1);
+        renderizarAparelhos();
       }
     }
 
-    // Excluir cliente
-    function excluirCliente(id) {
-      clientesRef.child(id).remove()
-        .then(() => {
-          alert("Cliente excluído com sucesso!");
-        })
-        .catch(error => {
-          alert("Erro ao excluir cliente: " + error.message);
-        });
+    // Modal de adicionar aparelho
+    document.getElementById("btnAddAparelho").addEventListener("click", () => {
+      document.getElementById("modalAparelho").classList.add("active");
+    });
+
+    function fecharModalAparelho() {
+      document.getElementById("modalAparelho").classList.remove("active");
+      document.getElementById("formAparelho").reset();
+    }
+
+    function adicionarAparelho(event) {
+      event.preventDefault();
+      
+      const aparelho = {
+        tipo: document.getElementById("tipoAparelho").value,
+        marca: document.getElementById("marcaAparelho").value,
+        modelo: document.getElementById("modeloAparelho").value
+      };
+      
+      aparelhosTemp.push(aparelho);
+      renderizarAparelhos();
+      fecharModalAparelho();
+    }
+
+    // Sistema de exclusão com senha
+    function solicitarExclusao(id, nome) {
+      clienteParaExcluir = { id, nome };
+      document.getElementById("modalSenha").classList.add("active");
+      document.getElementById("senhaExclusao").value = "";
+      document.getElementById("senhaError").classList.remove("show");
+    }
+
+    function fecharModalSenha() {
+      document.getElementById("modalSenha").classList.remove("active");
+      clienteParaExcluir = null;
+    }
+
+    async function confirmarExclusaoComSenha(event) {
+      event.preventDefault();
+      
+      const senha = document.getElementById("senhaExclusao").value;
+      const user = auth.currentUser;
+      
+      if (!user) {
+        alert("Você precisa estar logado para realizar esta ação.");
+        return;
+      }
+      
+      try {
+        // Reautentica o usuário com a senha fornecida
+        const credential = firebase.auth.EmailAuthProvider.credential(user.email, senha);
+        await user.reauthenticateWithCredential(credential);
+        
+        // Senha correta, pode excluir
+        await clientesRef.child(clienteParaExcluir.id).remove();
+        alert(`Cliente "${clienteParaExcluir.nome}" excluído com sucesso!`);
+        fecharModalSenha();
+        
+      } catch (error) {
+        console.error("Erro na autenticação:", error);
+        document.getElementById("senhaError").classList.add("show");
+        document.getElementById("senhaExclusao").value = "";
+      }
     }
 
     // Busca em tempo real
-    document.getElementById("searchInput").addEventListener("input", function() {
-      renderizarClientes();
-    });
+    document.getElementById("searchInput").addEventListener("input", renderizarClientes);
 
     // Botão novo cliente
     document.getElementById("btnNovoCliente").addEventListener("click", abrirModal);
 
     // Fechar modal ao clicar fora
     document.getElementById("modalCliente").addEventListener("click", function(e) {
-      if (e.target === this) {
-        fecharModal();
-      }
+      if (e.target === this) fecharModal();
+    });
+
+    document.getElementById("modalAparelho").addEventListener("click", function(e) {
+      if (e.target === this) fecharModalAparelho();
+    });
+
+    document.getElementById("modalSenha").addEventListener("click", function(e) {
+      if (e.target === this) fecharModalSenha();
     });
 
     // Máscaras de input
@@ -978,20 +1415,18 @@ ${cliente.dataAtualizacao ? `🔄 Última atualização: ${new Date(cliente.data
 
     // Atalhos de teclado
     document.addEventListener("keydown", function(e) {
-      // ESC para fechar modal
       if (e.key === "Escape") {
         fecharModal();
+        fecharModalAparelho();
+        fecharModalSenha();
       }
-      // Ctrl + N para novo cliente
       if (e.ctrlKey && e.key === "n") {
         e.preventDefault();
         abrirModal();
       }
     });
 
-    // Log de carregamento
-    console.log("Sistema de Gerenciamento de Clientes - Oficina");
-    console.log("Conectado ao Firebase Realtime Database");
+    console.log("Sistema de Gerenciamento de Clientes - SIGO Casa dos Reparos");
   </script>
 </body>
 </html>
