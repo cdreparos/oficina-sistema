@@ -4,614 +4,90 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Ordens de Serviço - SIGO</title>
-  <link rel="stylesheet" href="style.css"> <style>
-    /* Seu CSS gigante que já estava aqui permanece o mesmo */
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    body {
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-      background: #f0f2f5;
-      min-height: 100vh;
-    }
-
-    header {
-      background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
-      color: white;
-      padding: 30px 40px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    }
-
-    .header-content {
-      max-width: 1400px;
-      margin: 0 auto;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .header-left h1 {
-      font-size: 1.8rem;
-      font-weight: 700;
-      margin-bottom: 5px;
-    }
-
-    .header-left p {
-      font-size: 0.9rem;
-      opacity: 0.85;
-    }
-
-    .btn-voltar {
-      background: rgba(255,255,255,0.15);
-      color: white;
-      border: none;
-      padding: 12px 24px;
-      border-radius: 10px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.3s;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .btn-voltar:hover {
-      background: rgba(255,255,255,0.25);
-      transform: translateY(-2px);
-    }
-
-    .container {
-      max-width: 1400px;
-      margin: 30px auto;
-      padding: 0 40px;
-    }
-
-    .actions-bar {
-      background: white;
-      padding: 20px 30px;
-      border-radius: 16px;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.08);
-      margin-bottom: 24px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 20px;
-      flex-wrap: wrap;
-    }
-
-    .filter-tabs {
-      display: flex;
-      gap: 8px;
-      background: #f3f4f6;
-      padding: 4px;
-      border-radius: 10px;
-      flex-wrap: wrap;
-    }
-
-    .filter-tab {
-      padding: 10px 20px;
-      border: none;
-      background: transparent;
-      border-radius: 8px;
-      cursor: pointer;
-      font-weight: 600;
-      transition: all 0.3s;
-      color: #6b7280;
-      font-size: 0.85rem;
-    }
-
-    .filter-tab.active {
-      background: white;
-      color: #10b981;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    }
-
-    .btn-primary {
-      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-      color: white;
-      border: none;
-      padding: 14px 28px;
-      border-radius: 10px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.3s;
-      box-shadow: 0 4px 12px rgba(16,185,129,0.3);
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .btn-primary:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 16px rgba(16,185,129,0.4);
-    }
-
-    .os-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
-      gap: 20px;
-    }
-
-    .os-card {
-      background: white;
-      border-radius: 16px;
-      padding: 24px;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.08);
-      border: 1px solid #e5e7eb;
-      transition: all 0.3s;
-    }
-
-    .os-card:hover {
-      box-shadow: 0 8px 24px rgba(0,0,0,0.12);
-      transform: translateY(-4px);
-      border-color: #10b981;
-    }
-
-    .os-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      margin-bottom: 16px;
-      padding-bottom: 16px;
-      border-bottom: 2px solid #f3f4f6;
-    }
-
-    .os-numero {
-      font-size: 1.4rem;
-      font-weight: 800;
-      color: #10b981;
-    }
-
-    .os-status {
-      padding: 6px 14px;
-      border-radius: 20px;
-      font-size: 0.75rem;
-      font-weight: 700;
-      text-transform: uppercase;
-    }
-
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Inter', sans-serif; background: #f0f2f5; min-height: 100vh; }
+    header { background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%); color: white; padding: 30px 40px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+    .header-content { max-width: 1400px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+    .header-left h1 { font-size: 1.8rem; font-weight: 700; margin-bottom: 5px; }
+    .header-left p { font-size: 0.9rem; opacity: 0.85; }
+    .btn-voltar { background: rgba(255,255,255,0.15); color: white; border: none; padding: 12px 24px; border-radius: 10px; font-weight: 600; cursor: pointer; transition: all 0.3s; display: flex; align-items: center; gap: 8px; }
+    .btn-voltar:hover { background: rgba(255,255,255,0.25); transform: translateY(-2px); }
+    .container { max-width: 1400px; margin: 30px auto; padding: 0 40px; }
+    .actions-bar { background: white; padding: 20px 30px; border-radius: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); margin-bottom: 24px; display: flex; justify-content: space-between; align-items: center; gap: 20px; flex-wrap: wrap; }
+    .filter-tabs { display: flex; gap: 8px; background: #f3f4f6; padding: 4px; border-radius: 10px; flex-wrap: wrap; }
+    .filter-tab { padding: 10px 20px; border: none; background: transparent; border-radius: 8px; cursor: pointer; font-weight: 600; transition: all 0.3s; color: #6b7280; font-size: 0.85rem; }
+    .filter-tab.active { background: white; color: #10b981; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+    .btn-primary { background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; border: none; padding: 14px 28px; border-radius: 10px; font-weight: 600; cursor: pointer; transition: all 0.3s; box-shadow: 0 4px 12px rgba(16,185,129,0.3); display: flex; align-items: center; gap: 8px; }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(16,185,129,0.4); }
+    .os-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(380px, 1fr)); gap: 20px; }
+    .os-card { background: white; border-radius: 16px; padding: 24px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); border: 1px solid #e5e7eb; transition: all 0.3s; }
+    .os-card:hover { box-shadow: 0 8px 24px rgba(0,0,0,0.12); transform: translateY(-4px); border-color: #10b981; }
+    .os-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px; padding-bottom: 16px; border-bottom: 2px solid #f3f4f6; }
+    .os-numero { font-size: 1.4rem; font-weight: 800; color: #10b981; }
+    .os-status { padding: 6px 14px; border-radius: 20px; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; }
     .status-aguardando { background: #fef3c7; color: #92400e; }
     .status-em_andamento { background: #dbeafe; color: #1e40af; }
     .status-concluido { background: #d1fae5; color: #065f46; }
     .status-entregue { background: #e0e7ff; color: #3730a3; }
-
-    .os-cliente {
-      font-size: 1.1rem;
-      font-weight: 600;
-      color: #1f2937;
-      margin-bottom: 8px;
-    }
-
-    .os-aparelho {
-      color: #6b7280;
-      font-size: 0.9rem;
-      margin-bottom: 16px;
-    }
-
-    .os-details {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      margin-bottom: 16px;
-    }
-
-    .detail-row {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      font-size: 0.85rem;
-      color: #374151;
-    }
-
-    .detail-icon {
-      width: 28px;
-      height: 28px;
-      background: #f3f4f6;
-      border-radius: 6px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 0.9rem;
-      flex-shrink: 0;
-    }
-
-    .os-valor {
-      background: #f9fafb;
-      padding: 12px;
-      border-radius: 10px;
-      margin-bottom: 16px;
-      text-align: center;
-    }
-
-    .os-valor-label {
-      font-size: 0.75rem;
-      color: #6b7280;
-      margin-bottom: 4px;
-    }
-
-    .os-valor-total {
-      font-size: 1.5rem;
-      font-weight: 800;
-      color: #10b981;
-    }
-
-    .os-actions {
-      display: flex;
-      gap: 8px;
-    }
-
-    .btn-action {
-      flex: 1;
-      padding: 10px;
-      border: none;
-      border-radius: 8px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.3s;
-      font-size: 0.8rem;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 6px;
-    }
-
+    .os-cliente { font-size: 1.1rem; font-weight: 600; color: #1f2937; margin-bottom: 8px; }
+    .os-aparelho { color: #6b7280; font-size: 0.9rem; margin-bottom: 16px; }
+    .os-details { display: flex; flex-direction: column; gap: 10px; margin-bottom: 16px; }
+    .detail-row { display: flex; align-items: center; gap: 10px; font-size: 0.85rem; color: #374151; }
+    .detail-icon { width: 28px; height: 28px; background: #f3f4f6; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 0.9rem; flex-shrink: 0; }
+    .os-valor { background: #f9fafb; padding: 12px; border-radius: 10px; margin-bottom: 16px; text-align: center; }
+    .os-valor-label { font-size: 0.75rem; color: #6b7280; margin-bottom: 4px; }
+    .os-valor-total { font-size: 1.5rem; font-weight: 800; color: #10b981; }
+    .os-actions { display: flex; gap: 8px; }
+    .btn-action { flex: 1; padding: 10px; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; transition: all 0.3s; font-size: 0.8rem; display: flex; align-items: center; justify-content: center; gap: 6px; }
     .btn-view { background: #e0e7ff; color: #3730a3; }
     .btn-view:hover { background: #6366f1; color: white; }
     .btn-edit { background: #dbeafe; color: #1e40af; }
     .btn-edit:hover { background: #3b82f6; color: white; }
-    .btn-print { background: #d1fae5; color: #065f46; }
-    .btn-print:hover { background: #10b981; color: white; }
-
-    .empty-state {
-      text-align: center;
-      padding: 80px 20px;
-      background: white;
-      border-radius: 16px;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.08);
-    }
-
+    .empty-state { text-align: center; padding: 80px 20px; background: white; border-radius: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
     .empty-state-icon { font-size: 4rem; margin-bottom: 20px; opacity: 0.5; }
-    .empty-state h3 { font-size: 1.5rem; color: #374151; margin-bottom: 12px; }
-    .empty-state p { color: #6b7280; margin-bottom: 24px; }
-
-    .modal {
-      display: none;
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: rgba(0,0,0,0.6);
-      backdrop-filter: blur(4px);
-      z-index: 1000;
-      padding: 20px;
-      overflow-y: auto;
-    }
-
+    .modal { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.6); z-index: 1000; padding: 20px; overflow-y: auto; }
     .modal.active { display: block; }
-
-    .modal-content {
-      background: white;
-      border-radius: 20px;
-      padding: 32px;
-      max-width: 900px;
-      width: 100%;
-      margin: 40px auto;
-      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-    }
-
-    .modal-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 24px;
-      padding-bottom: 16px;
-      border-bottom: 2px solid #f3f4f6;
-    }
-
-    .modal-header h2 {
-      font-size: 1.5rem;
-      color: #1f2937;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-
-    .btn-close {
-      background: #f3f4f6;
-      border: none;
-      width: 36px;
-      height: 36px;
-      border-radius: 8px;
-      cursor: pointer;
-      font-size: 1.2rem;
-      transition: all 0.3s;
-      flex-shrink: 0;
-    }
-
-    .btn-close:hover {
-      background: #e5e7eb;
-      transform: rotate(90deg);
-    }
-
-    .form-section {
-      margin-bottom: 32px;
-    }
-
-    .form-section-title {
-      font-size: 1.1rem;
-      font-weight: 700;
-      color: #1f2937;
-      margin-bottom: 16px;
-      padding-bottom: 12px;
-      border-bottom: 2px solid #f3f4f6;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .form-group {
-      margin-bottom: 20px;
-    }
-
-    .form-group label {
-      display: block;
-      margin-bottom: 8px;
-      font-weight: 600;
-      color: #374151;
-      font-size: 0.9rem;
-    }
-
-    .form-group input,
-    .form-group textarea,
-    .form-group select {
-      width: 100%;
-      padding: 12px 16px;
-      border: 2px solid #e5e7eb;
-      border-radius: 10px;
-      font-size: 0.95rem;
-      transition: all 0.3s;
-      font-family: inherit;
-    }
-
-    .form-group input:focus,
-    .form-group textarea:focus,
-    .form-group select:focus {
-      outline: none;
-      border-color: #10b981;
-      box-shadow: 0 0 0 3px rgba(16,185,129,0.1);
-    }
-
-    .form-group textarea {
-      resize: vertical;
-      min-height: 80px;
-    }
-
-    .form-row {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 16px;
-    }
-
-    .form-row-3 {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 16px;
-    }
-
-    .form-actions {
-      display: flex;
-      gap: 12px;
-      margin-top: 28px;
-    }
-
-    .btn-submit {
-      flex: 1;
-      padding: 14px;
-      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-      color: white;
-      border: none;
-      border-radius: 10px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.3s;
-      font-size: 1rem;
-    }
-
-    .btn-submit:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 16px rgba(16,185,129,0.4);
-    }
-
-    .btn-cancel {
-      flex: 1;
-      padding: 14px;
-      background: #f3f4f6;
-      color: #374151;
-      border: none;
-      border-radius: 10px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.3s;
-      font-size: 1rem;
-    }
-
+    .modal-content { background: white; border-radius: 20px; padding: 32px; max-width: 900px; width: 100%; margin: 40px auto; box-shadow: 0 20px 60px rgba(0,0,0,0.3); }
+    .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; padding-bottom: 16px; border-bottom: 2px solid #f3f4f6; }
+    .modal-header h2 { font-size: 1.5rem; color: #1f2937; display: flex; align-items: center; gap: 12px; }
+    .btn-close { background: #f3f4f6; border: none; width: 36px; height: 36px; border-radius: 8px; cursor: pointer; font-size: 1.2rem; transition: all 0.3s; }
+    .btn-close:hover { background: #e5e7eb; transform: rotate(90deg); }
+    .form-section { margin-bottom: 32px; }
+    .form-section-title { font-size: 1.1rem; font-weight: 700; color: #1f2937; margin-bottom: 16px; padding-bottom: 12px; border-bottom: 2px solid #f3f4f6; display: flex; align-items: center; gap: 10px; }
+    .form-group { margin-bottom: 20px; }
+    .form-group label { display: block; margin-bottom: 8px; font-weight: 600; color: #374151; font-size: 0.9rem; }
+    .form-group input, .form-group textarea, .form-group select { width: 100%; padding: 12px 16px; border: 2px solid #e5e7eb; border-radius: 10px; font-size: 0.95rem; transition: all 0.3s; font-family: inherit; }
+    .form-group input:focus, .form-group textarea:focus, .form-group select:focus { outline: none; border-color: #10b981; box-shadow: 0 0 0 3px rgba(16,185,129,0.1); }
+    .form-group textarea { resize: vertical; min-height: 80px; }
+    .form-row { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+    .form-row-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+    .form-actions { display: flex; gap: 12px; margin-top: 28px; }
+    .btn-submit { flex: 1; padding: 14px; background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; border: none; border-radius: 10px; font-weight: 600; cursor: pointer; transition: all 0.3s; font-size: 1rem; }
+    .btn-submit:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(16,185,129,0.4); }
+    .btn-cancel { flex: 1; padding: 14px; background: #f3f4f6; color: #374151; border: none; border-radius: 10px; font-weight: 600; cursor: pointer; transition: all 0.3s; font-size: 1rem; }
     .btn-cancel:hover { background: #e5e7eb; }
-
-    .pecas-section {
-      background: #f9fafb;
-      padding: 20px;
-      border-radius: 12px;
-      margin-bottom: 20px;
-    }
-
-    .pecas-list {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-      margin-bottom: 16px;
-    }
-
-    .peca-item {
-      background: white;
-      padding: 16px;
-      border-radius: 10px;
-      border: 1px solid #e5e7eb;
-      display: grid;
-      grid-template-columns: 1fr auto auto auto;
-      gap: 16px;
-      align-items: center;
-    }
-
-    .peca-info strong {
-      display: block;
-      color: #1f2937;
-      margin-bottom: 4px;
-    }
-
-    .peca-origem {
-      padding: 4px 10px;
-      border-radius: 12px;
-      font-size: 0.75rem;
-      font-weight: 600;
-    }
-
-    .origem-oficina { background: #fef3c7; color: #92400e; }
-    .origem-loja { background: #d1fae5; color: #065f46; }
-
-    .btn-add-peca {
-      width: 100%;
-      padding: 12px;
-      background: #dbeafe;
-      color: #1e40af;
-      border: 2px dashed #3b82f6;
-      border-radius: 10px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.3s;
-    }
-
-    .btn-add-peca:hover {
-      background: #3b82f6;
-      color: white;
-      border-style: solid;
-    }
-
-    .btn-remove-peca {
-      background: #fee2e2;
-      color: #991b1b;
-      border: none;
-      padding: 8px 12px;
-      border-radius: 8px;
-      cursor: pointer;
-      font-size: 0.8rem;
-      transition: all 0.3s;
-    }
-
-    .btn-remove-peca:hover {
-      background: #ef4444;
-      color: white;
-    }
-
-    .resumo-financeiro {
-      background: #f9fafb;
-      padding: 20px;
-      border-radius: 12px;
-      margin-bottom: 20px;
-    }
-
-    .resumo-item {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 12px 0;
-      border-bottom: 1px solid #e5e7eb;
-    }
-
-    .resumo-item:last-child {
-      border-bottom: none;
-      padding-top: 16px;
-      margin-top: 8px;
-      border-top: 2px solid #10b981;
-    }
-
+    .pecas-section { background: #f9fafb; padding: 20px; border-radius: 12px; margin-bottom: 20px; }
+    .pecas-list { display: flex; flex-direction: column; gap: 12px; margin-bottom: 16px; }
+    .peca-item { background: white; padding: 16px; border-radius: 10px; border: 1px solid #e5e7eb; display: flex; justify-content: space-between; align-items: center; gap: 16px; }
+    .peca-info strong { display: block; color: #1f2937; margin-bottom: 4px; }
+    .btn-add-peca { width: 100%; padding: 12px; background: #dbeafe; color: #1e40af; border: 2px dashed #3b82f6; border-radius: 10px; font-weight: 600; cursor: pointer; transition: all 0.3s; }
+    .btn-add-peca:hover { background: #3b82f6; color: white; border-style: solid; }
+    .btn-remove-peca { background: #fee2e2; color: #991b1b; border: none; padding: 8px 12px; border-radius: 8px; cursor: pointer; font-size: 0.8rem; transition: all 0.3s; }
+    .btn-remove-peca:hover { background: #ef4444; color: white; }
+    .resumo-financeiro { background: #f9fafb; padding: 20px; border-radius: 12px; margin-bottom: 20px; }
+    .resumo-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid #e5e7eb; }
+    .resumo-item:last-child { border-bottom: none; padding-top: 16px; margin-top: 8px; border-top: 2px solid #10b981; }
     .resumo-label { font-weight: 600; color: #374151; }
     .resumo-valor { font-weight: 700; color: #10b981; font-size: 1.1rem; }
     .resumo-item:last-child .resumo-valor { font-size: 1.5rem; }
-
-    .cliente-search {
-      position: relative;
-    }
-
-    .cliente-suggestions {
-      position: absolute;
-      top: 100%;
-      left: 0;
-      right: 0;
-      background: white;
-      border: 2px solid #e5e7eb;
-      border-top: none;
-      border-radius: 0 0 10px 10px;
-      max-height: 200px;
-      overflow-y: auto;
-      z-index: 10;
-      display: none;
-    }
-
+    .cliente-search { position: relative; }
+    .cliente-suggestions { position: absolute; top: 100%; left: 0; right: 0; background: white; border: 2px solid #e5e7eb; border-top: none; border-radius: 0 0 10px 10px; max-height: 200px; overflow-y: auto; z-index: 10; display: none; }
     .cliente-suggestions.show { display: block; }
-
-    .cliente-suggestion-item {
-      padding: 12px 16px;
-      cursor: pointer;
-      transition: background 0.2s;
-      border-bottom: 1px solid #f3f4f6;
-    }
-
+    .cliente-suggestion-item { padding: 12px 16px; cursor: pointer; transition: background 0.2s; border-bottom: 1px solid #f3f4f6; }
     .cliente-suggestion-item:hover { background: #f9fafb; }
     .cliente-suggestion-item strong { display: block; color: #1f2937; }
     .cliente-suggestion-item small { color: #6b7280; }
-
-    .destino-options {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 12px;
-      margin-top: 8px;
-    }
-
-    .destino-option {
-      position: relative;
-    }
-
-    .destino-option input[type="radio"] {
-      position: absolute;
-      opacity: 0;
-      width: 0;
-      height: 0;
-    }
-
-    .destino-label {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      padding: 12px;
-      border: 2px solid #e5e7eb;
-      border-radius: 10px;
-      cursor: pointer;
-      transition: all 0.3s;
-      font-weight: 600;
-      color: #6b7280;
-    }
-
-    .destino-option input[type="radio"]:checked + .destino-label {
-      border-color: #10b981;
-      background: #d1fae5;
-      color: #065f46;
-    }
-
     @media (max-width: 768px) {
       .container { padding: 0 20px; }
       header { padding: 20px; }
@@ -620,7 +96,6 @@
       .filter-tabs { width: 100%; }
       .os-grid { grid-template-columns: 1fr; }
       .form-row, .form-row-3 { grid-template-columns: 1fr; }
-      .peca-item { grid-template-columns: 1fr; gap: 12px; }
     }
   </style>
 </head>
@@ -670,21 +145,18 @@
   <div class="modal" id="modalOS">
     <div class="modal-content">
       <div class="modal-header">
-        <h2 id="modalTitle">Nova Ordem de Serviço</h2>
+        <h2><span id="modalIcon">➕</span> <span id="modalTitle">Nova Ordem de Serviço</span></h2>
         <button class="btn-close" onclick="fecharModal()">✕</button>
       </div>
-      <form id="formOS">
+      <form id="formOS" onsubmit="salvarOS(event)">
         <input type="hidden" id="osId">
         <input type="hidden" id="numeroOS">
 
         <div class="form-section">
-          <div class="form-section-title">
-            <span>👤</span>
-            <span>Dados do Cliente</span>
-          </div>
+          <div class="form-section-title"><span>👤</span> Dados do Cliente</div>
           <div class="form-group cliente-search">
             <label for="clienteNome">Cliente *</label>
-            <input type="text" id="clienteNome" required placeholder="Digite o nome do cliente..." autocomplete="off">
+            <input type="text" id="clienteNome" required placeholder="Digite o nome do cliente...">
             <div class="cliente-suggestions" id="clienteSuggestions"></div>
             <input type="hidden" id="clienteId">
           </div>
@@ -695,10 +167,7 @@
         </div>
 
         <div class="form-section">
-          <div class="form-section-title">
-            <span>🔧</span>
-            <span>Dados do Aparelho</span>
-          </div>
+          <div class="form-section-title"><span>🔧</span> Dados do Aparelho</div>
           <div class="form-row-3">
             <div class="form-group">
               <label for="aparelho">Aparelho *</label>
@@ -717,44 +186,77 @@
             <label for="defeitoRelatado">Defeito Relatado *</label>
             <textarea id="defeitoRelatado" required placeholder="Descreva o problema..."></textarea>
           </div>
+          <div class="form-group">
+            <label for="diagnostico">Diagnóstico Técnico</label>
+            <textarea id="diagnostico" placeholder="Diagnóstico após análise..."></textarea>
+          </div>
         </div>
 
         <div class="form-section">
-            <div class="form-section-title">
-                <span>🔩</span>
-                <span>Peças Utilizadas</span>
-            </div>
-            <div class="pecas-section">
-                <div class="pecas-list" id="pecasList"></div>
-                <button type="button" class="btn-add-peca" id="btnAddPeca">➕ Adicionar Peça</button>
-            </div>
+          <div class="form-section-title"><span>🔩</span> Peças Utilizadas</div>
+          <div class="pecas-section">
+            <div class="pecas-list" id="pecasList"></div>
+            <button type="button" class="btn-add-peca" id="btnAddPeca">➕ Adicionar Peça</button>
+          </div>
         </div>
 
         <div class="form-section">
-            <div class="form-section-title">
-                <span>💰</span>
-                <span>Valores</span>
+          <div class="form-section-title"><span>💰</span> Valores</div>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="valorMaoObra">Mão de Obra (R$) *</label>
+              <input type="number" id="valorMaoObra" required step="0.01" min="0" value="0">
             </div>
-            <div class="form-row">
-                <div class="form-group">
-                    <label for="valorMaoObra">Mão de Obra (R$) *</label>
-                    <input type="number" id="valorMaoObra" required step="0.01" min="0" value="0">
-                </div>
-                <div class="form-group">
-                    <label for="desconto">Desconto (R$)</label>
-                    <input type="number" id="desconto" step="0.01" min="0" value="0">
-                </div>
+            <div class="form-group">
+              <label for="desconto">Desconto (R$)</label>
+              <input type="number" id="desconto" step="0.01" min="0" value="0">
             </div>
-            <div class="resumo-financeiro">
-                <div class="resumo-item">
-                    <span class="resumo-label">Total Peças:</span>
-                    <span class="resumo-valor" id="totalPecas">R$ 0,00</span>
-                </div>
-                <div class="resumo-item">
-                    <span class="resumo-label">TOTAL GERAL:</span>
-                    <span class="resumo-valor" id="valorTotalFinal">R$ 0,00</span>
-                </div>
+          </div>
+          <div class="resumo-financeiro">
+            <div class="resumo-item">
+              <span class="resumo-label">Peças:</span>
+              <span class="resumo-valor" id="totalPecas">R$ 0,00</span>
             </div>
+            <div class="resumo-item">
+              <span class="resumo-label">Mão de Obra:</span>
+              <span class="resumo-valor" id="totalMaoObra">R$ 0,00</span>
+            </div>
+            <div class="resumo-item">
+              <span class="resumo-label">Desconto:</span>
+              <span class="resumo-valor" id="valorDesconto">- R$ 0,00</span>
+            </div>
+            <div class="resumo-item">
+              <span class="resumo-label">TOTAL:</span>
+              <span class="resumo-valor" id="valorTotalFinal">R$ 0,00</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-section">
+          <div class="form-section-title"><span>📋</span> Status e Prazos</div>
+          <div class="form-row-3">
+            <div class="form-group">
+              <label for="statusOS">Status *</label>
+              <select id="statusOS" required>
+                <option value="aguardando">Aguardando</option>
+                <option value="em_andamento">Em Andamento</option>
+                <option value="concluido">Concluído</option>
+                <option value="entregue">Entregue</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="dataEntrada">Data Entrada *</label>
+              <input type="date" id="dataEntrada" required>
+            </div>
+            <div class="form-group">
+              <label for="prazoEntrega">Prazo Entrega</label>
+              <input type="date" id="prazoEntrega">
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="observacoes">Observações</label>
+            <textarea id="observacoes" placeholder="Observações gerais..."></textarea>
+          </div>
         </div>
 
         <div class="form-actions">
@@ -771,7 +273,7 @@
         <h2>🔩 Adicionar Peça</h2>
         <button class="btn-close" onclick="fecharModalPeca()">✕</button>
       </div>
-      <form id="formPeca">
+      <form id="formPeca" onsubmit="adicionarPeca(event)">
         <div class="form-group">
           <label for="nomePeca">Nome da Peça *</label>
           <input type="text" id="nomePeca" required placeholder="Ex: Resistência 220V">
@@ -798,6 +300,285 @@
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 
-  <script src="script.js"></script>
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyCyz4Nrvcnf0MF_99fLKPMsrJ9dIzuRHG4",
+      authDomain: "oficina-sistema-cc2cd.firebaseapp.com",
+      databaseURL: "https://oficina-sistema-cc2cd-default-rtdb.firebaseio.com/",
+      projectId: "oficina-sistema-cc2cd",
+      storageBucket: "oficina-sistema-cc2cd.appspot.com",
+      messagingSenderId: "1034638142539",
+      appId: "1:1034638142539:web:4b63c09b30b86838eff1ce"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const database = firebase.database();
+    const osRef = database.ref("ordens_servico");
+    const clientesRef = database.ref("clientes");
+
+    auth.onAuthStateChanged(user => { if (!user) window.location.href = 'index.html'; });
+
+    let osData = {}, clientesData = {}, editandoId = null, filtroAtual = 'todas', pecasTemp = [], proximoNumeroOS = 1;
+
+    osRef.on("value", snapshot => { osData = snapshot.val() || {}; calcularProximoNumero(); renderizarOS(); });
+    clientesRef.on("value", snapshot => { clientesData = snapshot.val() || {}; });
+
+    function calcularProximoNumero() {
+      const numeros = Object.values(osData).map(os => parseInt(os.numeroOS) || 0);
+      proximoNumeroOS = numeros.length > 0 ? Math.max(...numeros) + 1 : 1;
+    }
+
+    function renderizarOS() {
+      const grid = document.getElementById('osGrid'), emptyState = document.getElementById('emptyState');
+      grid.innerHTML = '';
+      const osArray = Object.entries(osData).map(([id, data]) => ({ id, ...data }));
+      const osFiltradas = filtroAtual === 'todas' ? osArray : osArray.filter(os => os.statusOS === filtroAtual);
+      if (osFiltradas.length === 0) { emptyState.style.display = 'block'; grid.style.display = 'none'; return; }
+      emptyState.style.display = 'none'; grid.style.display = 'grid';
+      osFiltradas.sort((a, b) => parseInt(b.numeroOS) - parseInt(a.numeroOS));
+      osFiltradas.forEach(os => {
+        const card = document.createElement('div'); card.className = 'os-card';
+        const statusTexto = { aguardando: 'Aguardando', em_andamento: 'Em Andamento', concluido: 'Concluído', entregue: 'Entregue' };
+        const dataEntrada = new Date(os.dataEntrada).toLocaleDateString();
+        const prazo = os.prazoEntrega ? new Date(os.prazoEntrega).toLocaleDateString() : 'Não definido';
+        card.innerHTML = `
+          <div class="os-header">
+            <div class="os-numero">OS #${String(os.numeroOS).padStart(4, '0')}</div>
+            <div class="os-status status-${os.statusOS}">${statusTexto[os.statusOS]}</div>
+          </div>
+          <div class="os-cliente">${os.clienteNome}</div>
+          <div class="os-aparelho">${os.aparelho}${os.marca ? ` - ${os.marca}` : ''}</div>
+          <div class="os-details">
+            <div class="detail-row"><div class="detail-icon">📅</div><span>Entrada: ${dataEntrada}</span></div>
+            <div class="detail-row"><div class="detail-icon">⏰</div><span>Prazo: ${prazo}</span></div>
+            <div class="detail-row"><div class="detail-icon">🔧</div><span>${os.defeitoRelatado.substring(0, 50)}...</span></div>
+          </div>
+          <div class="os-valor">
+            <div class="os-valor-label">Valor Total</div>
+            <div class="os-valor-total">R$ ${parseFloat(os.valorTotalFinal || 0).toFixed(2).replace('.', ',')}</div>
+          </div>
+          <div class="os-actions">
+            <button class="btn-action btn-view" onclick="visualizarOS('${os.id}')">👁️ Ver</button>
+            <button class="btn-action btn-edit" onclick="editarOS('${os.id}')">✏️ Editar</button>
+          </div>
+        `;
+        grid.appendChild(card);
+      });
+    }
+
+    document.querySelectorAll('.filter-tab').forEach(tab => {
+      tab.addEventListener('click', function() {
+        document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+        this.classList.add('active'); filtroAtual = this.dataset.filter; renderizarOS();
+      });
+    });
+
+    document.getElementById('clienteNome').addEventListener('input', function() {
+      const termo = this.value.toLowerCase(), suggestions = document.getElementById('clienteSuggestions');
+      if (termo.length < 2) { suggestions.classList.remove('show'); return; }
+      const clientesFiltrados = Object.entries(clientesData).filter(([id, cliente]) => cliente.nome.toLowerCase().includes(termo)).slice(0, 5);
+      if (clientesFiltrados.length === 0) { suggestions.classList.remove('show'); return; }
+      suggestions.innerHTML = '';
+      clientesFiltrados.forEach(([id, cliente]) => {
+        const item = document.createElement('div'); item.className = 'cliente-suggestion-item';
+        item.innerHTML = `<strong>${cliente.nome}</strong><small>${cliente.telefone}</small>`;
+        item.addEventListener('click', () => {
+          document.getElementById('clienteNome').value = cliente.nome;
+          document.getElementById('clienteId').value = id;
+          document.getElementById('telefoneCliente').value = cliente.telefone;
+          suggestions.classList.remove('show');
+        });
+        suggestions.appendChild(item);
+      });
+      suggestions.classList.add('show');
+    });
+
+    document.getElementById('btnNovaOS').addEventListener('click', () => {
+      editandoId = null; pecasTemp = [];
+      document.getElementById('modalTitle').textContent = 'Nova Ordem de Serviço';
+      document.getElementById('modalIcon').textContent = '➕';
+      document.getElementById('formOS').reset();
+      document.getElementById('osId').value = '';
+      document.getElementById('numeroOS').value = proximoNumeroOS;
+      document.getElementById('clienteId').value = '';
+      document.getElementById('dataEntrada').value = new Date().toISOString().split('T')[0];
+      renderizarPecas(); calcularTotais();
+      document.getElementById('modalOS').classList.add('active');
+    });
+
+    function fecharModal() {
+      document.getElementById('modalOS').classList.remove('active');
+      editandoId = null; pecasTemp = [];
+    }
+
+    function fecharModalPeca() {
+      document.getElementById('modalPeca').classList.remove('active');
+      document.getElementById('formPeca').reset();
+    }
+
+    document.getElementById('btnAddPeca').addEventListener('click', () => {
+      document.getElementById('modalPeca').classList.add('active');
+    });
+
+    function adicionarPeca(event) {
+      event.preventDefault();
+      const peca = {
+        nome: document.getElementById('nomePeca').value,
+        quantidade: parseInt(document.getElementById('quantidadePeca').value),
+        valorUnitario: parseFloat(document.getElementById('valorPeca').value)
+      };
+      pecasTemp.push(peca); renderizarPecas(); calcularTotais(); fecharModalPeca();
+    }
+
+    function renderizarPecas() {
+      const lista = document.getElementById('pecasList');
+      lista.innerHTML = '';
+      if (pecasTemp.length === 0) {
+        lista.innerHTML = '<p style="text-align: center; color: #9ca3af; padding: 20px;">Nenhuma peça adicionada</p>';
+        return;
+      }
+      pecasTemp.forEach((peca, index) => {
+        const item = document.createElement('div'); item.className = 'peca-item';
+        const subtotal = peca.quantidade * peca.valorUnitario;
+        item.innerHTML = `
+          <div class="peca-info">
+            <strong>${peca.nome}</strong>
+            <small>${peca.quantidade}x R$ ${peca.valorUnitario.toFixed(2).replace('.', ',')} = R$ ${subtotal.toFixed(2).replace('.', ',')}</small>
+          </div>
+          <span style="font-weight: 700; color: #10b981;">R$ ${subtotal.toFixed(2).replace('.', ',')}</span>
+          <button type="button" class="btn-remove-peca" onclick="removerPeca(${index})">✕</button>
+        `;
+        lista.appendChild(item);
+      });
+    }
+
+    function removerPeca(index) {
+      if (confirm('Remover esta peça?')) {
+        pecasTemp.splice(index, 1); renderizarPecas(); calcularTotais();
+      }
+    }
+
+    function calcularTotais() {
+      const maoObra = parseFloat(document.getElementById('valorMaoObra').value) || 0;
+      const desconto = parseFloat(document.getElementById('desconto').value) || 0;
+      const totalPecas = pecasTemp.reduce((sum, p) => sum + (p.quantidade * p.valorUnitario), 0);
+      const totalGeral = totalPecas + maoObra - desconto;
+      document.getElementById('totalPecas').textContent = `R$ ${totalPecas.toFixed(2).replace('.', ',')}`;
+      document.getElementById('totalMaoObra').textContent = `R$ ${maoObra.toFixed(2).replace('.', ',')}`;
+      document.getElementById('valorDesconto').textContent = `- R$ ${desconto.toFixed(2).replace('.', ',')}`;
+      document.getElementById('valorTotalFinal').textContent = `R$ ${totalGeral.toFixed(2).replace('.', ',')}`;
+    }
+
+    document.getElementById('valorMaoObra').addEventListener('input', calcularTotais);
+    document.getElementById('desconto').addEventListener('input', calcularTotais);
+
+    function editarOS(id) {
+      editandoId = id;
+      const os = osData[id];
+      document.getElementById('modalTitle').textContent = 'Editar Ordem de Serviço';
+      document.getElementById('modalIcon').textContent = '✏️';
+      document.getElementById('osId').value = id;
+      document.getElementById('numeroOS').value = os.numeroOS;
+      document.getElementById('clienteNome').value = os.clienteNome;
+      document.getElementById('clienteId').value = os.clienteId || '';
+      document.getElementById('telefoneCliente').value = os.telefoneCliente;
+      document.getElementById('aparelho').value = os.aparelho;
+      document.getElementById('marca').value = os.marca || '';
+      document.getElementById('modelo').value = os.modelo || '';
+      document.getElementById('defeitoRelatado').value = os.defeitoRelatado;
+      document.getElementById('diagnostico').value = os.diagnostico || '';
+      document.getElementById('valorMaoObra').value = os.valorMaoObra || 0;
+      document.getElementById('desconto').value = os.desconto || 0;
+      document.getElementById('statusOS').value = os.statusOS;
+      document.getElementById('dataEntrada').value = os.dataEntrada;
+      document.getElementById('prazoEntrega').value = os.prazoEntrega || '';
+      document.getElementById('observacoes').value = os.observacoes || '';
+      pecasTemp = os.pecas || [];
+      renderizarPecas(); calcularTotais();
+      document.getElementById('modalOS').classList.add('active');
+    }
+
+    function visualizarOS(id) {
+      editarOS(id);
+      document.getElementById('modalTitle').textContent = 'Visualizar Ordem de Serviço';
+      document.getElementById('modalIcon').textContent = '👁️';
+      document.querySelectorAll('#formOS input, #formOS textarea, #formOS select, #formOS button[type="button"]').forEach(el => {
+        el.disabled = true;
+      });
+      document.querySelector('.btn-submit').style.display = 'none';
+    }
+
+    function salvarOS(event) {
+      event.preventDefault();
+      const maoObra = parseFloat(document.getElementById('valorMaoObra').value) || 0;
+      const desconto = parseFloat(document.getElementById('desconto').value) || 0;
+      const totalPecas = pecasTemp.reduce((sum, p) => sum + (p.quantidade * p.valorUnitario), 0);
+      const totalFinal = totalPecas + maoObra - desconto;
+
+      const osDataObj = {
+        numeroOS: editandoId ? osData[editandoId].numeroOS : proximoNumeroOS,
+        clienteId: document.getElementById('clienteId').value,
+        clienteNome: document.getElementById('clienteNome').value,
+        telefoneCliente: document.getElementById('telefoneCliente').value,
+        aparelho: document.getElementById('aparelho').value,
+        marca: document.getElementById('marca').value,
+        modelo: document.getElementById('modelo').value,
+        defeitoRelatado: document.getElementById('defeitoRelatado').value,
+        diagnostico: document.getElementById('diagnostico').value,
+        pecas: pecasTemp,
+        valorPecas: totalPecas,
+        valorMaoObra: maoObra,
+        desconto: desconto,
+        valorTotalFinal: totalFinal,
+        statusOS: document.getElementById('statusOS').value,
+        dataEntrada: document.getElementById('dataEntrada').value,
+        prazoEntrega: document.getElementById('prazoEntrega').value,
+        observacoes: document.getElementById('observacoes').value,
+        tecnicoResponsavel: auth.currentUser.email,
+        criadoEm: editandoId ? osData[editandoId].criadoEm : new Date().toISOString(),
+        atualizadoEm: new Date().toISOString()
+      };
+
+      if (editandoId) {
+        osRef.child(editandoId).update(osDataObj)
+          .then(() => { alert('OS atualizada com sucesso!'); fecharModal(); })
+          .catch(error => { alert('Erro ao atualizar OS: ' + error.message); });
+      } else {
+        osRef.push(osDataObj)
+          .then(() => { alert('OS cadastrada com sucesso!'); fecharModal(); })
+          .catch(error => { alert('Erro ao cadastrar OS: ' + error.message); });
+      }
+    }
+
+    document.addEventListener('click', (e) => {
+      if (!e.target.closest('.cliente-search')) {
+        document.getElementById('clienteSuggestions').classList.remove('show');
+      }
+    });
+
+    document.getElementById('modalOS').addEventListener('click', function(e) {
+      if (e.target === this) fecharModal();
+    });
+
+    document.getElementById('modalPeca').addEventListener('click', function(e) {
+      if (e.target === this) fecharModalPeca();
+    });
+
+    document.getElementById('telefoneCliente').addEventListener('input', function(e) {
+      let value = e.target.value.replace(/\D/g, '');
+      if (value.length <= 11) {
+        value = value.replace(/^(\d{2})(\d)/g, '($1) $2');
+        value = value.replace(/(\d)(\d{4})$/, '$1-$2');
+      }
+      e.target.value = value;
+    });
+
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') { fecharModal(); fecharModalPeca(); }
+      if (e.ctrlKey && e.key === 'n') { e.preventDefault(); document.getElementById('btnNovaOS').click(); }
+    });
+
+    console.log('Sistema de Ordens de Serviço - SIGO Casa dos Reparos - Carregado!');
+  </script>
 </body>
 </html>
