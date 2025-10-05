@@ -782,7 +782,12 @@
     // Função de navegação entre páginas
     function navegarPara(pagina) {
       // Verifica se o módulo está ativo
-      const modulosAtivos = ['clientes.html', 'agendamentos.html', 'pecas.html'];
+      const modulosAtivos = [
+  'clientes.html', 
+  'agendamentos.html', 
+  'pecas.html',
+  'ordens-servico.html'
+];
       
       if (modulosAtivos.includes(pagina)) {
         window.location.href = pagina;
