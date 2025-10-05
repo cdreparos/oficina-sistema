@@ -724,63 +724,12 @@
     </div>
   </div>
 
-  <!-- Firebase SDK -->
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 
-    firebase.initializeApp(firebaseConfig);
-    const database = firebase.database();
-    const clientesRef = database.ref("clientes");
+  <script src="script.js"></script>
 
-    // Variáveis globais
-    let clientesData = {};
-    let editandoId = null;
-
-    // Carregar clientes em tempo real
-    clientesRef.on("value", snapshot => {
-      clientesData = snapshot.val() || {};
-      renderizarClientes();
-    });
-
-    // Renderizar clientes na grid
-    function renderizarClientes() {
-      const grid = document.getElementById("clientesGrid");
-      const emptyState = document.getElementById("emptyState");
-      const searchTerm = document.getElementById("searchInput").value.toLowerCase();
-
-      grid.innerHTML = "";
-
-      const clientesArray = Object.entries(clientesData).map(([id, data]) => ({
-        id,
-        ...data
-      }));
-
-      // Filtrar clientes
-      const clientesFiltrados = clientesArray.filter(cliente => {
-        const nome = (cliente.nome || "").toLowerCase();
-        const telefone = (cliente.telefone || "").toLowerCase();
-        const endereco = (cliente.endereco || "").toLowerCase();
-        return nome.includes(searchTerm) || telefone.includes(searchTerm) || endereco.includes(searchTerm);
-      });
-
-      if (clientesFiltrados.length === 0) {
-        emptyState.style.display = "block";
-        grid.style.display = "none";
-        return;
-      }
-
-      emptyState.style.display = "none";
-      grid.style.display = "grid";
-
-      clientesFiltrados.forEach(cliente => {
-        const iniciais = cliente.nome.split(" ").map(n => n[0]).join("").substring(0, 2).toUpperCase();
-        const aparelhos = cliente.aparelhos ? cliente.aparelhos.join(", ") : "Não informado";
-        const totalServicos = cliente.historicoServicos || 0;
-        const dataCadastro = cliente.dataCadastro ? new Date(cliente.dataCadastro).toLocaleDateString() : "N/A";
-
-        const card = document.createElement("div");
-        card.className = "cliente-card";
-        card.innerHTML = `
           <div class="cliente-header">
             <div class="cliente-avatar">${iniciais}</div>
             <div class="cliente-info">
