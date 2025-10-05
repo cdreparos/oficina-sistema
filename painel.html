@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="description" content="Sistema de gerenciamento para oficina de eletrodomésticos" />
-  <title>Sistema da Oficina - Dashboard</title>
+  <title>SIGO - Casa dos Reparos | Painel de Controle</title>
   
   <style>
     /* Reset e configurações globais */
@@ -19,6 +19,12 @@
       background: #f0f2f5;
       min-height: 100vh;
       padding: 0;
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    body.loaded {
+      opacity: 1;
     }
 
     /* Container principal */
@@ -47,14 +53,32 @@
       align-items: center;
     }
 
-    .header-left h1 {
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .header-logo {
+      width: 50px;
+      height: 50px;
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.8rem;
+      backdrop-filter: blur(10px);
+    }
+
+    .header-info h1 {
       font-size: 1.8rem;
       font-weight: 700;
       margin-bottom: 5px;
       letter-spacing: -0.5px;
     }
 
-    .header-left p {
+    .header-info p {
       font-size: 0.9rem;
       opacity: 0.85;
       font-weight: 300;
@@ -64,6 +88,44 @@
       display: flex;
       gap: 15px;
       align-items: center;
+    }
+
+    .user-info {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: rgba(255, 255, 255, 0.15);
+      padding: 8px 16px;
+      border-radius: 12px;
+      backdrop-filter: blur(10px);
+    }
+
+    .user-avatar {
+      width: 36px;
+      height: 36px;
+      background: rgba(255, 255, 255, 0.3);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      font-size: 0.9rem;
+    }
+
+    .user-details {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .user-name {
+      font-size: 0.9rem;
+      font-weight: 600;
+    }
+
+    .user-email {
+      font-size: 0.75rem;
+      opacity: 0.8;
     }
 
     .header-icon {
@@ -94,7 +156,7 @@
       gap: 24px;
     }
 
-    /* Blocos/Cards refinados */
+    /* Blocos/Cards modulares e clicáveis */
     .bloco {
       background: white;
       border-radius: 16px;
@@ -103,12 +165,29 @@
       transition: all 0.3s ease;
       border: 1px solid #e5e7eb;
       position: relative;
+      cursor: pointer;
     }
 
     .bloco:hover {
       box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
       transform: translateY(-4px);
       border-color: #3b82f6;
+    }
+
+    .bloco.clickable::after {
+      content: '→';
+      position: absolute;
+      top: 24px;
+      right: 24px;
+      font-size: 1.5rem;
+      color: #3b82f6;
+      opacity: 0;
+      transition: all 0.3s;
+    }
+
+    .bloco.clickable:hover::after {
+      opacity: 1;
+      right: 20px;
     }
 
     .bloco-header {
@@ -149,10 +228,40 @@
       font-weight: 600;
     }
 
+    /* Descrição do card */
+    .bloco-description {
+      color: #6b7280;
+      font-size: 0.9rem;
+      line-height: 1.6;
+      margin-bottom: 16px;
+    }
+
+    /* Status do módulo */
+    .module-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      border-radius: 8px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      margin-top: 12px;
+    }
+
+    .status-active {
+      background: #d1fae5;
+      color: #065f46;
+    }
+
+    .status-coming-soon {
+      background: #fef3c7;
+      color: #92400e;
+    }
+
     /* Listas dentro dos blocos */
     .bloco ul {
       list-style: none;
-      max-height: 280px;
+      max-height: 200px;
       overflow-y: auto;
       margin: 0;
       padding-right: 8px;
@@ -167,7 +276,6 @@
       font-size: 0.9rem;
       color: #374151;
       transition: all 0.2s;
-      cursor: pointer;
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -246,12 +354,17 @@
     #vendas ul li { border-left-color: #14b8a6; }
     #vendas ul li:hover { background: #ccfbf1; border-left-color: #0d9488; }
 
-    /* Resumo Financeiro - Card Especial */
+    /* Resumo Financeiro - Card Premium */
     #resumo-financeiro {
       grid-column: span 2;
       background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
       color: white;
       border: none;
+      cursor: default;
+    }
+
+    #resumo-financeiro::after {
+      display: none;
     }
 
     #resumo-financeiro .bloco-header {
@@ -361,7 +474,11 @@
 
       .header-right {
         width: 100%;
-        justify-content: center;
+        justify-content: space-between;
+      }
+
+      .user-info {
+        flex: 1;
       }
 
       main {
@@ -438,31 +555,34 @@
 </head>
 <body>
   <div class="container">
-    <!-- 
-      CABEÇALHO APRIMORADO
-      Design mais limpo com ícones de ação rápida
-    -->
+    <!-- CABEÇALHO -->
     <header>
       <div class="header-content">
         <div class="header-left">
-          <h1>🔧 Sistema de Gerenciamento - Oficina</h1>
-          <p>Controle completo de consertos, peças e finanças</p>
+          <div class="header-logo">🔧</div>
+          <div class="header-info">
+            <h1>SIGO - Casa dos Reparos</h1>
+            <p>Sistema Integrado de Gerenciamento de Oficina</p>
+          </div>
         </div>
         <div class="header-right">
-          <div class="header-icon" title="Notificações">🔔</div>
-          <div class="header-icon" title="Configurações">⚙️</div>
-          <div class="header-icon" title="Perfil">👤</div>
+          <div class="user-info">
+            <div class="user-avatar">👤</div>
+            <div class="user-details">
+              <div class="user-name">Usuário</div>
+              <div class="user-email">email@exemplo.com</div>
+            </div>
+          </div>
+          <div class="header-icon" title="Notificações" id="btnNotificacoes">🔔</div>
+          <div class="header-icon" title="Configurações" onclick="abrirConfiguracoes()">⚙️</div>
         </div>
       </div>
     </header>
 
-    <!-- 
-      DASHBOARD PRINCIPAL
-      Design refinado com cores específicas por categoria
-    -->
+    <!-- DASHBOARD PRINCIPAL -->
     <main>
       
-      <!-- BLOCO 1: ANOTAÇÕES/LEMBRETES -->
+      <!-- CARD 1: ANOTAÇÕES (Ativo) -->
       <section id="anotacoes" class="bloco">
         <div class="bloco-header">
           <h2>
@@ -471,14 +591,16 @@
           </h2>
           <span class="bloco-badge" id="badge-anotacoes">0</span>
         </div>
-        <ul id="lista-anotacoes">
-          <!-- Lista preenchida dinamicamente pelo script.js -->
-        </ul>
+        <p class="bloco-description">
+          Lembretes e anotações rápidas para o dia a dia da oficina
+        </p>
+        <ul id="lista-anotacoes"></ul>
         <button class="btn-adicionar" id="btnNovaAnotacao">+ Nova Anotação</button>
+        <span class="module-status status-active">✓ Ativo</span>
       </section>
 
-      <!-- BLOCO 2: AGENDAMENTOS -->
-      <section id="agendamentos" class="bloco">
+      <!-- CARD 2: AGENDAMENTOS (Em desenvolvimento - Link: agendamentos.html) -->
+      <section id="agendamentos" class="bloco clickable" onclick="navegarPara('agendamentos.html')">
         <div class="bloco-header">
           <h2>
             <div class="bloco-icon">📅</div>
@@ -486,14 +608,14 @@
           </h2>
           <span class="bloco-badge" id="badge-agendamentos">0</span>
         </div>
-        <ul id="lista-agendamentos">
-          <!-- Lista preenchida dinamicamente -->
-        </ul>
-        <button class="btn-adicionar" id="btnNovoAgendamento">+ Novo Agendamento</button>
+        <p class="bloco-description">
+          Gerencie horários e compromissos com clientes
+        </p>
+        <span class="module-status status-coming-soon">🚧 Em breve</span>
       </section>
 
-      <!-- BLOCO 3: CONTAS A PAGAR -->
-      <section id="contas-pagar" class="bloco">
+      <!-- CARD 3: CONTAS A PAGAR (Em desenvolvimento - Link: contas.html) -->
+      <section id="contas-pagar" class="bloco clickable" onclick="navegarPara('contas.html')">
         <div class="bloco-header">
           <h2>
             <div class="bloco-icon">💰</div>
@@ -501,14 +623,14 @@
           </h2>
           <span class="bloco-badge" id="badge-contas">0</span>
         </div>
-        <ul id="lista-contas-pagar">
-          <!-- Lista preenchida dinamicamente -->
-        </ul>
-        <button class="btn-adicionar" id="btnNovaConta">+ Nova Conta</button>
+        <p class="bloco-description">
+          Controle de despesas e pagamentos da oficina
+        </p>
+        <span class="module-status status-coming-soon">🚧 Em breve</span>
       </section>
 
-      <!-- BLOCO 4: PEÇAS PARA PEDIR -->
-      <section id="pecas-pedir" class="bloco">
+      <!-- CARD 4: PEÇAS PARA PEDIR (Em desenvolvimento - Link: pecas.html) -->
+      <section id="pecas-pedir" class="bloco clickable" onclick="navegarPara('pecas.html')">
         <div class="bloco-header">
           <h2>
             <div class="bloco-icon">🔩</div>
@@ -516,14 +638,14 @@
           </h2>
           <span class="bloco-badge" id="badge-pecas">0</span>
         </div>
-        <ul id="lista-pecas-pedir">
-          <!-- Lista preenchida dinamicamente -->
-        </ul>
-        <button class="btn-adicionar" id="btnNovaPeca">+ Adicionar Peça</button>
+        <p class="bloco-description">
+          Lista de peças que precisam ser encomendadas
+        </p>
+        <span class="module-status status-coming-soon">🚧 Em breve</span>
       </section>
 
-      <!-- BLOCO 5: ORDENS DE SERVIÇO -->
-      <section id="ordens-servico" class="bloco">
+      <!-- CARD 5: ORDENS DE SERVIÇO (Em desenvolvimento - Link: ordens-servico.html) -->
+      <section id="ordens-servico" class="bloco clickable" onclick="navegarPara('ordens-servico.html')">
         <div class="bloco-header">
           <h2>
             <div class="bloco-icon">🛠️</div>
@@ -531,14 +653,14 @@
           </h2>
           <span class="bloco-badge" id="badge-os">0</span>
         </div>
-        <ul id="lista-ordens-servico">
-          <!-- Lista preenchida dinamicamente -->
-        </ul>
-        <button class="btn-adicionar" id="btnNovaOS">+ Nova OS</button>
+        <p class="bloco-description">
+          Gerenciamento completo de consertos e reparos
+        </p>
+        <span class="module-status status-coming-soon">🚧 Em breve</span>
       </section>
 
-      <!-- BLOCO 6: ESTOQUE DE PEÇAS -->
-      <section id="estoque" class="bloco">
+      <!-- CARD 6: ESTOQUE (Em desenvolvimento - Link: estoque.html) -->
+      <section id="estoque" class="bloco clickable" onclick="navegarPara('estoque.html')">
         <div class="bloco-header">
           <h2>
             <div class="bloco-icon">📦</div>
@@ -546,14 +668,14 @@
           </h2>
           <span class="bloco-badge" id="badge-estoque">0</span>
         </div>
-        <ul id="lista-estoque">
-          <!-- Lista preenchida dinamicamente -->
-        </ul>
-        <button class="btn-adicionar" id="btnAdicionarEstoque">+ Adicionar Item</button>
+        <p class="bloco-description">
+          Controle de peças e materiais em estoque
+        </p>
+        <span class="module-status status-coming-soon">🚧 Em breve</span>
       </section>
 
-      <!-- BLOCO 7: CLIENTES -->
-      <section id="clientes" class="bloco">
+      <!-- CARD 7: CLIENTES (Ativo - Link: clientes.html) -->
+      <section id="clientes" class="bloco clickable" onclick="navegarPara('clientes.html')">
         <div class="bloco-header">
           <h2>
             <div class="bloco-icon">👥</div>
@@ -561,14 +683,14 @@
           </h2>
           <span class="bloco-badge" id="badge-clientes">0</span>
         </div>
-        <ul id="lista-clientes">
-          <!-- Lista preenchida dinamicamente -->
-        </ul>
-        <button class="btn-adicionar" id="btnNovoCliente">+ Cadastrar Cliente</button>
+        <p class="bloco-description">
+          Cadastro completo e histórico de clientes
+        </p>
+        <span class="module-status status-active">✓ Ativo</span>
       </section>
 
-      <!-- BLOCO 8: VENDAS REALIZADAS -->
-      <section id="vendas" class="bloco">
+      <!-- CARD 8: VENDAS (Em desenvolvimento - Link: vendas.html) -->
+      <section id="vendas" class="bloco clickable" onclick="navegarPara('vendas.html')">
         <div class="bloco-header">
           <h2>
             <div class="bloco-icon">💵</div>
@@ -576,13 +698,13 @@
           </h2>
           <span class="bloco-badge" id="badge-vendas">0</span>
         </div>
-        <ul id="lista-vendas">
-          <!-- Lista preenchida dinamicamente -->
-        </ul>
-        <button class="btn-adicionar" id="btnNovaVenda">+ Registrar Venda</button>
+        <p class="bloco-description">
+          Registro e controle de vendas realizadas
+        </p>
+        <span class="module-status status-coming-soon">🚧 Em breve</span>
       </section>
 
-      <!-- BLOCO 9: RESUMO FINANCEIRO (Card Premium) -->
+      <!-- CARD 9: RESUMO FINANCEIRO (Card Premium) -->
       <section id="resumo-financeiro" class="bloco">
         <div class="bloco-header">
           <h2>
@@ -610,32 +732,29 @@
         </div>
       </section>
 
-      <!-- BLOCO 10: RELATÓRIOS -->
-      <section id="relatorios" class="bloco">
+      <!-- CARD 10: RELATÓRIOS (Em desenvolvimento - Link: relatorios.html) -->
+      <section id="relatorios" class="bloco clickable" onclick="navegarPara('relatorios.html')">
         <div class="bloco-header">
           <h2>
             <div class="bloco-icon">📈</div>
             Relatórios
           </h2>
         </div>
-        <ul id="lista-relatorios">
-          <li>📄 Relatório Mensal</li>
-          <li>📊 Análise de Vendas</li>
-          <li>🔧 Serviços Realizados</li>
-          <li>💰 Fluxo de Caixa</li>
-        </ul>
-        <button class="btn-adicionar" id="btnGerarRelatorio">📥 Gerar Relatório</button>
+        <p class="bloco-description">
+          Análises e relatórios gerenciais completos
+        </p>
+        <span class="module-status status-coming-soon">🚧 Em breve</span>
       </section>
 
     </main>
 
-    <!-- FOOTER MODERNO -->
+    <!-- FOOTER -->
     <footer>
       <button id="btnBackup">
         <span>💾</span>
         <span>Backup</span>
       </button>
-      <button id="btnConfiguracoes">
+      <button onclick="abrirConfiguracoes()">
         <span>⚙️</span>
         <span>Configurações</span>
       </button>
@@ -651,12 +770,31 @@
   </div>
 
   <!-- Firebase SDK -->
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 
-
-  <!-- SCRIPT EXTERNO -->
+  <!-- Script do sistema -->
   <script src="script.js"></script>
+
+  <!-- Script de navegação modular -->
+  <script>
+    // Função de navegação entre páginas
+    function navegarPara(pagina) {
+      // Verifica se o módulo está ativo
+      const modulosAtivos = ['clientes.html'];
+      
+      if (modulosAtivos.includes(pagina)) {
+        window.location.href = pagina;
+      } else {
+        alert(`O módulo "${pagina}" está em desenvolvimento e será lançado em breve! 🚀`);
+      }
+    }
+
+    // Adiciona classe loaded após carregar
+    window.addEventListener('load', () => {
+      document.body.classList.add('loaded');
+    });
+  </script>
 </body>
 </html>
