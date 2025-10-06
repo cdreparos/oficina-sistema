@@ -3,804 +3,502 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Sistema de gerenciamento para oficina de eletrodomésticos" />
-  <title>SIGO - Casa dos Reparos | Painel de Controle</title>
+  <title>SIGO - Painel de Controle</title>
   
   <style>
-    /* Reset e configurações globais */
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f0f2f5; min-height: 100vh; opacity: 0; transition: opacity 0.3s; }
+    body.loaded { opacity: 1; }
+    
+    /* Header */
+    header { background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%); color: white; padding: 30px 40px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); position: sticky; top: 0; z-index: 100; }
+    .header-content { max-width: 1400px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+    .header-left { display: flex; align-items: center; gap: 20px; }
+    .header-logo { width: 50px; height: 50px; background: rgba(255, 255, 255, 0.2); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; }
+    .header-info h1 { font-size: 1.8rem; font-weight: 700; margin-bottom: 5px; }
+    .header-info p { font-size: 0.9rem; opacity: 0.85; }
+    .header-right { display: flex; gap: 15px; align-items: center; }
+    .user-info { display: flex; align-items: center; gap: 12px; background: rgba(255, 255, 255, 0.15); padding: 8px 16px; border-radius: 12px; }
+    .user-avatar { width: 36px; height: 36px; background: rgba(255, 255, 255, 0.3); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 0.9rem; }
+    .user-details { display: flex; flex-direction: column; gap: 2px; }
+    .user-name { font-size: 0.9rem; font-weight: 600; }
+    .user-email { font-size: 0.75rem; opacity: 0.8; }
+    .header-icon { width: 40px; height: 40px; background: rgba(255, 255, 255, 0.15); border-radius: 10px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.3s; position: relative; }
+    .header-icon:hover { background: rgba(255, 255, 255, 0.25); transform: translateY(-2px); }
+    .notification-badge { position: absolute; top: -4px; right: -4px; background: #ef4444; color: white; border-radius: 50%; width: 20px; height: 20px; font-size: 0.7rem; font-weight: 700; display: flex; align-items: center; justify-content: center; border: 2px solid #3b82f6; }
 
-    body {
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-      background: #f0f2f5;
-      min-height: 100vh;
-      padding: 0;
-      opacity: 0;
-      transition: opacity 0.3s;
-    }
+    /* Main Grid */
+    main { max-width: 1400px; margin: 0 auto; padding: 30px 40px; display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 24px; }
 
-    body.loaded {
-      opacity: 1;
-    }
+    /* Cards */
+    .bloco { background: white; border-radius: 16px; padding: 24px; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08); transition: all 0.3s ease; border: 1px solid #e5e7eb; cursor: pointer; }
+    .bloco:hover { box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12); transform: translateY(-4px); border-color: #3b82f6; }
+    .bloco-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; padding-bottom: 16px; border-bottom: 2px solid #f3f4f6; }
+    .bloco-header h2 { font-size: 1.1rem; color: #1f2937; font-weight: 600; display: flex; align-items: center; gap: 12px; }
+    .bloco-icon { width: 40px; height: 40px; background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.3rem; }
+    .bloco-badge { background: #dbeafe; color: #1e40af; padding: 4px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; }
+    .bloco-description { color: #6b7280; font-size: 0.9rem; line-height: 1.6; margin-bottom: 16px; }
+    .module-status { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 8px; font-size: 0.8rem; font-weight: 600; margin-top: 12px; }
+    .status-active { background: #d1fae5; color: #065f46; }
+    .bloco ul { list-style: none; max-height: 200px; overflow-y: auto; margin: 0; padding-right: 8px; }
+    .bloco ul li { padding: 14px 16px; margin-bottom: 10px; background: #f9fafb; border-radius: 10px; border-left: 3px solid #3b82f6; font-size: 0.9rem; color: #374151; transition: all 0.2s; display: flex; justify-content: space-between; align-items: center; }
+    .bloco ul li:hover { background: #eff6ff; transform: translateX(4px); }
+    .bloco ul:empty::after { content: 'Nenhum item'; display: block; padding: 40px 20px; text-align: center; color: #9ca3af; font-size: 0.9rem; }
 
-    /* Container principal */
-    .container {
-      max-width: 100%;
-      margin: 0 auto;
-      background: #f0f2f5;
-    }
-
-    /* Cabeçalho refinado */
-    header {
-      background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
-      color: white;
-      padding: 30px 40px;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-      position: sticky;
-      top: 0;
-      z-index: 100;
-    }
-
-    .header-content {
-      max-width: 1400px;
-      margin: 0 auto;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .header-left {
-      display: flex;
-      align-items: center;
-      gap: 20px;
-    }
-
-    .header-logo {
-      width: 50px;
-      height: 50px;
-      background: rgba(255, 255, 255, 0.2);
-      border-radius: 12px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.8rem;
-      backdrop-filter: blur(10px);
-    }
-
-    .header-info h1 {
-      font-size: 1.8rem;
-      font-weight: 700;
-      margin-bottom: 5px;
-      letter-spacing: -0.5px;
-    }
-
-    .header-info p {
-      font-size: 0.9rem;
-      opacity: 0.85;
-      font-weight: 300;
-    }
-
-    .header-right {
-      display: flex;
-      gap: 15px;
-      align-items: center;
-    }
-
-    .user-info {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      background: rgba(255, 255, 255, 0.15);
-      padding: 8px 16px;
-      border-radius: 12px;
-      backdrop-filter: blur(10px);
-    }
-
-    .user-avatar {
-      width: 36px;
-      height: 36px;
-      background: rgba(255, 255, 255, 0.3);
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: 600;
-      font-size: 0.9rem;
-    }
-
-    .user-details {
-      display: flex;
-      flex-direction: column;
-      gap: 2px;
-    }
-
-    .user-name {
-      font-size: 0.9rem;
-      font-weight: 600;
-    }
-
-    .user-email {
-      font-size: 0.75rem;
-      opacity: 0.8;
-    }
-
-    .header-icon {
-      width: 40px;
-      height: 40px;
-      background: rgba(255, 255, 255, 0.15);
-      border-radius: 10px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      transition: all 0.3s;
-      backdrop-filter: blur(10px);
-    }
-
-    .header-icon:hover {
-      background: rgba(255, 255, 255, 0.25);
-      transform: translateY(-2px);
-    }
-
-    /* Grid da Dashboard */
-    main {
-      max-width: 1400px;
-      margin: 0 auto;
-      padding: 30px 40px;
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
-      gap: 24px;
-    }
-
-    /* Blocos/Cards modulares e clicáveis */
-    .bloco {
-      background: white;
-      border-radius: 16px;
-      padding: 24px;
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
-      transition: all 0.3s ease;
-      border: 1px solid #e5e7eb;
-      position: relative;
-      cursor: pointer;
-    }
-
-    .bloco:hover {
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
-      transform: translateY(-4px);
-      border-color: #3b82f6;
-    }
-
-    .bloco.clickable::after {
-      content: '→';
-      position: absolute;
-      top: 24px;
-      right: 24px;
-      font-size: 1.5rem;
-      color: #3b82f6;
-      opacity: 0;
-      transition: all 0.3s;
-    }
-
-    .bloco.clickable:hover::after {
-      opacity: 1;
-      right: 20px;
-    }
-
-    .bloco-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 20px;
-      padding-bottom: 16px;
-      border-bottom: 2px solid #f3f4f6;
-    }
-
-    .bloco-header h2 {
-      font-size: 1.1rem;
-      color: #1f2937;
-      font-weight: 600;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-
-    .bloco-icon {
-      width: 40px;
-      height: 40px;
-      background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
-      border-radius: 12px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.3rem;
-    }
-
-    .bloco-badge {
-      background: #dbeafe;
-      color: #1e40af;
-      padding: 4px 12px;
-      border-radius: 20px;
-      font-size: 0.75rem;
-      font-weight: 600;
-    }
-
-    /* Descrição do card */
-    .bloco-description {
-      color: #6b7280;
-      font-size: 0.9rem;
-      line-height: 1.6;
-      margin-bottom: 16px;
-    }
-
-    /* Status do módulo */
-    .module-status {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 6px 12px;
-      border-radius: 8px;
-      font-size: 0.8rem;
-      font-weight: 600;
-      margin-top: 12px;
-    }
-
-    .status-active {
-      background: #d1fae5;
-      color: #065f46;
-    }
-
-    .status-coming-soon {
-      background: #fef3c7;
-      color: #92400e;
-    }
-
-    /* Listas dentro dos blocos */
-    .bloco ul {
-      list-style: none;
-      max-height: 200px;
-      overflow-y: auto;
-      margin: 0;
-      padding-right: 8px;
-    }
-
-    .bloco ul li {
-      padding: 14px 16px;
-      margin-bottom: 10px;
-      background: #f9fafb;
-      border-radius: 10px;
-      border-left: 3px solid #3b82f6;
-      font-size: 0.9rem;
-      color: #374151;
-      transition: all 0.2s;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .bloco ul li:hover {
-      background: #eff6ff;
-      border-left-color: #2563eb;
-      transform: translateX(4px);
-    }
-
-    .bloco ul:empty::after {
-      content: 'Nenhum item cadastrado';
-      display: block;
-      padding: 40px 20px;
-      text-align: center;
-      color: #9ca3af;
-      font-size: 0.9rem;
-    }
-
-    /* Botões modernos */
-    .btn-adicionar {
-      margin-top: 16px;
-      width: 100%;
-      padding: 14px;
-      background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
-      color: white;
-      border: none;
-      border-radius: 10px;
-      font-size: 0.9rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.3s;
-      box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
-    }
-
-    .btn-adicionar:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 16px rgba(59, 130, 246, 0.4);
-    }
-
-    .btn-adicionar:active {
-      transform: translateY(0);
-    }
-
-    /* Cores específicas por tipo de bloco */
+    /* Cores específicas */
     #anotacoes .bloco-icon { background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); }
-    #anotacoes ul li { border-left-color: #f59e0b; }
-    #anotacoes ul li:hover { background: #fef3c7; border-left-color: #d97706; }
-
     #agendamentos .bloco-icon { background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%); }
-    #agendamentos ul li { border-left-color: #8b5cf6; }
-    #agendamentos ul li:hover { background: #f5f3ff; border-left-color: #7c3aed; }
-
-    #contas-pagar .bloco-icon { background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); }
-    #contas-pagar ul li { border-left-color: #ef4444; }
-    #contas-pagar ul li:hover { background: #fee2e2; border-left-color: #dc2626; }
-
     #pecas-pedir .bloco-icon { background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%); }
-    #pecas-pedir ul li { border-left-color: #06b6d4; }
-    #pecas-pedir ul li:hover { background: #cffafe; border-left-color: #0891b2; }
-
     #ordens-servico .bloco-icon { background: linear-gradient(135deg, #10b981 0%, #059669 100%); }
-    #ordens-servico ul li { border-left-color: #10b981; }
-    #ordens-servico ul li:hover { background: #d1fae5; border-left-color: #059669; }
-
     #estoque .bloco-icon { background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%); }
-    #estoque ul li { border-left-color: #6366f1; }
-    #estoque ul li:hover { background: #e0e7ff; border-left-color: #4f46e5; }
-
     #clientes .bloco-icon { background: linear-gradient(135deg, #ec4899 0%, #db2777 100%); }
-    #clientes ul li { border-left-color: #ec4899; }
-    #clientes ul li:hover { background: #fce7f3; border-left-color: #db2777; }
+    
+    /* Resumo Financeiro */
+    #resumo-financeiro { grid-column: span 2; background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%); color: white; border: none; }
+    #resumo-financeiro .bloco-header { border-bottom-color: rgba(255, 255, 255, 0.2); }
+    #resumo-financeiro h2 { color: white; }
+    #resumo-financeiro .bloco-icon { background: rgba(255, 255, 255, 0.2); }
+    .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 16px; margin-top: 10px; }
+    .stat-item { background: rgba(255, 255, 255, 0.1); padding: 20px; border-radius: 12px; text-align: center; transition: all 0.3s; }
+    .stat-item:hover { background: rgba(255, 255, 255, 0.15); transform: scale(1.05); }
+    .stat-item .numero { font-size: 2rem; font-weight: 800; color: white; display: block; margin-bottom: 8px; }
+    .stat-item .label { font-size: 0.85rem; color: rgba(255, 255, 255, 0.9); }
 
-    #vendas .bloco-icon { background: linear-gradient(135deg, #14b8a6 0%, #0d9488 100%); }
-    #vendas ul li { border-left-color: #14b8a6; }
-    #vendas ul li:hover { background: #ccfbf1; border-left-color: #0d9488; }
+    /* Footer */
+    footer { background: white; border-top: 1px solid #e5e7eb; padding: 24px 40px; display: flex; justify-content: center; gap: 16px; margin-top: 40px; }
+    footer button { background: #f3f4f6; color: #1f2937; border: none; padding: 12px 24px; border-radius: 10px; font-weight: 600; cursor: pointer; transition: all 0.3s; display: flex; align-items: center; gap: 8px; }
+    footer button:hover { background: #3b82f6; color: white; transform: translateY(-2px); }
 
-    /* Resumo Financeiro - Card Premium */
-    #resumo-financeiro {
-      grid-column: span 2;
-      background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
-      color: white;
-      border: none;
-      cursor: default;
-    }
+    /* Modal */
+    .modal { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.6); z-index: 1000; padding: 20px; overflow-y: auto; }
+    .modal.active { display: block; }
+    .modal-content { background: white; border-radius: 20px; padding: 32px; max-width: 700px; width: 100%; margin: 40px auto; }
+    .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; padding-bottom: 16px; border-bottom: 2px solid #f3f4f6; }
+    .modal-header h2 { font-size: 1.5rem; color: #1f2937; }
+    .btn-close { background: #f3f4f6; border: none; width: 36px; height: 36px; border-radius: 8px; cursor: pointer; font-size: 1.2rem; }
+    .btn-close:hover { background: #e5e7eb; transform: rotate(90deg); }
+    .notificacao-item { padding: 16px; background: #f9fafb; border-radius: 12px; margin-bottom: 12px; border-left: 4px solid #ef4444; }
+    .notificacao-item.info { border-left-color: #3b82f6; }
+    .notificacao-titulo { font-weight: 700; color: #1f2937; margin-bottom: 8px; }
+    .form-group { margin-bottom: 16px; }
+    .form-group label { display: block; margin-bottom: 8px; font-weight: 600; color: #374151; }
+    .form-group input, .form-group textarea { width: 100%; padding: 12px 16px; border: 2px solid #e5e7eb; border-radius: 10px; font-family: inherit; }
+    .form-group textarea { min-height: 100px; }
+    .btn-save { width: 100%; padding: 14px; background: #10b981; color: white; border: none; border-radius: 10px; font-weight: 600; cursor: pointer; margin-top: 16px; }
+    .backup-actions { display: flex; gap: 12px; margin-top: 16px; }
+    .backup-actions button { flex: 1; padding: 12px; border: none; border-radius: 10px; font-weight: 600; cursor: pointer; }
+    .btn-download { background: #dbeafe; color: #1e40af; }
+    .btn-upload { background: #d1fae5; color: #065f46; }
+    input[type="file"] { display: none; }
 
-    #resumo-financeiro::after {
-      display: none;
-    }
-
-    #resumo-financeiro .bloco-header {
-      border-bottom-color: rgba(255, 255, 255, 0.2);
-    }
-
-    #resumo-financeiro h2 {
-      color: white;
-    }
-
-    #resumo-financeiro .bloco-icon {
-      background: rgba(255, 255, 255, 0.2);
-      backdrop-filter: blur(10px);
-    }
-
-    .stats-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-      gap: 16px;
-      margin-top: 10px;
-    }
-
-    .stat-item {
-      background: rgba(255, 255, 255, 0.1);
-      padding: 20px;
-      border-radius: 12px;
-      text-align: center;
-      backdrop-filter: blur(10px);
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      transition: all 0.3s;
-    }
-
-    .stat-item:hover {
-      background: rgba(255, 255, 255, 0.15);
-      transform: scale(1.05);
-    }
-
-    .stat-item .numero {
-      font-size: 2rem;
-      font-weight: 800;
-      color: white;
-      display: block;
-      margin-bottom: 8px;
-    }
-
-    .stat-item .label {
-      font-size: 0.85rem;
-      color: rgba(255, 255, 255, 0.9);
-      font-weight: 500;
-    }
-
-    /* Relatórios */
-    #relatorios .bloco-icon { background: linear-gradient(135deg, #84cc16 0%, #65a30d 100%); }
-    #relatorios ul li { border-left-color: #84cc16; }
-
-    /* Footer moderno */
-    footer {
-      background: white;
-      border-top: 1px solid #e5e7eb;
-      padding: 24px 40px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 16px;
-      margin-top: 40px;
-    }
-
-    footer button {
-      background: #f3f4f6;
-      color: #1f2937;
-      border: none;
-      padding: 12px 24px;
-      border-radius: 10px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.3s;
-      font-size: 0.9rem;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    footer button:hover {
-      background: #3b82f6;
-      color: white;
-      transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
-    }
-
-    /* Responsividade aprimorada */
-    @media (max-width: 1024px) {
-      #resumo-financeiro {
-        grid-column: span 1;
-      }
-    }
-
+    @media (max-width: 1024px) { #resumo-financeiro { grid-column: span 1; } }
     @media (max-width: 768px) {
-      header {
-        padding: 20px;
-      }
-
-      .header-content {
-        flex-direction: column;
-        gap: 15px;
-      }
-
-      .header-right {
-        width: 100%;
-        justify-content: space-between;
-      }
-
-      .user-info {
-        flex: 1;
-      }
-
-      main {
-        grid-template-columns: 1fr;
-        padding: 20px;
-        gap: 20px;
-      }
-
-      #resumo-financeiro {
-        grid-column: span 1;
-      }
-
-      .stats-grid {
-        grid-template-columns: repeat(2, 1fr);
-      }
-
-      footer {
-        padding: 20px;
-        flex-direction: column;
-      }
-
-      footer button {
-        width: 100%;
-        justify-content: center;
-      }
+      header { padding: 20px; }
+      .header-content { flex-direction: column; gap: 15px; }
+      main { grid-template-columns: 1fr; padding: 20px; }
+      footer { flex-direction: column; }
+      footer button { width: 100%; }
     }
-
-    /* Scrollbar customizada e refinada */
-    .bloco ul::-webkit-scrollbar {
-      width: 6px;
-    }
-
-    .bloco ul::-webkit-scrollbar-track {
-      background: #f3f4f6;
-      border-radius: 10px;
-    }
-
-    .bloco ul::-webkit-scrollbar-thumb {
-      background: #3b82f6;
-      border-radius: 10px;
-    }
-
-    .bloco ul::-webkit-scrollbar-thumb:hover {
-      background: #2563eb;
-    }
-
-    /* Animações sutis */
-    @keyframes fadeIn {
-      from {
-        opacity: 0;
-        transform: translateY(20px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    .bloco {
-      animation: fadeIn 0.5s ease-out;
-    }
-
-    .bloco:nth-child(1) { animation-delay: 0.05s; }
-    .bloco:nth-child(2) { animation-delay: 0.1s; }
-    .bloco:nth-child(3) { animation-delay: 0.15s; }
-    .bloco:nth-child(4) { animation-delay: 0.2s; }
-    .bloco:nth-child(5) { animation-delay: 0.25s; }
-    .bloco:nth-child(6) { animation-delay: 0.3s; }
-    .bloco:nth-child(7) { animation-delay: 0.35s; }
-    .bloco:nth-child(8) { animation-delay: 0.4s; }
-    .bloco:nth-child(9) { animation-delay: 0.45s; }
-    .bloco:nth-child(10) { animation-delay: 0.5s; }
   </style>
 </head>
 <body>
-  <div class="container">
-    <!-- CABEÇALHO -->
-    <header>
-      <div class="header-content">
-        <div class="header-left">
-          <div class="header-logo">🔧</div>
-          <div class="header-info">
-            <h1>SIGO - Casa dos Reparos</h1>
-            <p>Sistema Integrado de Gerenciamento de Oficina</p>
-          </div>
-        </div>
-        <div class="header-right">
-          <div class="user-info">
-            <div class="user-avatar">👤</div>
-            <div class="user-details">
-              <div class="user-name">Usuário</div>
-              <div class="user-email">email@exemplo.com</div>
-            </div>
-          </div>
-          <div class="header-icon" title="Notificações" id="btnNotificacoes">🔔</div>
-          <div class="header-icon" title="Configurações" onclick="abrirConfiguracoes()">⚙️</div>
+  <header>
+    <div class="header-content">
+      <div class="header-left">
+        <div class="header-logo">🔧</div>
+        <div class="header-info">
+          <h1>SIGO - Casa dos Reparos</h1>
+          <p>Sistema Integrado de Gerenciamento</p>
         </div>
       </div>
-    </header>
-
-    <!-- DASHBOARD PRINCIPAL -->
-    <main>
-      
-      <!-- CARD 1: ANOTAÇÕES (Ativo) -->
-      <section id="anotacoes" class="bloco">
-        <div class="bloco-header">
-          <h2>
-            <div class="bloco-icon">🗒️</div>
-            Anotações
-          </h2>
-          <span class="bloco-badge" id="badge-anotacoes">0</span>
-        </div>
-        <p class="bloco-description">
-          Lembretes e anotações rápidas para o dia a dia da oficina
-        </p>
-        <ul id="lista-anotacoes"></ul>
-        <button class="btn-adicionar" id="btnNovaAnotacao">+ Nova Anotação</button>
-        <span class="module-status status-active">✓ Ativo</span>
-      </section>
-
-      <!-- CARD 2: AGENDAMENTOS (Em desenvolvimento - Link: agendamentos.html) -->
-      <section id="agendamentos" class="bloco clickable" onclick="navegarPara('agendamentos.html')">
-        <div class="bloco-header">
-          <h2>
-            <div class="bloco-icon">📅</div>
-            Agendamentos
-          </h2>
-          <span class="bloco-badge" id="badge-agendamentos">0</span>
-        </div>
-        <p class="bloco-description">
-          Gerencie horários e compromissos com clientes
-        </p>
-        <span class="module-status status-coming-soon">🚧 Em breve</span>
-      </section>
-
-      <!-- CARD 3: CONTAS A PAGAR (Em desenvolvimento - Link: contas.html) -->
-      <section id="contas-pagar" class="bloco clickable" onclick="navegarPara('contas.html')">
-        <div class="bloco-header">
-          <h2>
-            <div class="bloco-icon">💰</div>
-            Contas a Pagar
-          </h2>
-          <span class="bloco-badge" id="badge-contas">0</span>
-        </div>
-        <p class="bloco-description">
-          Controle de despesas e pagamentos da oficina
-        </p>
-        <span class="module-status status-coming-soon">🚧 Em breve</span>
-      </section>
-
-      <!-- CARD 4: PEÇAS PARA PEDIR (Em desenvolvimento - Link: pecas.html) -->
-      <section id="pecas-pedir" class="bloco clickable" onclick="navegarPara('pecas.html')">
-        <div class="bloco-header">
-          <h2>
-            <div class="bloco-icon">🔩</div>
-            Peças para Pedir
-          </h2>
-          <span class="bloco-badge" id="badge-pecas">0</span>
-        </div>
-        <p class="bloco-description">
-          Lista de peças que precisam ser encomendadas
-        </p>
-        <span class="module-status status-coming-soon">🚧 Em breve</span>
-      </section>
-
-      <!-- CARD 5: ORDENS DE SERVIÇO (Em desenvolvimento - Link: ordens-servico.html) -->
-      <section id="ordens-servico" class="bloco clickable" onclick="navegarPara('ordens-servico.html')">
-        <div class="bloco-header">
-          <h2>
-            <div class="bloco-icon">🛠️</div>
-            Ordens de Serviço
-          </h2>
-          <span class="bloco-badge" id="badge-os">0</span>
-        </div>
-        <p class="bloco-description">
-          Gerenciamento completo de consertos e reparos
-        </p>
-        <span class="module-status status-coming-soon">🚧 Em breve</span>
-      </section>
-
-      <!-- CARD 6: ESTOQUE (Em desenvolvimento - Link: estoque.html) -->
-      <section id="estoque" class="bloco clickable" onclick="navegarPara('estoque.html')">
-        <div class="bloco-header">
-          <h2>
-            <div class="bloco-icon">📦</div>
-            Estoque
-          </h2>
-          <span class="bloco-badge" id="badge-estoque">0</span>
-        </div>
-        <p class="bloco-description">
-          Controle de peças e materiais em estoque
-        </p>
-        <span class="module-status status-coming-soon">🚧 Em breve</span>
-      </section>
-
-      <!-- CARD 7: CLIENTES (Ativo - Link: clientes.html) -->
-      <section id="clientes" class="bloco clickable" onclick="navegarPara('clientes.html')">
-        <div class="bloco-header">
-          <h2>
-            <div class="bloco-icon">👥</div>
-            Clientes
-          </h2>
-          <span class="bloco-badge" id="badge-clientes">0</span>
-        </div>
-        <p class="bloco-description">
-          Cadastro completo e histórico de clientes
-        </p>
-        <span class="module-status status-active">✓ Ativo</span>
-      </section>
-
-      <!-- CARD 8: VENDAS (Em desenvolvimento - Link: vendas.html) -->
-      <section id="vendas" class="bloco clickable" onclick="navegarPara('vendas.html')">
-        <div class="bloco-header">
-          <h2>
-            <div class="bloco-icon">💵</div>
-            Vendas
-          </h2>
-          <span class="bloco-badge" id="badge-vendas">0</span>
-        </div>
-        <p class="bloco-description">
-          Registro e controle de vendas realizadas
-        </p>
-        <span class="module-status status-coming-soon">🚧 Em breve</span>
-      </section>
-
-      <!-- CARD 9: RESUMO FINANCEIRO (Card Premium) -->
-      <section id="resumo-financeiro" class="bloco">
-        <div class="bloco-header">
-          <h2>
-            <div class="bloco-icon">📊</div>
-            Resumo Financeiro
-          </h2>
-        </div>
-        <div class="stats-grid">
-          <div class="stat-item">
-            <span class="numero" id="total-vendas-mes">R$ 0,00</span>
-            <span class="label">Vendas do Mês</span>
-          </div>
-          <div class="stat-item">
-            <span class="numero" id="total-contas-pendentes">R$ 0,00</span>
-            <span class="label">Contas Pendentes</span>
-          </div>
-          <div class="stat-item">
-            <span class="numero" id="total-os-abertas">0</span>
-            <span class="label">OS Abertas</span>
-          </div>
-          <div class="stat-item">
-            <span class="numero" id="total-agendamentos-hoje">0</span>
-            <span class="label">Agendamentos Hoje</span>
+      <div class="header-right">
+        <div class="user-info">
+          <div class="user-avatar" id="userAvatar">U</div>
+          <div class="user-details">
+            <div class="user-name" id="userName">Carregando...</div>
+            <div class="user-email" id="userEmail">...</div>
           </div>
         </div>
-      </section>
-
-      <!-- CARD 10: RELATÓRIOS (Em desenvolvimento - Link: relatorios.html) -->
-      <section id="relatorios" class="bloco clickable" onclick="navegarPara('relatorios.html')">
-        <div class="bloco-header">
-          <h2>
-            <div class="bloco-icon">📈</div>
-            Relatórios
-          </h2>
+        <div class="header-icon" id="btnNotificacoes" title="Notificações">🔔
+          <span class="notification-badge" id="notificationBadge" style="display: none;">0</span>
         </div>
-        <p class="bloco-description">
-          Análises e relatórios gerenciais completos
-        </p>
-        <span class="module-status status-coming-soon">🚧 Em breve</span>
-      </section>
+        <div class="header-icon" id="btnConfiguracoes" title="Configurações">⚙️</div>
+      </div>
+    </div>
+  </header>
 
-    </main>
+  <main>
+    <section id="anotacoes" class="bloco" onclick="window.location.href='anotacoes.html'">
+      <div class="bloco-header">
+        <h2><div class="bloco-icon">🗒️</div> Anotações</h2>
+        <span class="bloco-badge" id="badge-anotacoes">0</span>
+      </div>
+      <p class="bloco-description">Lembretes rápidos do dia a dia</p>
+      <ul id="lista-anotacoes"></ul>
+      <span class="module-status status-active">✓ Ativo</span>
+    </section>
 
-    <!-- FOOTER -->
-    <footer>
-      <button id="btnBackup">
-        <span>💾</span>
-        <span>Backup</span>
-      </button>
-      <button onclick="abrirConfiguracoes()">
-        <span>⚙️</span>
-        <span>Configurações</span>
-      </button>
-      <button id="btnAjuda">
-        <span>❓</span>
-        <span>Ajuda</span>
-      </button>
-      <button id="btnSair">
-        <span>🚪</span>
-        <span>Sair</span>
-      </button>
-    </footer>
+    <section id="agendamentos" class="bloco" onclick="window.location.href='agendamentos.html'">
+      <div class="bloco-header">
+        <h2><div class="bloco-icon">📅</div> Agendamentos</h2>
+        <span class="bloco-badge" id="badge-agendamentos">0</span>
+      </div>
+      <p class="bloco-description">Próximos agendamentos</p>
+      <ul id="lista-agendamentos"></ul>
+      <span class="module-status status-active">✓ Ativo</span>
+    </section>
+
+    <section id="pecas-pedir" class="bloco" onclick="window.location.href='pecas.html'">
+      <div class="bloco-header">
+        <h2><div class="bloco-icon">🔩</div> Peças para Pedir</h2>
+        <span class="bloco-badge" id="badge-pecas">0</span>
+      </div>
+      <p class="bloco-description">Peças pendentes (urgentes primeiro)</p>
+      <ul id="lista-pecas"></ul>
+      <span class="module-status status-active">✓ Ativo</span>
+    </section>
+
+    <section id="ordens-servico" class="bloco" onclick="window.location.href='ordens-servico.html'">
+      <div class="bloco-header">
+        <h2><div class="bloco-icon">🛠️</div> Ordens de Serviço</h2>
+        <span class="bloco-badge" id="badge-os">0</span>
+      </div>
+      <p class="bloco-description">OS abertas</p>
+      <ul id="lista-os"></ul>
+      <span class="module-status status-active">✓ Ativo</span>
+    </section>
+
+    <section id="estoque" class="bloco" onclick="window.location.href='estoque.html'">
+      <div class="bloco-header">
+        <h2><div class="bloco-icon">📦</div> Estoque</h2>
+        <span class="bloco-badge" id="badge-estoque">0</span>
+      </div>
+      <p class="bloco-description">Itens com estoque baixo</p>
+      <ul id="lista-estoque"></ul>
+      <span class="module-status status-active">✓ Ativo</span>
+    </section>
+
+    <section id="clientes" class="bloco" onclick="window.location.href='clientes.html'">
+      <div class="bloco-header">
+        <h2><div class="bloco-icon">👥</div> Clientes</h2>
+        <span class="bloco-badge" id="badge-clientes">0</span>
+      </div>
+      <p class="bloco-description">Total de clientes cadastrados</p>
+      <span class="module-status status-active">✓ Ativo</span>
+    </section>
+
+    <section id="resumo-financeiro" class="bloco" onclick="window.location.href='contas.html'">
+      <div class="bloco-header">
+        <h2><div class="bloco-icon">📊</div> Resumo Financeiro</h2>
+      </div>
+      <div class="stats-grid">
+        <div class="stat-item">
+          <span class="numero" id="total-vendas-mes">R$ 0,00</span>
+          <span class="label">Vendas do Mês</span>
+        </div>
+        <div class="stat-item">
+          <span class="numero" id="total-contas-pendentes">R$ 0,00</span>
+          <span class="label">Contas Pendentes</span>
+        </div>
+        <div class="stat-item">
+          <span class="numero" id="total-os-abertas">0</span>
+          <span class="label">OS Abertas</span>
+        </div>
+        <div class="stat-item">
+          <span class="numero" id="total-agendamentos-hoje">0</span>
+          <span class="label">Agendamentos Hoje</span>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <button id="btnBackup">💾 Backup</button>
+    <button id="btnConfig">⚙️ Configurações</button>
+    <button id="btnSair">🚪 Sair</button>
+  </footer>
+
+  <!-- Modais -->
+  <div class="modal" id="modalNotificacoes">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>🔔 Notificações</h2>
+        <button class="btn-close" onclick="fecharModal('modalNotificacoes')">✕</button>
+      </div>
+      <div id="notificacoesConteudo"></div>
+    </div>
   </div>
 
-  <!-- Firebase SDK -->
+  <div class="modal" id="modalConfiguracoes">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>⚙️ Configurações</h2>
+        <button class="btn-close" onclick="fecharModal('modalConfiguracoes')">✕</button>
+      </div>
+      <div class="form-group">
+        <label>Nome da Empresa</label>
+        <input type="text" id="configNomeEmpresa">
+      </div>
+      <div class="form-group">
+        <label>Telefone</label>
+        <input type="tel" id="configTelefone">
+      </div>
+      <div class="form-group">
+        <label>Endereço</label>
+        <input type="text" id="configEndereco">
+      </div>
+      <div class="form-group">
+        <label>Texto de Garantia</label>
+        <textarea id="configGarantia"></textarea>
+      </div>
+      <button class="btn-save" onclick="salvarConfiguracoes()">💾 Salvar</button>
+    </div>
+  </div>
+
+  <div class="modal" id="modalBackup">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>💾 Backup</h2>
+        <button class="btn-close" onclick="fecharModal('modalBackup')">✕</button>
+      </div>
+      <div class="backup-actions">
+        <button class="btn-download" onclick="realizarBackup()">⬇️ Baixar</button>
+        <button class="btn-upload" onclick="document.getElementById('fileRestore').click()">⬆️ Restaurar</button>
+      </div>
+      <input type="file" id="fileRestore" accept=".json" onchange="restaurarBackup(event)">
+    </div>
+  </div>
+
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+  <script src="firebase-config.js"></script>
+  <script src="utils.js"></script>
 
-  <!-- Script do sistema -->
-  <script src="script.js"></script>
-
-  <!-- Script de navegação modular -->
   <script>
-    // Função de navegação entre páginas
-    function navegarPara(pagina) {
-      // Verifica se o módulo está ativo
-      const modulosAtivos = [
-    'clientes.html',
-    'agendamentos.html',
-    'pecas.html',
-    'ordens-servico.html',
-    'estoque.html'
-  ];
+    protegerPagina();
+
+    const refs = {
+      anotacoes: database.ref("anotacoes"),
+      agendamentos: database.ref("agendamentos"),
+      pecasPedir: database.ref("pecas_pedir"),
+      os: database.ref("ordens_servico"),
+      estoque: database.ref("estoque"),
+      clientes: database.ref("clientes"),
+      transacoes: database.ref("transacoes"),
+      configuracoes: database.ref("configuracoes")
+    };
+
+    let dados = {};
+
+    auth.onAuthStateChanged(user => {
+      if (user) {
+        const nome = user.displayName || user.email.split('@')[0];
+        const iniciais = nome.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
+        document.getElementById('userName').textContent = nome;
+        document.getElementById('userEmail').textContent = user.email;
+        document.getElementById('userAvatar').textContent = iniciais;
+      }
+    });
+
+    Object.keys(refs).forEach(key => {
+      refs[key].on("value", snapshot => {
+        dados[key] = snapshot.val() || {};
+        atualizarDashboard();
+      });
+    });
+
+    function atualizarDashboard() {
+      // Anotações
+      const anotacoesArray = Object.values(dados.anotacoes || {}).filter(a => !a.arquivada).slice(0, 5);
+      document.getElementById('badge-anotacoes').textContent = anotacoesArray.length;
+      const listaAnotacoes = document.getElementById('lista-anotacoes');
+      listaAnotacoes.innerHTML = '';
+      anotacoesArray.forEach(a => {
+        const li = document.createElement('li');
+        li.textContent = a.texto.substring(0, 40) + (a.texto.length > 40 ? '...' : '');
+        listaAnotacoes.appendChild(li);
+      });
+
+      // Agendamentos
+      const hoje = new Date();
+      const agendamentosArray = Object.values(dados.agendamentos || {})
+        .filter(ag => new Date(ag.dataAgendamento) >= hoje)
+        .sort((a, b) => new Date(a.dataAgendamento) - new Date(b.dataAgendamento))
+        .slice(0, 5);
+      document.getElementById('badge-agendamentos').textContent = agendamentosArray.length;
+      const listaAgendamentos = document.getElementById('lista-agendamentos');
+      listaAgendamentos.innerHTML = '';
+      agendamentosArray.forEach(ag => {
+        const li = document.createElement('li');
+        li.innerHTML = `<span>${ag.clienteNome}</span><small>${formatarData(ag.dataAgendamento)}</small>`;
+        listaAgendamentos.appendChild(li);
+      });
+
+      // Peças
+      const pecasArray = Object.values(dados.pecasPedir || {})
+        .filter(p => p.statusPeca === 'pendente')
+        .sort((a, b) => (a.prioridade === 'urgente' ? -1 : 1))
+        .slice(0, 5);
+      document.getElementById('badge-pecas').textContent = pecasArray.length;
+      const listaPecas = document.getElementById('lista-pecas');
+      listaPecas.innerHTML = '';
+      pecasArray.forEach(p => {
+        const li = document.createElement('li');
+        li.textContent = p.nomePeca;
+        listaPecas.appendChild(li);
+      });
+
+      // OS
+      const osArray = Object.values(dados.os || {})
+        .filter(os => os.statusOS === 'aguardando' || os.statusOS === 'em_andamento')
+        .slice(0, 5);
+      document.getElementById('badge-os').textContent = osArray.length;
+      const listaOS = document.getElementById('lista-os');
+      listaOS.innerHTML = '';
+      osArray.forEach(os => {
+        const li = document.createElement('li');
+        li.textContent = `OS #${String(os.numeroOS).padStart(4, '0')} - ${os.clienteNome}`;
+        listaOS.appendChild(li);
+      });
+
+      // Estoque
+      const estoqueArray = Object.values(dados.estoque || {})
+        .filter(item => item.quantidade <= item.estoqueMinimo)
+        .slice(0, 5);
+      document.getElementById('badge-estoque').textContent = estoqueArray.length;
+      const listaEstoque = document.getElementById('lista-estoque');
+      listaEstoque.innerHTML = '';
+      estoqueArray.forEach(item => {
+        const li = document.createElement('li');
+        li.innerHTML = `<span>${item.nomePeca}</span><small>${item.quantidade} un.</small>`;
+        listaEstoque.appendChild(li);
+      });
+
+      // Clientes
+      document.getElementById('badge-clientes').textContent = Object.keys(dados.clientes || {}).length;
+
+      // Financeiro
+      const mesAtual = new Date().getMonth();
+      const anoAtual = new Date().getFullYear();
+      const vendasMes = Object.values(dados.transacoes || {})
+        .filter(t => {
+          const data = new Date(t.dataTransacao);
+          return t.tipo === 'entrada' && t.statusTransacao === 'pago' && data.getMonth() === mesAtual && data.getFullYear() === anoAtual;
+        })
+        .reduce((sum, t) => sum + parseFloat(t.valor), 0);
       
-      if (modulosAtivos.includes(pagina)) {
-        window.location.href = pagina;
-      } else {
-        alert(`O módulo "${pagina}" está em desenvolvimento e será lançado em breve! 🚀`);
+      const contasPendentes = Object.values(dados.transacoes || {})
+        .filter(t => t.tipo === 'saida' && t.statusTransacao === 'pendente')
+        .reduce((sum, t) => sum + parseFloat(t.valor), 0);
+
+      document.getElementById('total-vendas-mes').textContent = formatarMoeda(vendasMes);
+      document.getElementById('total-contas-pendentes').textContent = formatarMoeda(contasPendentes);
+      document.getElementById('total-os-abertas').textContent = osArray.length;
+      
+      const agendamentosHoje = Object.values(dados.agendamentos || {})
+        .filter(ag => new Date(ag.dataAgendamento).toDateString() === new Date().toDateString()).length;
+      document.getElementById('total-agendamentos-hoje').textContent = agendamentosHoje;
+
+      // Notificações
+      const totalNotif = estoqueArray.length + agendamentosHoje;
+      if (totalNotif > 0) {
+        document.getElementById('notificationBadge').style.display = 'flex';
+        document.getElementById('notificationBadge').textContent = totalNotif;
       }
     }
 
-    // Adiciona classe loaded após carregar
+    document.getElementById('btnNotificacoes').onclick = () => {
+      document.getElementById('modalNotificacoes').classList.add('active');
+    };
+
+    document.getElementById('btnConfiguracoes').onclick = () => {
+      const config = dados.configuracoes || {};
+      document.getElementById('configNomeEmpresa').value = config.nomeEmpresa || '';
+      document.getElementById('configTelefone').value = config.telefone || '';
+      document.getElementById('configEndereco').value = config.endereco || '';
+      document.getElementById('configGarantia').value = config.textoGarantia || '';
+      document.getElementById('modalConfiguracoes').classList.add('active');
+    };
+
+    document.getElementById('btnConfig').onclick = document.getElementById('btnConfiguracoes').onclick;
+
+    function salvarConfiguracoes() {
+      refs.configuracoes.set({
+        nomeEmpresa: document.getElementById('configNomeEmpresa').value,
+        telefone: document.getElementById('configTelefone').value,
+        endereco: document.getElementById('configEndereco').value,
+        textoGarantia: document.getElementById('configGarantia').value
+      }).then(() => {
+        alert('Configurações salvas!');
+        fecharModal('modalConfiguracoes');
+      });
+    }
+
+    document.getElementById('btnBackup').onclick = () => {
+      document.getElementById('modalBackup').classList.add('active');
+    };
+
+    function realizarBackup() {
+      const backup = { data: new Date().toISOString(), dados: dados };
+      const blob = new Blob([JSON.stringify(backup, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `backup-sigo-${new Date().toISOString().split('T')[0]}.json`;
+      a.click();
+      URL.revokeObjectURL(url);
+      alert('Backup realizado!');
+    }
+
+    function restaurarBackup(event) {
+      if (!confirm('⚠️ Restaurar backup substituirá todos os dados atuais. Continuar?')) {
+        event.target.value = '';
+        return;
+      }
+      
+      const file = event.target.files[0];
+      if (!file) return;
+      
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        try {
+          const backup = JSON.parse(e.target.result);
+          const promises = [];
+          Object.keys(backup.dados).forEach(key => {
+            if (refs[key]) {
+              promises.push(refs[key].set(backup.dados[key]));
+            }
+          });
+          Promise.all(promises).then(() => {
+            alert('Backup restaurado! A página será recarregada.');
+            window.location.reload();
+          });
+        } catch (error) {
+          alert('Erro ao restaurar: ' + error.message);
+        }
+      };
+      reader.readAsText(file);
+      event.target.value = '';
+    }
+
+    document.getElementById('btnSair').onclick = logout;
+
+    function fecharModal(modalId) {
+      document.getElementById(modalId).classList.remove('active');
+    }
+
+    document.querySelectorAll('.modal').forEach(modal => {
+      modal.addEventListener('click', function(e) {
+        if (e.target === this) this.classList.remove('active');
+      });
+    });
+
     window.addEventListener('load', () => {
       document.body.classList.add('loaded');
     });
+
+    console.log('Painel SIGO - Carregado!');
   </script>
 </body>
 </html>
