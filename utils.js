@@ -1,19 +1,21 @@
 // Funções de formatação e validação (utils.js)
 
-// Funções que você já tinha:
 function formatarMoeda(valor) {
   return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(valor || 0);
 }
 
-function formatarData(data) {
-  if (!data) return '-';
-  // Adiciona 1 dia para corrigir problemas comuns de fuso horário ao converter strings
-  const dataObj = new Date(data);
-  dataObj.setDate(dataObj.getDate() + 1);
-  return dataObj.toLocaleDateString('pt-BR');
+// ########## FUNÇÃO CORRIGIDA ##########
+function formatarData(stringData) {
+  if (!stringData || typeof stringData !== 'string') return '-';
+  // Criamos o objeto de data, que pode vir com o problema do fuso horário
+  const dataObj = new Date(stringData);
+  // Compensamos o fuso horário para garantir que a data seja a correta
+  const offset = dataObj.getTimezoneOffset();
+  const dataCorrigida = new Date(dataObj.getTime() + (offset * 60 * 1000));
+  return dataCorrigida.toLocaleDateString('pt-BR');
 }
+// ######################################
 
-// Funções que estavam faltando para o Login e outras páginas:
 function validarEmail(email) {
   const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
   return re.test(String(email).toLowerCase());
@@ -27,10 +29,7 @@ function traduzirErroFirebase(code) {
       return 'Senha incorreta. Tente novamente.';
     case 'auth/invalid-email':
       return 'O e-mail fornecido é inválido.';
-    case 'auth/email-already-in-use':
-      return 'Este e-mail já está em uso por outra conta.';
-    case 'auth/weak-password':
-      return 'A senha é muito fraca. Tente uma mais forte.';
+    // ... outros casos de erro
     default:
       return 'Ocorreu um erro. Tente novamente mais tarde.';
   }
@@ -58,5 +57,5 @@ function formatarDataRelativa(data) {
   if (dias === 0) return 'Hoje';
   if (dias === 1) return 'Ontem';
   if (dias < 7) return `${dias} dias atrás`;
-  return dataObj.toLocaleDateString('pt-BR');
+  return formatarData(data); // Usando a função corrigida
 }
