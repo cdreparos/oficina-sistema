@@ -1,3 +1,0 @@
-// config.js
-export const SUPABASE_URL = "https://aofljpfewtpotmuqmlsf.supabase.co";
-export const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFvZmxqcGZld3Rwb3RtdXFtbHNmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk2MDUwNzYsImV4cCI6MjA3NTE4MTA3Nn0.UuHq6phzcCOqGQRWy7BT2TrUsHPDRqDVH2NXqGqGtDQ";
