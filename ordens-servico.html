@@ -297,20 +297,12 @@
   </div>
 
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+<script src="firebase-config.js"></script>
+<script src="utils.js"></script>
 
   <script>
-    const firebaseConfig = {
-      apiKey: "AIzaSyCyz4Nrvcnf0MF_99fLKPMsrJ9dIzuRHG4",
-      authDomain: "oficina-sistema-cc2cd.firebaseapp.com",
-      databaseURL: "https://oficina-sistema-cc2cd-default-rtdb.firebaseio.com/",
-      projectId: "oficina-sistema-cc2cd",
-      storageBucket: "oficina-sistema-cc2cd.appspot.com",
-      messagingSenderId: "1034638142539",
-      appId: "1:1034638142539:web:4b63c09b30b86838eff1ce"
-    };
-    firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
     const database = firebase.database();
     const osRef = database.ref("ordens_servico");
