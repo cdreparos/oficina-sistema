@@ -38,17 +38,19 @@
     .os-valor { background: #f9fafb; padding: 12px; border-radius: 10px; margin-bottom: 16px; text-align: center; }
     .os-valor-label { font-size: 0.75rem; color: #6b7280; margin-bottom: 4px; }
     .os-valor-total { font-size: 1.5rem; font-weight: 800; color: #10b981; }
-    .os-actions { display: flex; gap: 8px; }
-    .btn-action { flex: 1; padding: 10px; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; transition: all 0.3s; font-size: 0.8rem; display: flex; align-items: center; justify-content: center; gap: 6px; }
-    .btn-view { background: #e0e7ff; color: #3730a3; }
-    .btn-view:hover { background: #6366f1; color: white; }
+    .os-actions { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+    .btn-action { padding: 10px; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; transition: all 0.3s; font-size: 0.8rem; display: flex; align-items: center; justify-content: center; gap: 6px; }
+    .btn-finish { background: #d1fae5; color: #065f46; }
+    .btn-finish:hover { background: #10b981; color: white; }
     .btn-edit { background: #dbeafe; color: #1e40af; }
     .btn-edit:hover { background: #3b82f6; color: white; }
+    .btn-delete { background: #fee2e2; color: #991b1b; }
+    .btn-delete:hover { background: #ef4444; color: white; }
     .empty-state { text-align: center; padding: 80px 20px; background: white; border-radius: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
     .empty-state-icon { font-size: 4rem; margin-bottom: 20px; opacity: 0.5; }
     .modal { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.6); z-index: 1000; padding: 20px; overflow-y: auto; }
-    .modal.active { display: block; }
-    .modal-content { background: white; border-radius: 20px; padding: 32px; max-width: 900px; width: 100%; margin: 40px auto; box-shadow: 0 20px 60px rgba(0,0,0,0.3); }
+    .modal.active { display: flex; align-items: center; justify-content: center; }
+    .modal-content { background: white; border-radius: 20px; padding: 32px; max-width: 900px; width: 100%; box-shadow: 0 20px 60px rgba(0,0,0,0.3); max-height: 90vh; overflow-y: auto; }
     .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; padding-bottom: 16px; border-bottom: 2px solid #f3f4f6; }
     .modal-header h2 { font-size: 1.5rem; color: #1f2937; display: flex; align-items: center; gap: 12px; }
     .btn-close { background: #f3f4f6; border: none; width: 36px; height: 36px; border-radius: 8px; cursor: pointer; font-size: 1.2rem; transition: all 0.3s; }
@@ -68,9 +70,10 @@
     .btn-cancel { flex: 1; padding: 14px; background: #f3f4f6; color: #374151; border: none; border-radius: 10px; font-weight: 600; cursor: pointer; transition: all 0.3s; font-size: 1rem; }
     .btn-cancel:hover { background: #e5e7eb; }
     .pecas-section { background: #f9fafb; padding: 20px; border-radius: 12px; margin-bottom: 20px; }
-    .pecas-list { display: flex; flex-direction: column; gap: 12px; margin-bottom: 16px; }
-    .peca-item { background: white; padding: 16px; border-radius: 10px; border: 1px solid #e5e7eb; display: flex; justify-content: space-between; align-items: center; gap: 16px; }
+    .pecas-list { display: flex; flex-direction: column; gap: 12px; margin-bottom: 16px; max-height: 250px; overflow-y: auto; }
+    .peca-item { background: white; padding: 16px; border-radius: 10px; border: 1px solid #e5e7eb; display: grid; grid-template-columns: 1fr auto auto; align-items: center; gap: 16px; }
     .peca-info strong { display: block; color: #1f2937; margin-bottom: 4px; }
+    .peca-info small { color: #6b7280; }
     .btn-add-peca { width: 100%; padding: 12px; background: #dbeafe; color: #1e40af; border: 2px dashed #3b82f6; border-radius: 10px; font-weight: 600; cursor: pointer; transition: all 0.3s; }
     .btn-add-peca:hover { background: #3b82f6; color: white; border-style: solid; }
     .btn-remove-peca { background: #fee2e2; color: #991b1b; border: none; padding: 8px 12px; border-radius: 8px; cursor: pointer; font-size: 0.8rem; transition: all 0.3s; }
@@ -81,13 +84,20 @@
     .resumo-label { font-weight: 600; color: #374151; }
     .resumo-valor { font-weight: 700; color: #10b981; font-size: 1.1rem; }
     .resumo-item:last-child .resumo-valor { font-size: 1.5rem; }
-    .cliente-search { position: relative; }
+    .cliente-search-wrapper { position: relative; display: flex; align-items: center; gap: 8px; }
     .cliente-suggestions { position: absolute; top: 100%; left: 0; right: 0; background: white; border: 2px solid #e5e7eb; border-top: none; border-radius: 0 0 10px 10px; max-height: 200px; overflow-y: auto; z-index: 10; display: none; }
     .cliente-suggestions.show { display: block; }
     .cliente-suggestion-item { padding: 12px 16px; cursor: pointer; transition: background 0.2s; border-bottom: 1px solid #f3f4f6; }
     .cliente-suggestion-item:hover { background: #f9fafb; }
     .cliente-suggestion-item strong { display: block; color: #1f2937; }
     .cliente-suggestion-item small { color: #6b7280; }
+    .btn-link { background: none; border: none; color: #3b82f6; font-weight: 600; cursor: pointer; padding: 0; font-size: 0.85rem; }
+    .btn-link:hover { text-decoration: underline; }
+    .peca-search-results { max-height: 200px; overflow-y: auto; border: 1px solid #e5e7eb; border-radius: 8px; margin-top: 8px; }
+    .peca-search-item { padding: 12px; cursor: pointer; border-bottom: 1px solid #f3f4f6; }
+    .peca-search-item:hover { background: #f9fafb; }
+    .peca-search-item strong { display: block; }
+    .peca-search-item small { color: #6b7280; }
     @media (max-width: 768px) {
       .container { padding: 0 20px; }
       header { padding: 20px; }
@@ -154,11 +164,14 @@
 
         <div class="form-section">
           <div class="form-section-title"><span>👤</span> Dados do Cliente</div>
-          <div class="form-group cliente-search">
-            <label for="clienteNome">Cliente *</label>
-            <input type="text" id="clienteNome" required placeholder="Digite o nome do cliente...">
-            <div class="cliente-suggestions" id="clienteSuggestions"></div>
-            <input type="hidden" id="clienteId">
+          <div class="form-group cliente-search-wrapper">
+            <div style="flex: 1; position: relative;">
+              <label for="clienteNome">Cliente *</label>
+              <input type="text" id="clienteNome" required placeholder="Digite o nome do cliente...">
+              <div class="cliente-suggestions" id="clienteSuggestions"></div>
+              <input type="hidden" id="clienteId">
+            </div>
+            <button type="button" class="btn-link" style="margin-top: 30px;" id="btnNovoClienteOS">[+ Novo Cliente]</button>
           </div>
           <div class="form-group">
             <label for="telefoneCliente">Telefone *</label>
@@ -168,19 +181,15 @@
 
         <div class="form-section">
           <div class="form-section-title"><span>🔧</span> Dados do Aparelho</div>
-          <div class="form-row-3">
-            <div class="form-group">
-              <label for="aparelho">Aparelho *</label>
-              <input type="text" id="aparelho" required placeholder="Ex: Lavadora">
+          <div class="form-group">
+            <label for="aparelhoSelect">Aparelho do Cliente *</label>
+            <div style="display: flex; gap: 8px; align-items: center;">
+              <select id="aparelhoSelect" required style="flex: 1;"></select>
+              <button type="button" class="btn-link" id="btnNovoAparelhoOS">[+ Novo Aparelho]</button>
             </div>
-            <div class="form-group">
-              <label for="marca">Marca</label>
-              <input type="text" id="marca" placeholder="Ex: Brastemp">
-            </div>
-            <div class="form-group">
-              <label for="modelo">Modelo</label>
-              <input type="text" id="modelo" placeholder="Ex: BWK12A">
-            </div>
+            <input type="hidden" id="aparelho" />
+            <input type="hidden" id="marca" />
+            <input type="hidden" id="modelo" />
           </div>
           <div class="form-group">
             <label for="defeitoRelatado">Defeito Relatado *</label>
@@ -196,7 +205,7 @@
           <div class="form-section-title"><span>🔩</span> Peças Utilizadas</div>
           <div class="pecas-section">
             <div class="pecas-list" id="pecasList"></div>
-            <button type="button" class="btn-add-peca" id="btnAddPeca">➕ Adicionar Peça</button>
+            <button type="button" class="btn-add-peca" id="btnAddPeca">➕ Adicionar Peça do Estoque</button>
           </div>
         </div>
 
@@ -214,11 +223,11 @@
           </div>
           <div class="resumo-financeiro">
             <div class="resumo-item">
-              <span class="resumo-label">Peças:</span>
+              <span class="resumo-label">Peças (Loja):</span>
               <span class="resumo-valor" id="totalPecas">R$ 0,00</span>
             </div>
             <div class="resumo-item">
-              <span class="resumo-label">Mão de Obra:</span>
+              <span class="resumo-label">Mão de Obra (+ Peças Oficina):</span>
               <span class="resumo-valor" id="totalMaoObra">R$ 0,00</span>
             </div>
             <div class="resumo-item">
@@ -241,7 +250,7 @@
                 <option value="aguardando">Aguardando</option>
                 <option value="em_andamento">Em Andamento</option>
                 <option value="concluido">Concluído</option>
-                <option value="entregue">Entregue</option>
+                <option value="entregue">Entregue (Pago)</option>
               </select>
             </div>
             <div class="form-group">
@@ -268,26 +277,40 @@
   </div>
 
   <div class="modal" id="modalPeca">
-    <div class="modal-content" style="max-width: 500px;">
+    <div class="modal-content" style="max-width: 600px;">
       <div class="modal-header">
-        <h2>🔩 Adicionar Peça</h2>
+        <h2>🔩 Adicionar Peça do Estoque</h2>
         <button class="btn-close" onclick="fecharModalPeca()">✕</button>
       </div>
       <form id="formPeca" onsubmit="adicionarPeca(event)">
+        <input type="hidden" id="pecaIdEstoque">
+        <input type="hidden" id="pecaNomeEstoque">
+        <input type="hidden" id="pecaValorEstoque">
+
         <div class="form-group">
-          <label for="nomePeca">Nome da Peça *</label>
-          <input type="text" id="nomePeca" required placeholder="Ex: Resistência 220V">
+          <label for="pecaSearch">Buscar Peça</label>
+          <input type="text" id="pecaSearch" placeholder="Digite o nome, código ou categoria da peça...">
+          <div class="peca-search-results" id="pecaSearchResults"></div>
         </div>
+        
         <div class="form-row">
           <div class="form-group">
             <label for="quantidadePeca">Quantidade *</label>
             <input type="number" id="quantidadePeca" required min="1" value="1">
           </div>
           <div class="form-group">
-            <label for="valorPeca">Valor Unit. (R$) *</label>
-            <input type="number" id="valorPeca" required step="0.01" min="0">
+            <label>Valor Unitário</label>
+            <input type="text" id="valorPecaDisplay" readonly style="background: #f3f4f6; font-weight: 700;">
           </div>
         </div>
+
+        <div class="form-group" style="background: #fef3c7; padding: 12px; border-radius: 8px; border-left: 4px solid #f59e0b;">
+          <label for="pecaOficina" style="display: flex; align-items: center; gap: 8px; margin: 0;">
+            <input type="checkbox" id="pecaOficina" style="width: 20px; height: 20px;">
+            <span>Peça da oficina (incluir custo na mão de obra)</span>
+          </label>
+        </div>
+
         <div class="form-actions">
           <button type="button" class="btn-cancel" onclick="fecharModalPeca()">Cancelar</button>
           <button type="submit" class="btn-submit">Adicionar</button>
@@ -296,24 +319,115 @@
     </div>
   </div>
 
+  <div class="modal" id="modalConcluirOS">
+    <div class="modal-content" style="max-width: 550px;">
+      <div class="modal-header">
+        <h2>✔ Finalizar e Receber OS</h2>
+        <button class="btn-close" onclick="fecharModalConcluirOS()">✕</button>
+      </div>
+      <form id="formConcluirOS" onsubmit="salvarPagamento(event)">
+        <input type="hidden" id="concluirOsId">
+        <div style="text-align: center; margin-bottom: 24px;">
+          <p style="font-size: 1rem; color: #6b7280;" id="concluirOsInfo">OS #0000 - Cliente</p>
+          <p style="font-size: 2.5rem; font-weight: 800; color: #10b981;" id="concluirValorTotal">R$ 0,00</p>
+        </div>
+        
+        <div class="form-row">
+          <div class="form-group">
+            <label for="formaPagamento">Forma de Pagamento *</label>
+            <select id="formaPagamento" required>
+              <option value="Dinheiro">Dinheiro</option>
+              <option value="PIX">PIX</option>
+              <option value="Cartão de Débito">Cartão de Débito</option>
+              <option value="Cartão de Crédito">Cartão de Crédito</option>
+              <option value="Múltiplo">Múltiplo (descrever abaixo)</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="valorRecebido">Valor Efetivo Recebido *</label>
+            <input type="number" id="valorRecebido" required step="0.01" min="0" placeholder="0.00">
+          </div>
+        </div>
+        <div class="form-group">
+            <label for="obsPagamento">Observações do Pagamento</label>
+            <textarea id="obsPagamento" placeholder="Ex: R$50 no PIX, R$100 no crédito. Taxa da máquina: R$4,50..."></textarea>
+        </div>
+        <div class="form-actions">
+          <button type="button" class="btn-cancel" onclick="fecharModalConcluirOS()">Cancelar</button>
+          <button type="submit" class="btn-submit">Confirmar Recebimento</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="modal" id="modalNovoClienteOS">
+    <div class="modal-content" style="max-width: 500px;">
+        <div class="modal-header">
+            <h2>👤 Novo Cliente</h2>
+            <button class="btn-close" onclick="fecharModalNovoClienteOS()">✕</button>
+        </div>
+        <form id="formNovoClienteOS" onsubmit="salvarNovoClienteOS(event)">
+            <div class="form-group">
+                <label for="novoClienteNome">Nome Completo *</label>
+                <input type="text" id="novoClienteNome" required>
+            </div>
+            <div class="form-group">
+                <label for="novoClienteTelefone">Telefone *</label>
+                <input type="tel" id="novoClienteTelefone" required>
+            </div>
+            <div class="form-actions">
+                <button type="button" class="btn-cancel" onclick="fecharModalNovoClienteOS()">Cancelar</button>
+                <button type="submit" class="btn-submit">Salvar Cliente</button>
+            </div>
+        </form>
+    </div>
+  </div>
+
+  <div class="modal" id="modalNovoAparelhoOS">
+      <div class="modal-content" style="max-width: 500px;">
+          <div class="modal-header">
+              <h2>🔧 Novo Aparelho</h2>
+              <button class="btn-close" onclick="fecharModalNovoAparelhoOS()">✕</button>
+          </div>
+          <form id="formNovoAparelhoOS" onsubmit="salvarNovoAparelhoOS(event)">
+              <div class="form-group">
+                  <label for="novoAparelhoTipo">Tipo de Aparelho *</label>
+                  <input type="text" id="novoAparelhoTipo" required placeholder="Ex: Lavadora, Geladeira">
+              </div>
+              <div class="form-group">
+                  <label for="novoAparelhoMarca">Marca *</label>
+                  <input type="text" id="novoAparelhoMarca" required placeholder="Ex: Brastemp">
+              </div>
+              <div class="form-group">
+                  <label for="novoAparelhoModelo">Modelo</label>
+                  <input type="text" id="novoAparelhoModelo" placeholder="Ex: BWK12A">
+              </div>
+              <div class="form-actions">
+                  <button type="button" class="btn-cancel" onclick="fecharModalNovoAparelhoOS()">Cancelar</button>
+                  <button type="submit" class="btn-submit">Salvar Aparelho</button>
+              </div>
+          </form>
+      </div>
+  </div>
+
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
-<script src="firebase-config.js"></script>
-<script src="utils.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+  <script src="firebase-config.js"></script>
+  <script src="utils.js"></script>
 
   <script>
-    const auth = firebase.auth();
-    const database = firebase.database();
     const osRef = database.ref("ordens_servico");
     const clientesRef = database.ref("clientes");
+    const estoqueRef = database.ref("estoque");
+    const transacoesRef = database.ref("transacoes");
 
-    auth.onAuthStateChanged(user => { if (!user) window.location.href = 'index.html'; });
-
-    let osData = {}, clientesData = {}, editandoId = null, filtroAtual = 'todas', pecasTemp = [], proximoNumeroOS = 1;
+    let osData = {}, clientesData = {}, estoqueData = {}, editandoId = null, filtroAtual = 'todas', pecasTemp = [], proximoNumeroOS = 1;
+    let clienteSelecionadoId = null;
 
     osRef.on("value", snapshot => { osData = snapshot.val() || {}; calcularProximoNumero(); renderizarOS(); });
     clientesRef.on("value", snapshot => { clientesData = snapshot.val() || {}; });
+    estoqueRef.on("value", snapshot => { estoqueData = snapshot.val() || {}; });
 
     function calcularProximoNumero() {
       const numeros = Object.values(osData).map(os => parseInt(os.numeroOS) || 0);
@@ -333,6 +447,9 @@
         const statusTexto = { aguardando: 'Aguardando', em_andamento: 'Em Andamento', concluido: 'Concluído', entregue: 'Entregue' };
         const dataEntrada = new Date(os.dataEntrada).toLocaleDateString();
         const prazo = os.prazoEntrega ? new Date(os.prazoEntrega).toLocaleDateString() : 'Não definido';
+        const isConcluido = os.statusOS === 'concluido';
+        const isEntregue = os.statusOS === 'entregue';
+        
         card.innerHTML = `
           <div class="os-header">
             <div class="os-numero">OS #${String(os.numeroOS).padStart(4, '0')}</div>
@@ -343,15 +460,21 @@
           <div class="os-details">
             <div class="detail-row"><div class="detail-icon">📅</div><span>Entrada: ${dataEntrada}</span></div>
             <div class="detail-row"><div class="detail-icon">⏰</div><span>Prazo: ${prazo}</span></div>
-            <div class="detail-row"><div class="detail-icon">🔧</div><span>${os.defeitoRelatado.substring(0, 50)}...</span></div>
           </div>
           <div class="os-valor">
             <div class="os-valor-label">Valor Total</div>
-            <div class="os-valor-total">R$ ${parseFloat(os.valorTotalFinal || 0).toFixed(2).replace('.', ',')}</div>
+            <div class="os-valor-total">${formatarMoeda(os.valorTotalFinal || 0)}</div>
           </div>
           <div class="os-actions">
-            <button class="btn-action btn-view" onclick="visualizarOS('${os.id}')">👁️ Ver</button>
-            <button class="btn-action btn-edit" onclick="editarOS('${os.id}')">✏️ Editar</button>
+            <button class="btn-action btn-finish" onclick="abrirModalConcluirOS('${os.id}')" ${isEntregue ? 'disabled' : ''}>
+              ✔ Finalizar/Receber
+            </button>
+            <button class="btn-action btn-edit" onclick="editarOS('${os.id}')" ${isEntregue ? 'disabled' : ''}>
+              ✏️ Editar
+            </button>
+            <button class="btn-action btn-delete" onclick="excluirOS('${os.id}', '${os.numeroOS}')">
+              🗑️ Excluir
+            </button>
           </div>
         `;
         grid.appendChild(card);
@@ -365,6 +488,7 @@
       });
     });
 
+    // --- LÓGICA DE CLIENTES ---
     document.getElementById('clienteNome').addEventListener('input', function() {
       const termo = this.value.toLowerCase(), suggestions = document.getElementById('clienteSuggestions');
       if (termo.length < 2) { suggestions.classList.remove('show'); return; }
@@ -374,19 +498,96 @@
       clientesFiltrados.forEach(([id, cliente]) => {
         const item = document.createElement('div'); item.className = 'cliente-suggestion-item';
         item.innerHTML = `<strong>${cliente.nome}</strong><small>${cliente.telefone}</small>`;
-        item.addEventListener('click', () => {
-          document.getElementById('clienteNome').value = cliente.nome;
-          document.getElementById('clienteId').value = id;
-          document.getElementById('telefoneCliente').value = cliente.telefone;
-          suggestions.classList.remove('show');
-        });
+        item.addEventListener('click', () => selecionarCliente(id));
         suggestions.appendChild(item);
       });
       suggestions.classList.add('show');
     });
 
+    function selecionarCliente(id) {
+        clienteSelecionadoId = id;
+        const cliente = clientesData[id];
+        document.getElementById('clienteNome').value = cliente.nome;
+        document.getElementById('clienteId').value = id;
+        document.getElementById('telefoneCliente').value = cliente.telefone;
+        document.getElementById('clienteSuggestions').classList.remove('show');
+        carregarAparelhosCliente(id);
+    }
+    
+    document.getElementById('btnNovoClienteOS').addEventListener('click', () => document.getElementById('modalNovoClienteOS').classList.add('active'));
+    function fecharModalNovoClienteOS() { document.getElementById('modalNovoClienteOS').classList.remove('active'); }
+    function salvarNovoClienteOS(event) {
+        event.preventDefault();
+        const novoCliente = {
+            nome: document.getElementById('novoClienteNome').value,
+            telefone: document.getElementById('novoClienteTelefone').value,
+            dataCadastro: new Date().toISOString()
+        };
+        clientesRef.push(novoCliente).then(ref => {
+            alert('Cliente cadastrado com sucesso!');
+            fecharModalNovoClienteOS();
+            selecionarCliente(ref.key);
+        });
+    }
+
+    // --- LÓGICA DE APARELHOS ---
+    function carregarAparelhosCliente(clienteId, aparelhoSelecionado = null) {
+        const select = document.getElementById('aparelhoSelect');
+        select.innerHTML = '<option value="">Selecione ou cadastre um aparelho...</option>';
+        const cliente = clientesData[clienteId];
+        if (cliente && cliente.aparelhos) {
+            cliente.aparelhos.forEach(aparelho => {
+                const text = `${aparelho.tipo} - ${aparelho.marca} (${aparelho.modelo || 'N/A'})`;
+                const option = new Option(text, JSON.stringify(aparelho));
+                select.add(option);
+            });
+        }
+        if (aparelhoSelecionado) {
+            select.value = JSON.stringify(aparelhoSelecionado);
+        }
+        atualizarCamposAparelho();
+    }
+    
+    document.getElementById('aparelhoSelect').addEventListener('change', atualizarCamposAparelho);
+    function atualizarCamposAparelho() {
+        const select = document.getElementById('aparelhoSelect');
+        if (select.value) {
+            const aparelho = JSON.parse(select.value);
+            document.getElementById('aparelho').value = aparelho.tipo;
+            document.getElementById('marca').value = aparelho.marca;
+            document.getElementById('modelo').value = aparelho.modelo;
+        }
+    }
+
+    document.getElementById('btnNovoAparelhoOS').addEventListener('click', () => {
+        if (!clienteSelecionadoId) {
+            alert('Selecione um cliente primeiro!');
+            return;
+        }
+        document.getElementById('modalNovoAparelhoOS').classList.add('active');
+    });
+    function fecharModalNovoAparelhoOS() { document.getElementById('modalNovoAparelhoOS').classList.remove('active'); }
+    function salvarNovoAparelhoOS(event) {
+        event.preventDefault();
+        const novoAparelho = {
+            tipo: document.getElementById('novoAparelhoTipo').value,
+            marca: document.getElementById('novoAparelhoMarca').value,
+            modelo: document.getElementById('novoAparelhoModelo').value,
+        };
+        
+        const aparelhosAtuais = clientesData[clienteSelecionadoId].aparelhos || [];
+        aparelhosAtuais.push(novoAparelho);
+        
+        clientesRef.child(clienteSelecionadoId).update({ aparelhos: aparelhosAtuais }).then(() => {
+            alert('Aparelho salvo para o cliente!');
+            fecharModalNovoAparelhoOS();
+            carregarAparelhosCliente(clienteSelecionadoId, novoAparelho);
+        });
+    }
+
+    // --- LÓGICA DA OS (ABERTURA E EDIÇÃO) ---
     document.getElementById('btnNovaOS').addEventListener('click', () => {
-      editandoId = null; pecasTemp = [];
+      editandoId = null; pecasTemp = []; clienteSelecionadoId = null;
       document.getElementById('modalTitle').textContent = 'Nova Ordem de Serviço';
       document.getElementById('modalIcon').textContent = '➕';
       document.getElementById('formOS').reset();
@@ -394,89 +595,26 @@
       document.getElementById('numeroOS').value = proximoNumeroOS;
       document.getElementById('clienteId').value = '';
       document.getElementById('dataEntrada').value = new Date().toISOString().split('T')[0];
+      carregarAparelhosCliente(null);
       renderizarPecas(); calcularTotais();
       document.getElementById('modalOS').classList.add('active');
     });
 
-    function fecharModal() {
-      document.getElementById('modalOS').classList.remove('active');
-      editandoId = null; pecasTemp = [];
-    }
-
-    function fecharModalPeca() {
-      document.getElementById('modalPeca').classList.remove('active');
-      document.getElementById('formPeca').reset();
-    }
-
-    document.getElementById('btnAddPeca').addEventListener('click', () => {
-      document.getElementById('modalPeca').classList.add('active');
-    });
-
-    function adicionarPeca(event) {
-      event.preventDefault();
-      const peca = {
-        nome: document.getElementById('nomePeca').value,
-        quantidade: parseInt(document.getElementById('quantidadePeca').value),
-        valorUnitario: parseFloat(document.getElementById('valorPeca').value)
-      };
-      pecasTemp.push(peca); renderizarPecas(); calcularTotais(); fecharModalPeca();
-    }
-
-    function renderizarPecas() {
-      const lista = document.getElementById('pecasList');
-      lista.innerHTML = '';
-      if (pecasTemp.length === 0) {
-        lista.innerHTML = '<p style="text-align: center; color: #9ca3af; padding: 20px;">Nenhuma peça adicionada</p>';
-        return;
-      }
-      pecasTemp.forEach((peca, index) => {
-        const item = document.createElement('div'); item.className = 'peca-item';
-        const subtotal = peca.quantidade * peca.valorUnitario;
-        item.innerHTML = `
-          <div class="peca-info">
-            <strong>${peca.nome}</strong>
-            <small>${peca.quantidade}x R$ ${peca.valorUnitario.toFixed(2).replace('.', ',')} = R$ ${subtotal.toFixed(2).replace('.', ',')}</small>
-          </div>
-          <span style="font-weight: 700; color: #10b981;">R$ ${subtotal.toFixed(2).replace('.', ',')}</span>
-          <button type="button" class="btn-remove-peca" onclick="removerPeca(${index})">✕</button>
-        `;
-        lista.appendChild(item);
-      });
-    }
-
-    function removerPeca(index) {
-      if (confirm('Remover esta peça?')) {
-        pecasTemp.splice(index, 1); renderizarPecas(); calcularTotais();
-      }
-    }
-
-    function calcularTotais() {
-      const maoObra = parseFloat(document.getElementById('valorMaoObra').value) || 0;
-      const desconto = parseFloat(document.getElementById('desconto').value) || 0;
-      const totalPecas = pecasTemp.reduce((sum, p) => sum + (p.quantidade * p.valorUnitario), 0);
-      const totalGeral = totalPecas + maoObra - desconto;
-      document.getElementById('totalPecas').textContent = `R$ ${totalPecas.toFixed(2).replace('.', ',')}`;
-      document.getElementById('totalMaoObra').textContent = `R$ ${maoObra.toFixed(2).replace('.', ',')}`;
-      document.getElementById('valorDesconto').textContent = `- R$ ${desconto.toFixed(2).replace('.', ',')}`;
-      document.getElementById('valorTotalFinal').textContent = `R$ ${totalGeral.toFixed(2).replace('.', ',')}`;
-    }
-
-    document.getElementById('valorMaoObra').addEventListener('input', calcularTotais);
-    document.getElementById('desconto').addEventListener('input', calcularTotais);
-
+    function fecharModal() { document.getElementById('modalOS').classList.remove('active'); }
+    
     function editarOS(id) {
       editandoId = id;
       const os = osData[id];
-      document.getElementById('modalTitle').textContent = 'Editar Ordem de Serviço';
+      selecionarCliente(os.clienteId);
+
+      document.getElementById('modalTitle').textContent = `Editar OS #${String(os.numeroOS).padStart(4, '0')}`;
       document.getElementById('modalIcon').textContent = '✏️';
       document.getElementById('osId').value = id;
       document.getElementById('numeroOS').value = os.numeroOS;
-      document.getElementById('clienteNome').value = os.clienteNome;
-      document.getElementById('clienteId').value = os.clienteId || '';
-      document.getElementById('telefoneCliente').value = os.telefoneCliente;
-      document.getElementById('aparelho').value = os.aparelho;
-      document.getElementById('marca').value = os.marca || '';
-      document.getElementById('modelo').value = os.modelo || '';
+      
+      const aparelhoSelecionado = { tipo: os.aparelho, marca: os.marca, modelo: os.modelo };
+      carregarAparelhosCliente(os.clienteId, aparelhoSelecionado);
+
       document.getElementById('defeitoRelatado').value = os.defeitoRelatado;
       document.getElementById('diagnostico').value = os.diagnostico || '';
       document.getElementById('valorMaoObra').value = os.valorMaoObra || 0;
@@ -490,25 +628,119 @@
       document.getElementById('modalOS').classList.add('active');
     }
 
-    function visualizarOS(id) {
-      editarOS(id);
-      document.getElementById('modalTitle').textContent = 'Visualizar Ordem de Serviço';
-      document.getElementById('modalIcon').textContent = '👁️';
-      document.querySelectorAll('#formOS input, #formOS textarea, #formOS select, #formOS button[type="button"]').forEach(el => {
-        el.disabled = true;
-      });
-      document.querySelector('.btn-submit').style.display = 'none';
+    // --- LÓGICA DE PEÇAS ---
+    document.getElementById('btnAddPeca').addEventListener('click', () => {
+        document.getElementById('formPeca').reset();
+        document.getElementById('pecaSearchResults').innerHTML = '';
+        document.getElementById('modalPeca').classList.add('active');
+    });
+    function fecharModalPeca() { document.getElementById('modalPeca').classList.remove('active'); }
+
+    document.getElementById('pecaSearch').addEventListener('input', function() {
+        const termo = this.value.toLowerCase();
+        const resultsContainer = document.getElementById('pecaSearchResults');
+        resultsContainer.innerHTML = '';
+        if (termo.length < 2) return;
+        
+        const pecasFiltradas = Object.entries(estoqueData).filter(([id, peca]) => 
+            (peca.nomePeca && peca.nomePeca.toLowerCase().includes(termo)) ||
+            (peca.codigoPeca && peca.codigoPeca.toLowerCase().includes(termo))
+        ).slice(0, 10);
+
+        pecasFiltradas.forEach(([id, peca]) => {
+            const item = document.createElement('div');
+            item.className = 'peca-search-item';
+            item.innerHTML = `<strong>${peca.nomePeca}</strong><small>Código: ${peca.codigoPeca || 'N/A'} | Estoque: ${peca.quantidade}</small>`;
+            item.onclick = () => selecionarPeca(id, peca);
+            resultsContainer.appendChild(item);
+        });
+    });
+
+    function selecionarPeca(id, peca) {
+        document.getElementById('pecaIdEstoque').value = id;
+        document.getElementById('pecaNomeEstoque').value = peca.nomePeca;
+        document.getElementById('pecaValorEstoque').value = peca.valorUnitario;
+        document.getElementById('valorPecaDisplay').value = formatarMoeda(peca.valorUnitario);
+        document.getElementById('pecaSearch').value = peca.nomePeca;
+        document.getElementById('pecaSearchResults').innerHTML = '';
     }
 
+    function adicionarPeca(event) {
+      event.preventDefault();
+      const peca = {
+        pecaId: document.getElementById('pecaIdEstoque').value,
+        nome: document.getElementById('pecaNomeEstoque').value,
+        quantidade: parseInt(document.getElementById('quantidadePeca').value),
+        valorUnitario: parseFloat(document.getElementById('pecaValorEstoque').value),
+        tipo: document.getElementById('pecaOficina').checked ? 'oficina' : 'loja'
+      };
+      if (!peca.pecaId) { alert("Selecione uma peça da lista!"); return; }
+      pecasTemp.push(peca); renderizarPecas(); calcularTotais(); fecharModalPeca();
+    }
+
+    function renderizarPecas() {
+      const lista = document.getElementById('pecasList');
+      lista.innerHTML = '';
+      if (pecasTemp.length === 0) {
+        lista.innerHTML = '<p style="text-align: center; color: #9ca3af;">Nenhuma peça adicionada</p>';
+        return;
+      }
+      pecasTemp.forEach((peca, index) => {
+        const item = document.createElement('div'); item.className = 'peca-item';
+        const subtotal = peca.quantidade * peca.valorUnitario;
+        const tipoLabel = peca.tipo === 'oficina' ? ' (Oficina)' : '';
+        item.innerHTML = `
+          <div class="peca-info">
+            <strong>${peca.nome}${tipoLabel}</strong>
+            <small>${peca.quantidade}x ${formatarMoeda(peca.valorUnitario)}</small>
+          </div>
+          <span style="font-weight: 700; color: #10b981;">${formatarMoeda(subtotal)}</span>
+          <button type="button" class="btn-remove-peca" onclick="removerPeca(${index})">✕</button>
+        `;
+        lista.appendChild(item);
+      });
+    }
+
+    function removerPeca(index) {
+        pecasTemp.splice(index, 1); renderizarPecas(); calcularTotais();
+    }
+
+    function calcularTotais() {
+      const maoObraBase = parseFloat(document.getElementById('valorMaoObra').value) || 0;
+      const desconto = parseFloat(document.getElementById('desconto').value) || 0;
+      
+      const totalPecasLoja = pecasTemp
+        .filter(p => p.tipo === 'loja')
+        .reduce((sum, p) => sum + (p.quantidade * p.valorUnitario), 0);
+      
+      const custoPecasOficina = pecasTemp
+        .filter(p => p.tipo === 'oficina')
+        .reduce((sum, p) => sum + (p.quantidade * p.valorUnitario), 0);
+
+      const maoObraFinal = maoObraBase + custoPecasOficina;
+      const totalGeral = totalPecasLoja + maoObraFinal - desconto;
+
+      document.getElementById('totalPecas').textContent = formatarMoeda(totalPecasLoja);
+      document.getElementById('totalMaoObra').textContent = formatarMoeda(maoObraFinal);
+      document.getElementById('valorDesconto').textContent = `- ${formatarMoeda(desconto)}`;
+      document.getElementById('valorTotalFinal').textContent = formatarMoeda(totalGeral);
+    }
+    document.getElementById('valorMaoObra').addEventListener('input', calcularTotais);
+    document.getElementById('desconto').addEventListener('input', calcularTotais);
+
+
+    // --- LÓGICA DE SALVAR E EXCLUIR OS ---
     function salvarOS(event) {
       event.preventDefault();
-      const maoObra = parseFloat(document.getElementById('valorMaoObra').value) || 0;
+      const maoObraBase = parseFloat(document.getElementById('valorMaoObra').value) || 0;
       const desconto = parseFloat(document.getElementById('desconto').value) || 0;
-      const totalPecas = pecasTemp.reduce((sum, p) => sum + (p.quantidade * p.valorUnitario), 0);
-      const totalFinal = totalPecas + maoObra - desconto;
+      const totalPecasLoja = pecasTemp.filter(p => p.tipo === 'loja').reduce((sum, p) => sum + (p.quantidade * p.valorUnitario), 0);
+      const custoPecasOficina = pecasTemp.filter(p => p.tipo === 'oficina').reduce((sum, p) => sum + (p.quantidade * p.valorUnitario), 0);
+      const maoObraFinal = maoObraBase + custoPecasOficina;
+      const totalFinal = totalPecasLoja + maoObraFinal - desconto;
 
       const osDataObj = {
-        numeroOS: editandoId ? osData[editandoId].numeroOS : proximoNumeroOS,
+        numeroOS: document.getElementById('numeroOS').value,
         clienteId: document.getElementById('clienteId').value,
         clienteNome: document.getElementById('clienteNome').value,
         telefoneCliente: document.getElementById('telefoneCliente').value,
@@ -518,8 +750,8 @@
         defeitoRelatado: document.getElementById('defeitoRelatado').value,
         diagnostico: document.getElementById('diagnostico').value,
         pecas: pecasTemp,
-        valorPecas: totalPecas,
-        valorMaoObra: maoObra,
+        valorPecas: totalPecasLoja,
+        valorMaoObra: maoObraFinal,
         desconto: desconto,
         valorTotalFinal: totalFinal,
         statusOS: document.getElementById('statusOS').value,
@@ -532,45 +764,81 @@
       };
 
       if (editandoId) {
-        osRef.child(editandoId).update(osDataObj)
-          .then(() => { alert('OS atualizada com sucesso!'); fecharModal(); })
-          .catch(error => { alert('Erro ao atualizar OS: ' + error.message); });
+        osRef.child(editandoId).update(osDataObj).then(() => { alert('OS atualizada com sucesso!'); fecharModal(); });
       } else {
-        osRef.push(osDataObj)
-          .then(() => { alert('OS cadastrada com sucesso!'); fecharModal(); })
-          .catch(error => { alert('Erro ao cadastrar OS: ' + error.message); });
+        osRef.push(osDataObj).then(() => { alert('OS cadastrada com sucesso!'); fecharModal(); });
       }
     }
+    
+    function excluirOS(id, numeroOS) {
+        if (confirm(`Tem certeza que deseja excluir a OS #${numeroOS}? Esta ação não pode ser desfeita.`)) {
+            osRef.child(id).remove().then(() => alert("OS excluída com sucesso!"));
+        }
+    }
+    
+    // --- LÓGICA DE CONCLUSÃO E PAGAMENTO ---
+    function abrirModalConcluirOS(id) {
+        const os = osData[id];
+        document.getElementById('concluirOsId').value = id;
+        document.getElementById('concluirOsInfo').textContent = `OS #${String(os.numeroOS).padStart(4, '0')} - ${os.clienteNome}`;
+        document.getElementById('concluirValorTotal').textContent = formatarMoeda(os.valorTotalFinal);
+        document.getElementById('valorRecebido').value = os.valorTotalFinal.toFixed(2);
+        document.getElementById('modalConcluirOS').classList.add('active');
+    }
+    
+    function fecharModalConcluirOS() {
+        document.getElementById('modalConcluirOS').classList.remove('active');
+    }
+    
+    async function salvarPagamento(event) {
+        event.preventDefault();
+        const osId = document.getElementById('concluirOsId').value;
+        const os = osData[osId];
+        const osUpdates = {};
 
-    document.addEventListener('click', (e) => {
-      if (!e.target.closest('.cliente-search')) {
-        document.getElementById('clienteSuggestions').classList.remove('show');
-      }
-    });
+        // 1. Atualizar o estoque
+        const pecasUtilizadas = os.pecas || [];
+        const estoqueUpdates = {};
+        for (const peca of pecasUtilizadas) {
+            const estoqueAtual = estoqueData[peca.pecaId];
+            if (estoqueAtual) {
+                const novaQuantidade = estoqueAtual.quantidade - peca.quantidade;
+                estoqueUpdates[`/${peca.pecaId}/quantidade`] = novaQuantidade;
+            }
+        }
+        await database.ref('estoque').update(estoqueUpdates);
 
-    document.getElementById('modalOS').addEventListener('click', function(e) {
-      if (e.target === this) fecharModal();
-    });
+        // 2. Criar a transação financeira
+        const transacao = {
+            tipo: 'entrada',
+            descricao: `Recebimento OS #${String(os.numeroOS).padStart(4, '0')}`,
+            categoria: 'servicos',
+            valor: parseFloat(document.getElementById('valorRecebido').value),
+            dataTransacao: new Date().toISOString().split('T')[0],
+            statusTransacao: 'pago',
+            formaPagamento: document.getElementById('formaPagamento').value,
+            observacoes: document.getElementById('obsPagamento').value,
+            referenciaOS: osId,
+            criadoPor: auth.currentUser.email,
+            criadoEm: new Date().toISOString()
+        };
+        await transacoesRef.push(transacao);
 
-    document.getElementById('modalPeca').addEventListener('click', function(e) {
-      if (e.target === this) fecharModalPeca();
-    });
+        // 3. Atualizar o status da OS
+        await osRef.child(osId).update({
+            statusOS: 'entregue',
+            dataPagamento: new Date().toISOString(),
+            pagamentoInfo: {
+                forma: transacao.formaPagamento,
+                valorRecebido: transacao.valor,
+                obs: transacao.observacoes
+            }
+        });
 
-    document.getElementById('telefoneCliente').addEventListener('input', function(e) {
-      let value = e.target.value.replace(/\D/g, '');
-      if (value.length <= 11) {
-        value = value.replace(/^(\d{2})(\d)/g, '($1) $2');
-        value = value.replace(/(\d)(\d{4})$/, '$1-$2');
-      }
-      e.target.value = value;
-    });
+        alert(`OS #${os.numeroOS} finalizada e recebimento registrado com sucesso!`);
+        fecharModalConcluirOS();
+    }
 
-    document.addEventListener('keydown', function(e) {
-      if (e.key === 'Escape') { fecharModal(); fecharModalPeca(); }
-      if (e.ctrlKey && e.key === 'n') { e.preventDefault(); document.getElementById('btnNovaOS').click(); }
-    });
-
-    console.log('Sistema de Ordens de Serviço - SIGO Casa dos Reparos - Carregado!');
   </script>
 </body>
 </html>
