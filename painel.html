@@ -81,9 +81,10 @@
     .list-item-value { font-weight: 600; font-size: 0.9rem; }
     .income { color: var(--accent-green); }
     .expense { color: var(--accent-red); }
-    .chart-placeholder { height: 250px; background: linear-gradient(135deg, #e2e8f0, #f1f5f9); border-radius: 12px; display: flex; align-items: center; justify-content: center; color: var(--text-secondary); }
-    body.dark-mode .chart-placeholder { background: linear-gradient(135deg, #1e293b, #334155); }
 
+    .alerta-amarelo { border-left: 3px solid var(--accent-yellow); padding-left: 12px; border-radius: 4px; }
+    .alerta-vermelho { border-left: 3px solid var(--accent-red); padding-left: 12px; border-radius: 4px; }
+    
     .mobile-menu-btn { display: none; background: none; border: none; font-size: 1.8rem; cursor: pointer; color: var(--text-primary); }
     .overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 99; }
     .overlay.is-open { display: block; }
@@ -104,7 +105,10 @@
   <div class="dashboard-container">
     <nav class="sidebar" id="sidebar">
       <div>
-        <div class="sidebar-header"><div class="sidebar-logo">S</div><h1>SIGO Casa dos Reparos</h1></div>
+        <div class="sidebar-header">
+          <div class="sidebar-logo">S</div>
+          <h1>SIGO Casa dos Reparos</h1>
+        </div>
         <ul class="nav-list">
           <li><a href="painel.html" class="active"><span class="nav-icon">🏠</span> Painel</a></li>
           <li><a href="ordens-servico.html"><span class="nav-icon">🛠️</span> Ordens de Serviço</a></li>
@@ -162,8 +166,8 @@
       <section class="main-dashboard">
         <div class="dashboard-left">
           <div class="dashboard-card" style="margin-bottom: 24px;">
-            <h3 class="dashboard-card-title">Visão Financeira do Mês</h3>
-            <div class="chart-placeholder">📈 Gráfico de Receitas vs. Despesas</div>
+             <h3 class="dashboard-card-title">📅 Agenda do Dia</h3>
+             <div id="lista-agenda-dia"><p style="text-align: center; color: var(--text-secondary);">Carregando agendamentos...</p></div>
           </div>
           <div class="dashboard-card">
              <h3 class="dashboard-card-title">Últimas Transações</h3>
@@ -171,9 +175,13 @@
           </div>
         </div>
         <div class="dashboard-right">
+          <div class="dashboard-card" style="margin-bottom: 24px;">
+            <h3 class="dashboard-card-title">⚠️ Contas a Vencer</h3>
+            <div id="lista-contas-vencer"><p style="text-align: center; color: var(--text-secondary);">Verificando contas...</p></div>
+          </div>
           <div class="dashboard-card">
-            <h3 class="dashboard-card-title">Lembretes e Tarefas</h3>
-            <div id="lista-tarefas"><p style="text-align: center; color: var(--text-secondary);">Carregando tarefas...</p></div>
+            <h3 class="dashboard-card-title">📝 Anotações Recentes</h3>
+            <div id="lista-anotacoes"><p style="text-align: center; color: var(--text-secondary);">Carregando anotações...</p></div>
           </div>
         </div>
       </section>
@@ -259,7 +267,9 @@
         dashboardData[key] = data;
         updateSummaryCards();
         updateTransactionList();
-        updateTaskList();
+        updateAgendaDoDia();
+        updateContasAVencer();
+        updateAnotacoes();
     }
 
     function formatarMoeda(valor) {
@@ -307,7 +317,7 @@
                     <div class="list-item-icon">${isIncome ? '↓' : '↑'}</div>
                     <div class="list-item-details">
                         <strong>${t.descricao.substring(0, 30)}${t.descricao.length > 30 ? '...' : ''}</strong>
-                        <small>${new Date(t.dataTransacao).toLocaleDateString('pt-BR')}</small>
+                        <small>${new Date(t.dataTransacao + 'T00:00:00').toLocaleDateString('pt-BR')}</small>
                     </div>
                     <span class="list-item-value ${isIncome ? 'income' : 'expense'}">
                         ${isIncome ? '+' : '-'} ${formatarMoeda(t.valor)}
@@ -317,53 +327,107 @@
         });
     }
 
-    function updateTaskList() {
-        if (!dashboardData.agendamentos || !dashboardData.anotacoes) return;
-        const listaTarefas = document.getElementById('lista-tarefas');
-        const hoje = new Date();
-        hoje.setHours(0,0,0,0);
+    function updateAgendaDoDia() {
+        if (!dashboardData.agendamentos) return;
+        const listaAgenda = document.getElementById('lista-agenda-dia');
+        const hojeString = new Date().toISOString().slice(0, 10);
 
-        const agendamentos = Object.values(dashboardData.agendamentos || {})
-            .filter(ag => new Date(ag.dataAgendamento + 'T00:00:00') >= hoje)
-            .sort((a,b) => new Date(a.dataAgendamento) - new Date(b.dataAgendamento))
-            .slice(0, 2);
-            
-        const anotacoes = Object.values(dashboardData.anotacoes || {})
-            .filter(a => !a.arquivada)
-            .sort((a,b) => new Date(b.criadoEm) - new Date(a.criadoEm))
-            .slice(0, 2);
+        const agendamentosHoje = Object.values(dashboardData.agendamentos || {})
+            .filter(ag => ag.dataAgendamento === hojeString)
+            .sort((a, b) => a.horaAgendamento.localeCompare(b.horaAgendamento));
 
-        const tarefas = [...agendamentos, ...anotacoes];
-        
-        if (tarefas.length === 0) {
-            listaTarefas.innerHTML = '<p style="text-align: center; color: var(--text-secondary);">Nenhuma tarefa pendente.</p>';
+        if (agendamentosHoje.length === 0) {
+            listaAgenda.innerHTML = '<p style="text-align: center; color: var(--text-secondary);">Nenhum agendamento para hoje.</p>';
             return;
         }
 
-        listaTarefas.innerHTML = '';
-        tarefas.forEach(task => {
-            let icon, title, subtitle;
-            if (task.tipoServico) {
-                icon = '📅';
-                title = `${task.clienteNome} (${task.horaAgendamento})`;
-                subtitle = new Date(task.dataAgendamento + 'T00:00:00').toLocaleDateString('pt-BR', {weekday: 'long', day: 'numeric'});
-            } else {
-                icon = '📝';
-                title = task.texto.substring(0, 35) + (task.texto.length > 35 ? '...' : '');
-                subtitle = "Anotação Pessoal";
-            }
+        listaAgenda.innerHTML = '';
+        agendamentosHoje.forEach(ag => {
             const itemHTML = `
                 <div class="list-item">
-                    <div class="list-item-icon">${icon}</div>
+                    <div class="list-item-icon">🗓️</div>
                     <div class="list-item-details">
-                        <strong>${title}</strong>
-                        <small>${subtitle}</small>
+                        <strong>${ag.clienteNome}</strong>
+                        <small>${ag.tipoServico}</small>
+                    </div>
+                    <span class="list-item-value">${ag.horaAgendamento}</span>
+                </div>`;
+            listaAgenda.innerHTML += itemHTML;
+        });
+    }
+
+    function updateContasAVencer() {
+        if (!dashboardData.transacoes) return;
+        const listaContas = document.getElementById('lista-contas-vencer');
+
+        const hoje = new Date();
+        hoje.setHours(0, 0, 0, 0);
+
+        const contasPendentes = Object.values(dashboardData.transacoes || {})
+            .filter(t => t.tipo === 'saida' && t.statusTransacao === 'pendente' && t.dataVencimento)
+            .sort((a,b) => new Date(a.dataVencimento) - new Date(b.dataVencimento));
+            
+        let htmlContas = '';
+        contasPendentes.forEach(conta => {
+            const dataVenc = new Date(conta.dataVencimento + 'T00:00:00');
+            const diffTime = dataVenc - hoje;
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+            let classeAlerta = '';
+            if (diffDays <= 0) {
+                classeAlerta = 'alerta-vermelho'; // Vencido ou vence hoje
+            } else if (diffDays <= 2) {
+                classeAlerta = 'alerta-amarelo'; // Vence em 1 ou 2 dias
+            }
+            
+            if(classeAlerta) {
+                const itemHTML = `
+                    <div class="list-item ${classeAlerta}">
+                        <div class="list-item-details">
+                            <strong>${conta.descricao}</strong>
+                            <small>Vence em: ${dataVenc.toLocaleDateString('pt-BR')}</small>
+                        </div>
+                        <span class="list-item-value expense">${formatarMoeda(conta.valor)}</span>
+                    </div>`;
+                htmlContas += itemHTML;
+            }
+        });
+        
+        if(htmlContas === '') {
+             listaContas.innerHTML = '<p style="text-align: center; color: var(--text-secondary);">Nenhuma conta vencendo nos próximos dias.</p>';
+        } else {
+            listaContas.innerHTML = htmlContas;
+        }
+    }
+
+    function updateAnotacoes() {
+        if (!dashboardData.anotacoes) return;
+        const listaAnotacoes = document.getElementById('lista-anotacoes');
+
+        const anotacoes = Object.values(dashboardData.anotacoes || {})
+            .filter(a => !a.arquivada)
+            .sort((a,b) => new Date(b.criadoEm) - new Date(a.criadoEm))
+            .slice(0, 4);
+
+        if (anotacoes.length === 0) {
+            listaAnotacoes.innerHTML = '<p style="text-align: center; color: var(--text-secondary);">Nenhuma anotação ativa.</p>';
+            return;
+        }
+
+        listaAnotacoes.innerHTML = '';
+        anotacoes.forEach(task => {
+            const itemHTML = `
+                <div class="list-item">
+                    <div class="list-item-icon">📝</div>
+                    <div class="list-item-details">
+                        <strong>${task.texto.substring(0, 40)}${task.texto.length > 40 ? '...' : ''}</strong>
                     </div>
                 </div>`;
-            listaTarefas.innerHTML += itemHTML;
+            listaAnotacoes.innerHTML += itemHTML;
         });
     }
 
   </script>
+
 </body>
 </html>
