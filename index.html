@@ -41,8 +41,8 @@
     }
     
     .logo {
-      width: 120px;
-      height: 120px;
+      width: 140px; /* Aumentado para o novo design */
+      height: 140px;
       margin: 0 auto 20px;
       display: flex;
       align-items: center;
@@ -56,7 +56,7 @@
 
     /* Estado de espiar a senha */
     #mascote-login.peek .pupila-wrapper {
-      transform: translateY(-5px);
+      transform: translateY(-4px); /* Olhar para cima */
     }
     #mascote-login.peek .sobrancelha {
       transform: translateY(-2px);
@@ -200,53 +200,64 @@
       <div class="logo">
          <svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
             <defs>
-              <linearGradient id="lavadoraBody" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stop-color="#E5E7EB" />
-                <stop offset="100%" stop-color="#D1D5DB" />
-              </linearGradient>
-              <linearGradient id="lavadoraPainel" x1="0%" y1="0%" x2="0%" y2="100%">
-                <stop offset="0%" stop-color="#4B5563" />
-                <stop offset="100%" stop-color="#1F2937" />
-              </linearGradient>
-               <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
-                <feDropShadow dx="0" dy="4" stdDeviation="4" flood-color="#000" flood-opacity="0.2"/>
-              </filter>
+                <linearGradient id="bodyGradient" x1="0" y1="0" x2="1" y2="1">
+                    <stop offset="0%" stop-color="#F9FAFB"/>
+                    <stop offset="100%" stop-color="#D1D5DB"/>
+                </linearGradient>
+                <linearGradient id="panelGradient" x1="0" y1="0" x2="1" y2="1">
+                    <stop offset="0%" stop-color="#4B5563"/>
+                    <stop offset="100%" stop-color="#1F2937"/>
+                </linearGradient>
+                <filter id="dropShadow">
+                    <feDropShadow dx="2" dy="5" stdDeviation="3" flood-color="#000" flood-opacity="0.2"/>
+                </filter>
             </defs>
-
-            <g id="corpo-lavadora" filter="url(#shadow)">
-              <rect x="10" y="15" width="100" height="95" rx="12" fill="url(#lavadoraBody)" />
-              <rect x="10" y="15" width="100" height="20" rx="12" ry="12" fill="url(#lavadoraPainel)" />
-              <circle cx="100" cy="25" r="5" fill="#3B82F6" stroke="#E5E7EB" stroke-width="1"/>
-              <rect x="18" y="22" width="15" height="6" rx="3" fill="#9CA3AF" />
-
-              <circle cx="60" cy="67" r="32" fill="#6B7280" />
-              <circle cx="60" cy="67" r="28" fill="#D6EAF8" fill-opacity="0.5" />
+        
+            <g id="corpo-lavadora" filter="url(#dropShadow)">
+                <path d="M10 30 Q10 15, 25 15 L95 15 Q110 15, 110 30 L110 105 Q110 115, 100 115 L20 115 Q10 115, 10 105 Z" fill="url(#bodyGradient)"/>
+                <path d="M10 30 Q10 15, 25 15 L95 15 Q110 15, 110 30 L110 35 L10 35 Z" fill="url(#panelGradient)"/>
+                <rect x="20" y="22" width="20" height="8" rx="2" fill="#9CA3AF" fill-opacity="0.5"/>
+                <circle cx="95" cy="25" r="8" fill="#4B5563"/>
+                <circle cx="95" cy="25" r="7" fill="#3B82F6"/>
+                <line x1="95" y1="19" x2="95" y2="25" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+                <circle cx="55" cy="25" r="3" fill="#6B7280"/>
+                <circle cx="67" cy="25" r="3" fill="#6B7280"/>
+                <circle cx="79" cy="25" r="3" fill="#6B7280"/>
+                <circle cx="60" cy="72" r="35" fill="#9CA3AF"/>
+                <circle cx="60" cy="72" r="32" fill="#E5E7EB"/>
+                <circle cx="60" cy="72" r="28" fill="#BFDBFE" fill-opacity="0.3"/>
             </g>
-
+        
             <g id="mascote-login">
-              <path id="sobrancelha-esq" class="sobrancelha" d="M 40,52 Q 50,49 60,52" stroke="#1F2937" stroke-width="3" fill="none" stroke-linecap="round"/>
-              <path id="sobrancelha-dir" class="sobrancelha" d="M 70,52 Q 80,49 90,52" stroke="#1F2937" stroke-width="3" fill="none" stroke-linecap="round"/>
-
-              <g id="olhos">
-                <circle class="olho-fundo" cx="50" cy="65" r="9" fill="white"/>
-                <circle class="olho-fundo" cx="80" cy="65" r="9" fill="white"/>
-                <g class="pupila-wrapper" id="pupila-esq">
-                  <circle r="5" fill="black" cx="50" cy="65"/>
-                  <circle cx="51.5" cy="63.5" r="1.5" fill="white" fill-opacity="0.9"/>
+                <g transform="translate(0, -2)">
+                    <path id="sobrancelha-esq" class="sobrancelha" d="M 40,58 Q 48,54 56,58" stroke="#1F2937" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+                    <path id="sobrancelha-dir" class="sobrancelha" d="M 64,58 Q 72,54 80,58" stroke="#1F2937" stroke-width="2.5" fill="none" stroke-linecap="round"/>
                 </g>
-                <g class="pupila-wrapper" id="pupila-dir">
-                  <circle r="5" fill="black" cx="80" cy="65"/>
-                  <circle cx="81.5" cy="63.5" r="1.5" fill="white" fill-opacity="0.9"/>
+        
+                <g id="olhos">
+                    <g transform="translate(48, 70)">
+                        <circle class="olho-fundo" r="9" fill="white"/>
+                        <g class="pupila-wrapper" id="pupila-esq">
+                            <circle r="5" fill="black"/>
+                            <circle cx="1.5" cy="-1.5" r="1.5" fill="white" fill-opacity="0.9"/>
+                        </g>
+                    </g>
+                    <g transform="translate(72, 70)">
+                        <circle class="olho-fundo" r="9" fill="white"/>
+                        <g class="pupila-wrapper" id="pupila-dir">
+                            <circle r="5" fill="black"/>
+                            <circle cx="1.5" cy="-1.5" r="1.5" fill="white" fill-opacity="0.9"/>
+                        </g>
+                    </g>
                 </g>
-              </g>
-
-              <g id="boca">
-                <path id="boca-normal" class="boca" d="M 60,82 Q 65,85 70,82" stroke="black" stroke-width="2.5" fill="none" stroke-linecap="round"/>
-                <path id="boca-feliz" class="boca" d="M 58,82 Q 65,92 72,82" stroke="black" stroke-width="3" fill="none" stroke-linecap="round" style="display: none;"/>
-                <path id="boca-triste" class="boca" d="M 58,85 Q 65,78 72,85" stroke="black" stroke-width="2.5" fill="none" stroke-linecap="round" style="display: none;"/>
-              </g>
+        
+                <g id="boca">
+                    <path id="boca-normal" class="boca" d="M 55,88 Q 60,91 65,88" stroke="black" stroke-width="2" fill="none" stroke-linecap="round"/>
+                    <path id="boca-feliz" class="boca" d="M 52,88 Q 60,98 68,88" stroke="black" stroke-width="2.5" fill="none" stroke-linecap="round" style="display: none;"/>
+                    <path id="boca-triste" class="boca" d="M 53,91 Q 60,84 67,91" stroke="black" stroke-width="2" fill="none" stroke-linecap="round" style="display: none;"/>
+                </g>
             </g>
-          </svg>
+        </svg>
       </div>
       <h1>SIGO Casa dos Reparos</h1>
       <p>Sistema Integrado de Gerenciamento de Oficina</p>
@@ -345,38 +356,41 @@
 
     // --- LÓGICA DO MASCOTE/LOGO ANIMADO ---
     const logoContainer = document.querySelector('.logo');
-    const mascote = document.getElementById('mascote-login'); // Agora é o grupo da FACE
+    const mascote = document.getElementById('mascote-login'); // Grupo da FACE
     const pupilaEsq = document.getElementById('pupila-esq');
     const pupilaDir = document.getElementById('pupila-dir');
     const togglePassword = document.getElementById('togglePassword');
     let isPeeking = false;
 
-    // Olhos seguindo o mouse
+    // Lógica de seguir o mouse CORRIGIDA
     window.addEventListener('mousemove', (e) => {
       if (isPeeking) return;
 
       const rect = logoContainer.getBoundingClientRect();
-      
       const { clientX, clientY } = e;
 
+      // Centros dos olhos (baseado no viewBox 120x120 e transform)
+      const olhoEsqX = rect.left + (48 * rect.width / 120);
+      const olhoEsqY = rect.top + (70 * rect.height / 120);
+      const olhoDirX = rect.left + (72 * rect.width / 120);
+      const olhoDirY = rect.top + (70 * rect.height / 120);
+      
+      const maxMove = 3; // Distância máxima que a pupila pode se mover
+
       // Movimento da pupila esquerda
-      const olhoEsqX = rect.left + (50 * rect.width / 120);
-      const olhoEsqY = rect.top + (65 * rect.height / 120);
       const deltaEsqX = clientX - olhoEsqX;
       const deltaEsqY = clientY - olhoEsqY;
       const angleEsq = Math.atan2(deltaEsqY, deltaEsqX);
-      const moveEsqX = Math.cos(angleEsq) * 2;
-      const moveEsqY = Math.sin(angleEsq) * 2;
+      const moveEsqX = Math.cos(angleEsq) * maxMove;
+      const moveEsqY = Math.sin(angleEsq) * maxMove;
       pupilaEsq.style.transform = `translate(${moveEsqX}px, ${moveEsqY}px)`;
       
       // Movimento da pupila direita
-      const olhoDirX = rect.left + (80 * rect.width / 120);
-      const olhoDirY = rect.top + (65 * rect.height / 120);
       const deltaDirX = clientX - olhoDirX;
       const deltaDirY = clientY - olhoDirY;
       const angleDir = Math.atan2(deltaDirY, deltaDirX);
-      const moveDirX = Math.cos(angleDir) * 2;
-      const moveDirY = Math.sin(angleDir) * 2;
+      const moveDirX = Math.cos(angleDir) * maxMove;
+      const moveDirY = Math.sin(angleDir) * maxMove;
       pupilaDir.style.transform = `translate(${moveDirX}px, ${moveDirY}px)`;
     });
 
