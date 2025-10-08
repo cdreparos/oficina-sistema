@@ -17,41 +17,20 @@
       --accent-red: #ef4444;
       --border-color: #e2e8f0;
     }
-
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
+    
+    body.dark-mode {
+        --main-bg: #0f172a;
+        --card-bg: #1e293b;
+        --text-primary: #f1f5f9;
+        --text-secondary: #94a3b8;
+        --border-color: #334155;
     }
 
-    body {
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-      background: var(--main-bg);
-      color: var(--text-primary);
-    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Inter', sans-serif; background: var(--main-bg); color: var(--text-primary); transition: background-color 0.3s, color 0.3s; }
+    .dashboard-container { display: grid; grid-template-columns: 240px 1fr; min-height: 100vh; }
 
-    .dashboard-container {
-      display: grid;
-      grid-template-columns: 240px 1fr;
-      min-height: 100vh;
-    }
-
-    /* --- Sidebar de Navegação (Estilos copiados do painel.html) --- */
-    .sidebar {
-      background: var(--sidebar-bg);
-      color: #fff;
-      display: flex;
-      flex-direction: column;
-      padding: 24px 16px;
-      position: fixed;
-      left: 0;
-      top: 0;
-      height: 100%;
-      width: 240px;
-      z-index: 100;
-      transition: transform 0.3s ease-in-out;
-    }
-
+    .sidebar { background: var(--sidebar-bg); color: #fff; display: flex; flex-direction: column; padding: 24px 16px; position: fixed; left: 0; top: 0; height: 100%; width: 240px; z-index: 100; transition: transform 0.3s ease-in-out; }
     .sidebar-header { display: flex; align-items: center; gap: 12px; padding-bottom: 24px; margin-bottom: 16px; border-bottom: 1px solid var(--sidebar-bg-hover); }
     .sidebar-logo { width: 40px; height: 40px; background: var(--accent-blue); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; font-weight: bold; }
     .sidebar-header h1 { font-size: 1.1rem; font-weight: 600; }
@@ -64,86 +43,43 @@
     .logout-btn { width: 100%; background: none; border: none; color: #cbd5e1; display: flex; align-items: center; gap: 12px; padding: 12px 16px; font-size: 1rem; cursor: pointer; text-align: left; font-family: inherit; border-radius: 8px; transition: all 0.2s ease-in-out; }
     .logout-btn:hover { background: var(--accent-red); color: #fff; }
 
-    /* --- Conteúdo Principal --- */
-    .main-content {
-      grid-column: 2 / 3;
-      padding: 32px;
-    }
-
-    .main-header {
-      margin-bottom: 32px;
-    }
-
+    .main-content { grid-column: 2 / 3; padding: 32px; }
+    .main-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 32px; }
     .main-header h1 { font-size: 1.8rem; font-weight: 700; color: var(--text-primary); }
     
-    .settings-card {
-      background: var(--card-bg);
-      border-radius: 16px;
-      padding: 24px 32px;
-      margin-bottom: 24px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-    }
+    .settings-card { background: var(--card-bg); border-radius: 16px; padding: 24px 32px; margin-bottom: 24px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); transition: background-color 0.3s; }
+    .settings-card-title { font-size: 1.3rem; font-weight: 600; padding-bottom: 16px; margin-bottom: 24px; border-bottom: 1px solid var(--border-color); }
+    .setting-item { display: flex; justify-content: space-between; align-items: center; padding: 16px 0; border-bottom: 1px solid var(--border-color); flex-wrap: wrap; }
+    .setting-item:last-child { border-bottom: none; }
+    .setting-item-info { flex-basis: 60%; }
+    .setting-item-info h3 { font-size: 1rem; font-weight: 500; margin-bottom: 4px; }
+    .setting-item-info p { font-size: 0.9rem; color: var(--text-secondary); max-width: 500px; }
+    .setting-item-action { flex-basis: 35%; text-align: right; }
     
-    .settings-card-title {
-      font-size: 1.3rem;
-      font-weight: 600;
-      padding-bottom: 16px;
-      margin-bottom: 24px;
-      border-bottom: 1px solid var(--border-color);
-    }
-
-    .setting-item {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 16px 0;
-      border-bottom: 1px solid var(--border-color);
-    }
-    .setting-item:last-child {
-      border-bottom: none;
-    }
-    
-    .setting-item-info h3 {
-      font-size: 1rem;
-      font-weight: 500;
-      margin-bottom: 4px;
-    }
-    .setting-item-info p {
-      font-size: 0.9rem;
-      color: var(--text-secondary);
-      max-width: 500px;
-    }
-    
-    .btn { padding: 10px 20px; border-radius: 8px; border: 1px solid #ccc; background-color: #f0f0f0; font-weight: 600; cursor: pointer; transition: all 0.2s; }
-    .btn:hover { background-color: #e0e0e0; }
+    .btn { padding: 10px 20px; border-radius: 8px; border: 1px solid #9ca3af; background-color: transparent; color: var(--text-primary); font-weight: 600; cursor: pointer; transition: all 0.2s; }
+    .btn:hover { background-color: #f1f5f9; }
+    body.dark-mode .btn:hover { background-color: var(--sidebar-bg-hover); }
     .btn-primary { background-color: var(--accent-blue); color: white; border-color: var(--accent-blue); }
-    .btn-primary:hover { background-color: #2563eb; }
+    .btn-primary:hover { background-color: #2563eb; color: white; }
     .btn-danger { background-color: var(--accent-red); color: white; border-color: var(--accent-red); }
-    .btn-danger:hover { background-color: #dc2626; }
+    .btn-danger:hover { background-color: #dc2626; color: white; }
     
-    .danger-zone {
-      border: 2px solid var(--accent-red);
-    }
+    .danger-zone { border: 1px solid #b91c1c; }
     
-    .form-group {
-        margin-bottom: 16px;
-    }
-    .form-group label {
-        display: block;
-        font-weight: 500;
-        margin-bottom: 8px;
-        font-size: 0.9rem;
-    }
-    .form-group input, .form-group textarea {
-        width: 100%;
-        padding: 10px 14px;
-        border-radius: 8px;
-        border: 1px solid #ccc;
-        font-size: 1rem;
-    }
+    .form-group { margin-bottom: 16px; }
+    .form-group label { display: block; font-weight: 500; margin-bottom: 8px; font-size: 0.9rem; }
+    .form-group input, .form-group textarea, .form-group select { width: 100%; padding: 10px 14px; border-radius: 8px; border: 1px solid #9ca3af; font-size: 1rem; background-color: var(--main-bg); color: var(--text-primary); }
+    
+    .checkbox-group label { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
 
-    /* --- RESPONSIVIDADE --- */
-    .mobile-menu-btn { display: none; background: none; border: none; font-size: 1.8rem; cursor: pointer; }
+    .toggle-switch { position: relative; display: inline-block; width: 50px; height: 28px; }
+    .toggle-switch input { opacity: 0; width: 0; height: 0; }
+    .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; border-radius: 28px; }
+    .slider:before { position: absolute; content: ""; height: 20px; width: 20px; left: 4px; bottom: 4px; background-color: white; transition: .4s; border-radius: 50%; }
+    input:checked + .slider { background-color: var(--accent-blue); }
+    input:checked + .slider:before { transform: translateX(22px); }
+
+    .mobile-menu-btn { display: none; background: none; border: none; font-size: 1.8rem; cursor: pointer; color: var(--text-primary); }
     .overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 99; }
     .overlay.is-open { display: block; }
     @media (max-width: 768px) {
@@ -152,7 +88,9 @@
       .sidebar.is-open { transform: translateX(0); }
       .main-content { grid-column: 1 / 2; padding: 16px; }
       .mobile-menu-btn { display: block; }
-      .setting-item { flex-direction: column; align-items: flex-start; gap: 12px; }
+      .setting-item { flex-direction: column; align-items: flex-start; gap: 16px; }
+      .setting-item-action { width: 100%; text-align: left; }
+      .btn { width: 100%; }
     }
   </style>
 </head>
@@ -161,11 +99,7 @@
   <div class="dashboard-container">
     <nav class="sidebar" id="sidebar">
       <div>
-        <div class="sidebar-header">
-          <div class="sidebar-logo">S</div>
-          <h1>SIGO Casa dos Reparos</h1>
-        </div>
-        
+        <div class="sidebar-header"><div class="sidebar-logo">S</div><h1>SIGO Casa dos Reparos</h1></div>
         <ul class="nav-list">
           <li><a href="painel.html"><span class="nav-icon">🏠</span> Painel</a></li>
           <li><a href="ordens-servico.html"><span class="nav-icon">🛠️</span> Ordens de Serviço</a></li>
@@ -178,68 +112,80 @@
         </ul>
       </div>
       <div class="sidebar-footer">
-        <button class="logout-btn" onclick="logout()">
-          <span class="nav-icon">🚪</span> Sair do Sistema
-        </button>
+        <button class="logout-btn" onclick="logout()"><span class="nav-icon">🚪</span> Sair do Sistema</button>
       </div>
     </nav>
-    
     <div class="overlay" id="overlay"></div>
 
     <main class="main-content">
-      <header class="main-header">
-        <h1>Configurações do Sistema</h1>
-        <button class="mobile-menu-btn" id="mobileMenuBtn">☰</button>
-      </header>
+      <header class="main-header"><h1>Configurações</h1><button class="mobile-menu-btn" id="mobileMenuBtn">☰</button></header>
 
-      <section class="settings-card danger-zone">
-        <h2 class="settings-card-title">Gerenciamento de Dados</h2>
-        
+      <section class="settings-card">
+        <h2 class="settings-card-title">Oficina e Perfil</h2>
+        <div class="form-group"><label for="inputNomeOficina">Nome da Oficina</label><input type="text" id="inputNomeOficina" placeholder="O nome que aparecerá em relatórios"></div>
+        <div class="form-group"><label for="inputEndereco">Endereço</label><input type="text" id="inputEndereco" placeholder="Rua, Número, Bairro, Cidade"></div>
+        <div class="form-group"><label for="inputTelefone">Telefone / WhatsApp</label><input type="tel" id="inputTelefone" placeholder="(00) 00000-0000"></div>
+        <div class="form-group"><label for="inputDocumento">CNPJ / CPF</label><input type="text" id="inputDocumento" placeholder="Seu documento principal"></div>
+        <hr style="border: none; border-top: 1px solid var(--border-color); margin: 24px 0;">
+        <div class="form-group"><label for="inputNomeExibicao">Seu Nome de Exibição</label><input type="text" id="inputNomeExibicao" placeholder="Nome que aparece no painel"></div>
         <div class="setting-item">
-          <div class="setting-item-info">
-            <h3>Backup Completo</h3>
-            <p>Faça o download de um arquivo com todos os dados do sistema (clientes, OS, estoque, etc.). Guarde em um local seguro.</p>
-          </div>
-          <button class="btn btn-primary" id="btnBackup">Fazer Backup Agora</button>
-        </div>
-        
-        <div class="setting-item">
-          <div class="setting-item-info">
-            <h3>Restaurar Backup</h3>
-            <p>Substitua todos os dados atuais por um arquivo de backup anterior. <strong>Atenção: esta ação não pode ser desfeita.</strong></p>
-          </div>
-          <input type="file" id="inputRestore" accept=".json" style="display: none;">
-          <button class="btn" onclick="document.getElementById('inputRestore').click();">Enviar Arquivo</button>
-        </div>
-
-        <div class="setting-item">
-          <div class="setting-item-info">
-            <h3>Limpar Dados Gerais</h3>
-            <p>Apaga permanentemente todos os dados do sistema. Use com extremo cuidado, apenas se desejar recomeçar do zero.</p>
-          </div>
-          <button class="btn btn-danger" id="btnCleanData">Limpar Todos os Dados</button>
+            <div class="setting-item-info"><h3>Alterar Senha</h3><p>Um e-mail será enviado para você com as instruções para redefinir sua senha.</p></div>
+            <div class="setting-item-action"><button class="btn" id="btnAlterarSenha">Redefinir Senha</button></div>
         </div>
       </section>
 
       <section class="settings-card">
-        <h2 class="settings-card-title">Personalização da Oficina e Perfil</h2>
-        
-        <div class="form-group">
-            <label for="inputNomeOficina">Nome da Oficina</label>
-            <input type="text" id="inputNomeOficina" placeholder="Ex: Casa dos Reparos">
+        <h2 class="settings-card-title">Preferências do Sistema</h2>
+        <div class="setting-item">
+            <div class="setting-item-info"><h3>Modo Escuro</h3><p>Alterne entre o tema claro e escuro para melhor conforto visual.</p></div>
+            <div class="setting-item-action"><label class="toggle-switch"><input type="checkbox" id="toggleDarkMode"><span class="slider"></span></label></div>
         </div>
-
-        <div class="form-group">
-            <label for="inputNomeExibicao">Seu Nome de Exibição</label>
-            <input type="text" id="inputNomeExibicao" placeholder="Seu nome que aparece no painel">
+        <div class="setting-item">
+            <div class="setting-item-info"><h3>Aviso de Contas a Vencer</h3><p>Receber alertas no painel com quantos dias de antecedência.</p></div>
+            <div class="setting-item-action"><input type="number" id="inputDiasAlertaContas" value="7" style="width: 80px; text-align: center;"></div>
         </div>
-        
-        <div style="text-align: right; margin-top: 24px;">
-            <button class="btn btn-primary" id="btnSalvarPerfil">Salvar Alterações</button>
+        <div class="setting-item">
+            <div class="setting-item-info"><h3>Alerta de Estoque Baixo</h3><p>Considerar "estoque baixo" quando a quantidade atingir o valor mínimo mais esta porcentagem.</p></div>
+            <div class="setting-item-action"><input type="number" id="inputPercentualEstoque" value="20" style="width: 80px; text-align: center;"> %</div>
         </div>
       </section>
       
-      </main>
+      <section class="settings-card">
+        <h2 class="settings-card-title">Impressão e Documentos</h2>
+        <div class="form-group">
+            <label for="inputRodape">Texto de Rodapé (Termos de Garantia)</label>
+            <textarea id="inputRodape" rows="4" placeholder="Ex: A garantia deste serviço é de 90 dias para peças e mão de obra..."></textarea>
+        </div>
+        <div class="setting-item">
+            <div class="setting-item-info"><h3>Opções de Impressão da OS</h3><p>Escolha quais campos devem aparecer no documento impresso.</p></div>
+            <div class="setting-item-action checkbox-group">
+                <label><input type="checkbox" id="printCpfCliente"> Incluir CPF do cliente</label>
+                <label><input type="checkbox" id="printDetalharPecas"> Detalhar preços das peças</label>
+                <label><input type="checkbox" id="printAssinatura"> Adicionar campo para assinatura</label>
+            </div>
+        </div>
+      </section>
+
+      <section class="settings-card danger-zone">
+        <h2 class="settings-card-title">Gerenciamento de Dados</h2>
+        <div class="setting-item">
+          <div class="setting-item-info"><h3>Backup Completo</h3><p>Faça o download de um arquivo com todos os dados do sistema.</p></div>
+          <div class="setting-item-action"><button class="btn btn-primary" id="btnBackup">Fazer Backup Agora</button></div>
+        </div>
+        <div class="setting-item">
+          <div class="setting-item-info"><h3>Restaurar Backup</h3><p>Substitua todos os dados atuais por um arquivo de backup. <strong>Ação irreversível.</strong></p></div>
+          <div class="setting-item-action"><input type="file" id="inputRestore" accept=".json" style="display: none;"><button class="btn" onclick="document.getElementById('inputRestore').click();">Enviar Arquivo</button></div>
+        </div>
+        <div class="setting-item">
+          <div class="setting-item-info"><h3>Limpar Dados Gerais</h3><p>Apaga permanentemente todos os dados do sistema. <strong>Use com extremo cuidado.</strong></p></div>
+          <div class="setting-item-action"><button class="btn btn-danger" id="btnCleanData">Limpar Todos os Dados</button></div>
+        </div>
+      </section>
+      
+      <div style="text-align: center; margin-top: 32px;">
+        <button class="btn btn-primary" id="btnSalvarTudo" style="padding: 14px 40px; font-size: 1.1rem;">Salvar Todas as Configurações</button>
+      </div>
+    </main>
   </div>
 
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
@@ -251,117 +197,82 @@
   <script>
     protegerPagina();
 
-    // --- LÓGICA DE RESPONSIVIDADE (MENU MOBILE) ---
+    // LÓGICA DE RESPONSIVIDADE
     const sidebar = document.getElementById('sidebar');
     const mobileMenuBtn = document.getElementById('mobileMenuBtn');
     const overlay = document.getElementById('overlay');
-    mobileMenuBtn.addEventListener('click', () => {
-        sidebar.classList.toggle('is-open');
-        overlay.classList.toggle('is-open');
-    });
-    overlay.addEventListener('click', () => {
-        sidebar.classList.remove('is-open');
-        overlay.classList.remove('is-open');
-    });
+    mobileMenuBtn.addEventListener('click', () => { sidebar.classList.toggle('is-open'); overlay.classList.toggle('is-open'); });
+    overlay.addEventListener('click', () => { sidebar.classList.remove('is-open'); overlay.classList.remove('is-open'); });
 
     const configRef = database.ref('configuracoes');
 
-    // --- LÓGICA DE GERENCIAMENTO DE DADOS ---
+    // LÓGICA DE GERENCIAMENTO DE DADOS (Backup, Restore, Limpar)
+    // O código para estas funções é longo e já foi validado, omitido aqui para clareza, mas presente no bloco final.
     
-    // BACKUP
-    document.getElementById('btnBackup').addEventListener('click', async () => {
-        alert("Iniciando o backup. Isso pode levar um momento.");
-        try {
-            const snapshot = await database.ref().once('value');
-            const data = snapshot.val();
-            
-            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            const dataString = new Date().toISOString().slice(0, 10);
-            a.download = `backup-sigo-${dataString}.json`;
-            a.click();
-            URL.revokeObjectURL(url);
-            alert("Backup concluído com sucesso!");
-        } catch (error) {
-            alert("Erro ao gerar o backup: " + error.message);
-        }
-    });
+    // MAPEAMENTO DE TODOS OS INPUTS DE CONFIGURAÇÃO
+    const allInputs = {
+        nomeOficina: document.getElementById('inputNomeOficina'),
+        endereco: document.getElementById('inputEndereco'),
+        telefone: document.getElementById('inputTelefone'),
+        documento: document.getElementById('inputDocumento'),
+        nomeExibicao: document.getElementById('inputNomeExibicao'),
+        darkMode: document.getElementById('toggleDarkMode'),
+        diasAlertaContas: document.getElementById('inputDiasAlertaContas'),
+        percentualEstoque: document.getElementById('inputPercentualEstoque'),
+        rodapeDocumentos: document.getElementById('inputRodape'),
+        printCpfCliente: document.getElementById('printCpfCliente'),
+        printDetalharPecas: document.getElementById('printDetalharPecas'),
+        printAssinatura: document.getElementById('printAssinatura'),
+    };
 
-    // RESTAURAR (UPLOAD)
-    document.getElementById('inputRestore').addEventListener('change', (event) => {
-        const file = event.target.files[0];
-        if (!file) return;
-
-        if (!confirm("⚠️ ATENÇÃO! ⚠️\n\nVocê tem certeza que deseja restaurar este backup?\n\nTODOS OS DADOS ATUAIS SERÃO APAGADOS E SUBSTITUÍDOS PELOS DADOS DO ARQUIVO.\n\nEsta ação é irreversível.")) {
-            event.target.value = ''; // Limpa o input
-            return;
-        }
-
-        const reader = new FileReader();
-        reader.onload = async (e) => {
-            try {
-                const data = JSON.parse(e.target.result);
-                await database.ref().set(data);
-                alert("Backup restaurado com sucesso! A página será recarregada.");
-                window.location.reload();
-            } catch (error) {
-                alert("Erro ao ler o arquivo de backup. Verifique se o arquivo é válido.\n\n" + error.message);
-            }
-        };
-        reader.readAsText(file);
-    });
-
-    // LIMPAR DADOS
-    document.getElementById('btnCleanData').addEventListener('click', async () => {
-        const confirmacao1 = prompt("Esta ação apagará TODOS os seus dados permanentemente. Para confirmar, digite 'CONFIRMAR EXCLUSAO' na caixa abaixo:");
-        if (confirmacao1 !== "CONFIRMAR EXCLUSAO") {
-            alert("Ação cancelada. A frase de confirmação não corresponde.");
-            return;
-        }
-
-        if (!confirm("ÚLTIMO AVISO:\n\nTodos os seus clientes, ordens de serviço, estoque e dados financeiros serão excluídos. Deseja realmente continuar?")) {
-            alert("Ação cancelada.");
-            return;
-        }
-        
-        try {
-            alert("Limpando dados... O sistema será recarregado em seguida.");
-            await database.ref().remove();
-            alert("Todos os dados foram excluídos.");
-            window.location.reload();
-        } catch (error) {
-            alert("Ocorreu um erro ao limpar os dados: " + error.message);
-        }
-    });
-
-    // --- LÓGICA DE PERSONALIZAÇÃO ---
-    const inputNomeOficina = document.getElementById('inputNomeOficina');
-    const inputNomeExibicao = document.getElementById('inputNomeExibicao');
-    
-    // Carregar configurações salvas
+    // Carregar configurações salvas do Firebase
     configRef.on('value', (snapshot) => {
         const config = snapshot.val() || {};
-        inputNomeOficina.value = config.nomeOficina || '';
-        inputNomeExibicao.value = config.nomeExibicao || '';
+        allInputs.nomeOficina.value = config.nomeOficina || '';
+        allInputs.endereco.value = config.endereco || '';
+        allInputs.telefone.value = config.telefone || '';
+        allInputs.documento.value = config.documento || '';
+        allInputs.nomeExibicao.value = config.nomeExibicao || auth.currentUser?.displayName || '';
+        allInputs.diasAlertaContas.value = config.diasAlertaContas || 7;
+        allInputs.percentualEstoque.value = config.percentualEstoque || 20;
+        allInputs.rodapeDocumentos.value = config.rodapeDocumentos || '';
+        allInputs.printCpfCliente.checked = config.printCpfCliente || false;
+        allInputs.printDetalharPecas.checked = config.printDetalharPecas || false;
+        allInputs.printAssinatura.checked = config.printAssinatura || false;
+        
+        // Aplica o tema escuro se estiver salvo
+        if (config.darkMode) {
+            allInputs.darkMode.checked = true;
+            document.body.classList.add('dark-mode');
+        } else {
+            allInputs.darkMode.checked = false;
+            document.body.classList.remove('dark-mode');
+        }
     });
 
-    // Salvar configurações
-    document.getElementById('btnSalvarPerfil').addEventListener('click', async () => {
+    // Salvar todas as configurações
+    document.getElementById('btnSalvarTudo').addEventListener('click', async () => {
         const user = auth.currentUser;
         if (!user) return;
         
         try {
-            // Atualiza o nome de exibição no Firebase Auth (se alterado)
-            if (user.displayName !== inputNomeExibicao.value) {
-                await user.updateProfile({ displayName: inputNomeExibicao.value });
+            if (user.displayName !== allInputs.nomeExibicao.value) {
+                await user.updateProfile({ displayName: allInputs.nomeExibicao.value });
             }
             
-            // Salva as configurações no Realtime Database
             await configRef.update({
-                nomeOficina: inputNomeOficina.value,
-                nomeExibicao: inputNomeExibicao.value
+                nomeOficina: allInputs.nomeOficina.value,
+                endereco: allInputs.endereco.value,
+                telefone: allInputs.telefone.value,
+                documento: allInputs.documento.value,
+                nomeExibicao: allInputs.nomeExibicao.value,
+                darkMode: allInputs.darkMode.checked,
+                diasAlertaContas: parseInt(allInputs.diasAlertaContas.value),
+                percentualEstoque: parseInt(allInputs.percentualEstoque.value),
+                rodapeDocumentos: allInputs.rodapeDocumentos.value,
+                printCpfCliente: allInputs.printCpfCliente.checked,
+                printDetalharPecas: allInputs.printDetalharPecas.checked,
+                printAssinatura: allInputs.printAssinatura.checked,
             });
             
             alert("Configurações salvas com sucesso!");
@@ -369,7 +280,54 @@
             alert("Erro ao salvar configurações: " + error.message);
         }
     });
+    
+    // Alterar Senha
+    document.getElementById('btnAlterarSenha').addEventListener('click', () => { /* ... (código mantido) ... */ });
+    
+    // Lógica do Modo Escuro
+    allInputs.darkMode.addEventListener('change', () => {
+        document.body.classList.toggle('dark-mode', allInputs.darkMode.checked);
+    });
 
+    // --- CÓDIGO COMPLETO DAS FUNÇÕES DE DADOS (PARA GARANTIR) ---
+    document.getElementById('btnBackup').addEventListener('click', async () => {
+        alert("Iniciando o backup...");
+        try {
+            const snapshot = await database.ref().once('value'); const data = snapshot.val();
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url;
+            const dataString = new Date().toISOString().slice(0, 10);
+            a.download = `backup-sigo-${dataString}.json`; document.body.appendChild(a); a.click(); document.body.removeChild(a);
+            URL.revokeObjectURL(url); alert("Backup concluído com sucesso!");
+        } catch (error) { console.error("Erro no backup:", error); alert("Erro ao gerar o backup: " + error.message); }
+    });
+    document.getElementById('inputRestore').addEventListener('change', (event) => {
+        const file = event.target.files[0]; if (!file) { event.target.value = ''; return; }
+        if (!confirm("⚠️ ATENÇÃO! ⚠️\n\nTODOS OS DADOS ATUAIS SERÃO APAGADOS E SUBSTITUÍDOS. Esta ação é irreversível. Deseja continuar?")) { event.target.value = ''; return; }
+        const reader = new FileReader();
+        reader.onload = async (e) => {
+            try {
+                const data = JSON.parse(e.target.result); await database.ref().set(data);
+                alert("Backup restaurado com sucesso! A página será recarregada."); window.location.reload();
+            } catch (error) { alert("Erro ao ler o arquivo de backup. Verifique se o arquivo é válido.\n\n" + error.message); }
+        };
+        reader.readAsText(file); event.target.value = '';
+    });
+    document.getElementById('btnCleanData').addEventListener('click', async () => {
+        if (prompt("Esta ação apagará TUDO. Para confirmar, digite 'CONFIRMAR EXCLUSAO':") !== "CONFIRMAR EXCLUSAO") { alert("Ação cancelada."); return; }
+        if (!confirm("ÚLTIMO AVISO: Deseja realmente continuar?")) { alert("Ação cancelada."); return; }
+        try {
+            await database.ref().remove(); alert("Todos os dados foram excluídos. A página será recarregada."); window.location.reload();
+        } catch (error) { alert("Ocorreu um erro: " + error.message); }
+    });
+    document.getElementById('btnAlterarSenha').addEventListener('click', () => {
+        const user = auth.currentUser; if (!user) return;
+        if (confirm("Você receberá um e-mail com instruções para redefinir sua senha. Deseja continuar?")) {
+            auth.sendPasswordResetEmail(user.email)
+                .then(() => { alert("E-mail de redefinição de senha enviado para " + user.email); })
+                .catch((error) => { alert("Erro ao enviar e-mail: " + error.message); });
+        }
+    });
   </script>
 </body>
 </html>
