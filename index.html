@@ -41,7 +41,7 @@
     }
     
     .logo {
-      width: 140px; /* Aumentado para o novo design */
+      width: 140px;
       height: 140px;
       margin: 0 auto 20px;
       display: flex;
@@ -49,10 +49,15 @@
       justify-content: center;
     }
     
-    /* Estilos e transições para as partes da face */
-    .pupila-wrapper, .boca, .sobrancelha, .olho-fundo {
+    /* Apenas as expressões (boca, sobrancelhas) terão transição suave */
+    .boca, .sobrancelha, .olho-fundo {
       transition: all 0.3s ease-in-out;
     }
+    /* A pupila não tem transição para responder instantaneamente ao mouse */
+    .pupila-wrapper {
+        transition: transform 0.3s ease-in-out; /* Adicionado para suavizar o "olhar pra cima" */
+    }
+
 
     /* Estado de espiar a senha */
     #mascote-login.peek .pupila-wrapper {
@@ -364,7 +369,12 @@
 
     // Lógica de seguir o mouse CORRIGIDA
     window.addEventListener('mousemove', (e) => {
+      // Trava o movimento se estiver espiando a senha
       if (isPeeking) return;
+
+      // Remove a transição CSS para movimento instantâneo
+      pupilaEsq.style.transition = 'none';
+      pupilaDir.style.transition = 'none';
 
       const rect = logoContainer.getBoundingClientRect();
       const { clientX, clientY } = e;
@@ -402,12 +412,22 @@
       
       resetarMascote();
 
+      // Readiciona a transição para suavizar a animação de "olhar para cima"
+      pupilaEsq.style.transition = 'transform 0.3s ease-in-out';
+      pupilaDir.style.transition = 'transform 0.3s ease-in-out';
+
       if (type === 'text') {
         isPeeking = true;
         mascote.classList.add('peek');
+        // Força a posição para cima via JS, que sobrepõe o mousemove
+        pupilaEsq.style.transform = 'translateY(-4px)';
+        pupilaDir.style.transform = 'translateY(-4px)';
       } else {
         isPeeking = false;
         mascote.classList.remove('peek');
+        // Reseta a posição para o centro
+        pupilaEsq.style.transform = 'translate(0, 0)';
+        pupilaDir.style.transform = 'translate(0, 0)';
       }
     });
     
