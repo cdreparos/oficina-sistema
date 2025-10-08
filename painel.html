@@ -9,7 +9,7 @@
     :root {
       --sidebar-bg: #1e293b;
       --sidebar-bg-hover: #334155;
-      --main-bg: #e2e8f0; /* COR DO FUNDO ALTERADA */
+      --main-bg: #e2e8f0;
       --card-bg: #ffffff;
       --text-primary: #1e293b;
       --text-secondary: #64748b;
@@ -20,347 +20,82 @@
       --border-color: #e2e8f0;
     }
 
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
+    body.dark-mode {
+        --main-bg: #0f172a;
+        --card-bg: #1e293b;
+        --text-primary: #f1f5f9;
+        --text-secondary: #94a3b8;
+        --border-color: #334155;
     }
 
-    body {
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-      background: var(--main-bg);
-      color: var(--text-primary);
-    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Inter', sans-serif; background: var(--main-bg); color: var(--text-primary); transition: background-color 0.3s, color 0.3s; }
+    .dashboard-container { display: grid; grid-template-columns: 240px 1fr; min-height: 100vh; }
 
-    .dashboard-container {
-      display: grid;
-      grid-template-columns: 240px 1fr;
-      min-height: 100vh;
-    }
+    .sidebar { background: var(--sidebar-bg); color: #fff; display: flex; flex-direction: column; padding: 24px 16px; position: fixed; left: 0; top: 0; height: 100%; width: 240px; z-index: 100; transition: transform 0.3s ease-in-out; }
+    .sidebar-header { display: flex; align-items: center; gap: 12px; padding-bottom: 24px; margin-bottom: 16px; border-bottom: 1px solid var(--sidebar-bg-hover); }
+    .sidebar-logo { width: 40px; height: 40px; background: var(--accent-blue); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; font-weight: bold; }
+    .sidebar-header h1 { font-size: 1.1rem; font-weight: 600; }
+    .nav-list { list-style: none; flex-grow: 1; }
+    .nav-list a { color: #cbd5e1; text-decoration: none; display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-radius: 8px; font-weight: 500; transition: all 0.2s ease-in-out; margin-bottom: 4px; }
+    .nav-list a:hover { background: var(--sidebar-bg-hover); color: #fff; }
+    .nav-list a.active { background: var(--accent-blue); color: #fff; }
+    .nav-icon { font-size: 1.2rem; }
+    .sidebar-footer { border-top: 1px solid var(--sidebar-bg-hover); padding-top: 16px; }
+    .user-profile { display: flex; align-items: center; gap: 12px; background: var(--sidebar-bg-hover); padding: 12px; border-radius: 8px; margin-bottom: 12px; }
+    .user-avatar { width: 36px; height: 36px; border-radius: 50%; background: var(--accent-blue); display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 0.9rem; flex-shrink: 0; }
+    .user-details .user-name { font-weight: 600; font-size: 0.9rem; }
+    .user-details .user-email { font-size: 0.75rem; color: #94a3b8; }
+    .logout-btn { width: 100%; background: none; border: none; color: #cbd5e1; display: flex; align-items: center; gap: 12px; padding: 12px 16px; font-size: 1rem; cursor: pointer; text-align: left; font-family: inherit; border-radius: 8px; transition: all 0.2s ease-in-out; }
+    .logout-btn:hover { background: var(--accent-red); color: #fff; }
 
-    /* --- Sidebar de Navegação --- */
-    .sidebar {
-      background: var(--sidebar-bg);
-      color: #fff;
-      display: flex;
-      flex-direction: column;
-      padding: 24px 16px;
-      position: fixed;
-      left: 0;
-      top: 0;
-      height: 100%;
-      width: 240px;
-      z-index: 100;
-      transition: transform 0.3s ease-in-out; /* Para animação mobile */
-    }
+    .main-content { grid-column: 2 / 3; padding: 32px; }
+    .main-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 32px; }
+    .main-header h2 { font-size: 1.8rem; font-weight: 700; color: var(--text-primary); }
+    .main-header p { color: var(--text-secondary); font-size: 1rem; }
 
-    .sidebar-header {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      padding-bottom: 24px;
-      margin-bottom: 16px;
-      border-bottom: 1px solid var(--sidebar-bg-hover);
-    }
-    
-    .sidebar-logo {
-      width: 40px;
-      height: 40px;
-      background: var(--accent-blue);
-      border-radius: 10px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.5rem;
-      font-weight: bold;
-    }
-
-    .sidebar-header h1 {
-      font-size: 1.1rem;
-      font-weight: 600;
-    }
-
-    .nav-list {
-      list-style: none;
-      flex-grow: 1;
-    }
-
-    .nav-list a {
-      color: #cbd5e1;
-      text-decoration: none;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      padding: 12px 16px;
-      border-radius: 8px;
-      font-weight: 500;
-      transition: all 0.2s ease-in-out;
-      margin-bottom: 4px;
-    }
-
-    .nav-list a:hover {
-      background: var(--sidebar-bg-hover);
-      color: #fff;
-    }
-    
-    .nav-list a.active {
-      background: var(--accent-blue);
-      color: #fff;
-    }
-    
-    .nav-icon {
-      font-size: 1.2rem;
-    }
-
-    .sidebar-footer {
-      border-top: 1px solid var(--sidebar-bg-hover);
-      padding-top: 16px;
-    }
-
-    .user-profile {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      background: var(--sidebar-bg-hover);
-      padding: 12px;
-      border-radius: 8px;
-      margin-bottom: 12px;
-    }
-    
-    .user-avatar {
-      width: 36px;
-      height: 36px;
-      border-radius: 50%;
-      background: var(--accent-blue);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: bold;
-      font-size: 0.9rem;
-      flex-shrink: 0;
-    }
-
-    .user-details .user-name {
-      font-weight: 600;
-      font-size: 0.9rem;
-    }
-    
-    .user-details .user-email {
-      font-size: 0.75rem;
-      color: #94a3b8;
-    }
-    
-    .logout-btn {
-      width: 100%;
-      background: none;
-      border: none;
-      color: #cbd5e1;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      padding: 12px 16px;
-      font-size: 1rem;
-      cursor: pointer;
-      text-align: left;
-      font-family: inherit;
-      border-radius: 8px;
-      transition: all 0.2s ease-in-out;
-    }
-    
-    .logout-btn:hover {
-      background: var(--accent-red);
-      color: #fff;
-    }
-
-    /* --- Conteúdo Principal --- */
-    .main-content {
-      grid-column: 2 / 3;
-      padding: 32px;
-    }
-
-    .main-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 32px;
-    }
-
-    .main-header h2 {
-      font-size: 1.8rem;
-      font-weight: 700;
-      color: var(--text-primary);
-    }
-    
-    .main-header p {
-      color: var(--text-secondary);
-      font-size: 1rem;
-    }
-
-    .summary-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 24px;
-      margin-bottom: 32px;
-    }
-
-    .summary-card {
-      background: var(--card-bg);
-      padding: 24px;
-      border-radius: 16px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-      border-left: 4px solid;
-    }
-    
+    .summary-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 24px; margin-bottom: 32px; }
+    .summary-card { background: var(--card-bg); padding: 24px; border-radius: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); border-left: 4px solid; transition: background-color 0.3s; }
     .summary-card.blue { border-color: var(--accent-blue); }
     .summary-card.green { border-color: var(--accent-green); }
     .summary-card.yellow { border-color: var(--accent-yellow); }
     .summary-card.red { border-color: var(--accent-red); }
-
-    .card-header {
-      display: flex;
-      align-items: center;
-      gap: 16px;
-      margin-bottom: 12px;
-    }
-    
-    .card-icon {
-      width: 48px;
-      height: 48px;
-      border-radius: 12px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.5rem;
-    }
+    .card-header { display: flex; align-items: center; gap: 16px; margin-bottom: 12px; }
+    .card-icon { width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; }
     .blue .card-icon { background-color: #dbeafe; color: var(--accent-blue); }
     .green .card-icon { background-color: #d1fae5; color: var(--accent-green); }
     .yellow .card-icon { background-color: #fef3c7; color: var(--accent-yellow); }
     .red .card-icon { background-color: #fee2e2; color: var(--accent-red); }
-
-    .card-title {
-      color: var(--text-secondary);
-      font-size: 0.9rem;
-      font-weight: 500;
-    }
-
-    .card-value {
-      font-size: 2.2rem;
-      font-weight: 800;
-      color: var(--text-primary);
-    }
+    .card-title { color: var(--text-secondary); font-size: 0.9rem; font-weight: 500; }
+    .card-value { font-size: 2.2rem; font-weight: 800; color: var(--text-primary); }
     
-    .main-dashboard {
-      display: grid;
-      grid-template-columns: 2fr 1fr;
-      gap: 24px;
-    }
-    
-    .dashboard-card {
-      background: var(--card-bg);
-      padding: 24px;
-      border-radius: 16px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-    }
-
-    .dashboard-card-title {
-      font-size: 1.2rem;
-      font-weight: 600;
-      margin-bottom: 20px;
-    }
-    
-    .list-item {
-      display: flex;
-      align-items: center;
-      gap: 16px;
-      padding: 12px 0;
-      border-bottom: 1px solid var(--border-color);
-    }
+    .main-dashboard { display: grid; grid-template-columns: 2fr 1fr; gap: 24px; }
+    .dashboard-card { background: var(--card-bg); padding: 24px; border-radius: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); transition: background-color 0.3s; }
+    .dashboard-card-title { font-size: 1.2rem; font-weight: 600; margin-bottom: 20px; }
+    .list-item { display: flex; align-items: center; gap: 16px; padding: 12px 0; border-bottom: 1px solid var(--border-color); }
     .list-item:last-child { border-bottom: none; }
-    
-    .list-item-icon {
-      width: 36px;
-      height: 36px;
-      border-radius: 8px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1rem;
-      background-color: #f1f5f9;
-    }
-
+    .list-item-icon { width: 36px; height: 36px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 1rem; background-color: var(--main-bg); transition: background-color 0.3s; }
     .list-item-details { flex-grow: 1; }
     .list-item-details strong { display: block; font-weight: 500; font-size: 0.9rem; }
     .list-item-details small { color: var(--text-secondary); font-size: 0.8rem; }
-    
-    .list-item-value {
-      font-weight: 600;
-      font-size: 0.9rem;
-    }
+    .list-item-value { font-weight: 600; font-size: 0.9rem; }
     .income { color: var(--accent-green); }
     .expense { color: var(--accent-red); }
-    
-    .chart-placeholder {
-      height: 250px;
-      background: linear-gradient(135deg, #e2e8f0, #f1f5f9);
-      border-radius: 12px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: var(--text-secondary);
-    }
-    
-    /* --- RESPONSIVIDADE --- */
-    .mobile-menu-btn {
-        display: none; /* Oculto em telas grandes */
-        background: none;
-        border: none;
-        font-size: 1.8rem;
-        cursor: pointer;
-    }
+    .chart-placeholder { height: 250px; background: linear-gradient(135deg, #e2e8f0, #f1f5f9); border-radius: 12px; display: flex; align-items: center; justify-content: center; color: var(--text-secondary); }
+    body.dark-mode .chart-placeholder { background: linear-gradient(135deg, #1e293b, #334155); }
 
-    .overlay {
-        display: none;
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0,0,0,0.5);
-        z-index: 99;
-    }
-    .overlay.is-open {
-        display: block;
-    }
-
-    @media (max-width: 1024px) {
-      .main-dashboard {
-        grid-template-columns: 1fr;
-      }
-    }
-    
+    .mobile-menu-btn { display: none; background: none; border: none; font-size: 1.8rem; cursor: pointer; color: var(--text-primary); }
+    .overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 99; }
+    .overlay.is-open { display: block; }
+    @media (max-width: 1024px) { .main-dashboard { grid-template-columns: 1fr; } }
     @media (max-width: 768px) {
-      .dashboard-container {
-        grid-template-columns: 1fr; /* Coluna única em telas pequenas */
-      }
-      .sidebar {
-        transform: translateX(-100%); /* Esconde a sidebar fora da tela */
-      }
-      .sidebar.is-open {
-        transform: translateX(0); /* Mostra a sidebar */
-      }
-      .main-content {
-        grid-column: 1 / 2; /* Ocupa a grid inteira */
-        padding: 16px;
-      }
-      .mobile-menu-btn {
-        display: block; /* Mostra o botão de menu */
-      }
-      .main-header {
-        gap: 16px;
-      }
-      .main-header div {
-        flex-grow: 1;
-      }
+      .dashboard-container { grid-template-columns: 1fr; }
+      .sidebar { transform: translateX(-100%); }
+      .sidebar.is-open { transform: translateX(0); }
+      .main-content { grid-column: 1 / 2; padding: 16px; }
+      .mobile-menu-btn { display: block; }
+      .main-header { gap: 16px; }
+      .main-header div { flex-grow: 1; }
     }
   </style>
 </head>
@@ -369,11 +104,7 @@
   <div class="dashboard-container">
     <nav class="sidebar" id="sidebar">
       <div>
-        <div class="sidebar-header">
-          <div class="sidebar-logo">S</div>
-          <h1>SIGO Casa dos Reparos</h1>
-        </div>
-        
+        <div class="sidebar-header"><div class="sidebar-logo">S</div><h1>SIGO Casa dos Reparos</h1></div>
         <ul class="nav-list">
           <li><a href="painel.html" class="active"><span class="nav-icon">🏠</span> Painel</a></li>
           <li><a href="ordens-servico.html"><span class="nav-icon">🛠️</span> Ordens de Serviço</a></li>
@@ -385,7 +116,6 @@
           <li><a href="configuracoes.html"><span class="nav-icon">⚙️</span> Configurações</a></li>
         </ul>
       </div>
-
       <div class="sidebar-footer">
         <div class="user-profile">
           <div class="user-avatar" id="userAvatar">U</div>
@@ -399,7 +129,6 @@
         </button>
       </div>
     </nav>
-    
     <div class="overlay" id="overlay"></div>
 
     <main class="main-content">
@@ -413,34 +142,19 @@
 
       <section class="summary-grid">
         <div class="summary-card blue">
-          <div class="card-header">
-            <div class="card-icon">🛠️</div>
-            <span class="card-title">OS em Andamento</span>
-          </div>
+          <div class="card-header"><div class="card-icon">🛠️</div><span class="card-title">OS em Andamento</span></div>
           <p class="card-value" id="stat-os-andamento">0</p>
         </div>
-
         <div class="summary-card green">
-          <div class="card-header">
-            <div class="card-icon">💵</div>
-            <span class="card-title">Receita do Dia</span>
-          </div>
+          <div class="card-header"><div class="card-icon">💵</div><span class="card-title">Receita do Dia</span></div>
           <p class="card-value" id="stat-receita-dia">R$ 0,00</p>
         </div>
-
         <div class="summary-card yellow">
-          <div class="card-header">
-            <div class="card-icon">📅</div>
-            <span class="card-title">Agendamentos Hoje</span>
-          </div>
+          <div class="card-header"><div class="card-icon">📅</div><span class="card-title">Agendamentos Hoje</span></div>
           <p class="card-value" id="stat-agendamentos-hoje">0</p>
         </div>
-        
         <div class="summary-card red">
-          <div class="card-header">
-            <div class="card-icon">📦</div>
-            <span class="card-title">Estoque Baixo</span>
-          </div>
+          <div class="card-header"><div class="card-icon">📦</div><span class="card-title">Estoque Baixo</span></div>
           <p class="card-value" id="stat-estoque-baixo">0</p>
         </div>
       </section>
@@ -449,25 +163,17 @@
         <div class="dashboard-left">
           <div class="dashboard-card" style="margin-bottom: 24px;">
             <h3 class="dashboard-card-title">Visão Financeira do Mês</h3>
-            <div class="chart-placeholder">
-              📈 Gráfico de Receitas vs. Despesas
-            </div>
+            <div class="chart-placeholder">📈 Gráfico de Receitas vs. Despesas</div>
           </div>
-          
           <div class="dashboard-card">
              <h3 class="dashboard-card-title">Últimas Transações</h3>
-             <div id="lista-transacoes">
-                <p style="text-align: center; color: var(--text-secondary);">Carregando transações...</p>
-             </div>
+             <div id="lista-transacoes"><p style="text-align: center; color: var(--text-secondary);">Carregando transações...</p></div>
           </div>
         </div>
-
         <div class="dashboard-right">
           <div class="dashboard-card">
             <h3 class="dashboard-card-title">Lembretes e Tarefas</h3>
-            <div id="lista-tarefas">
-               <p style="text-align: center; color: var(--text-secondary);">Carregando tarefas...</p>
-            </div>
+            <div id="lista-tarefas"><p style="text-align: center; color: var(--text-secondary);">Carregando tarefas...</p></div>
           </div>
         </div>
       </section>
@@ -483,43 +189,16 @@
   <script>
     protegerPagina();
 
-    // --- LÓGICA DE RESPONSIVIDADE (MENU MOBILE) ---
+    // LÓGICA DE RESPONSIVIDADE (MENU MOBILE)
     const sidebar = document.getElementById('sidebar');
     const mobileMenuBtn = document.getElementById('mobileMenuBtn');
     const overlay = document.getElementById('overlay');
+    mobileMenuBtn.addEventListener('click', () => { sidebar.classList.toggle('is-open'); overlay.classList.toggle('is-open'); });
+    overlay.addEventListener('click', () => { sidebar.classList.remove('is-open'); overlay.classList.remove('is-open'); });
 
-    mobileMenuBtn.addEventListener('click', () => {
-        sidebar.classList.toggle('is-open');
-        overlay.classList.toggle('is-open');
-    });
-    overlay.addEventListener('click', () => {
-        sidebar.classList.remove('is-open');
-        overlay.classList.remove('is-open');
-    });
-
-    // --- DINÂMICA DO CABEÇALHO E DATA ---
+    // --- VARIÁVEIS GLOBAIS ---
     const greetingElement = document.getElementById('greeting');
     const dateElement = document.getElementById('currentDate');
-
-    function updateHeader() {
-        const agora = new Date();
-        const hora = agora.getHours();
-        
-        let cumprimento = "Bom dia";
-        if (hora >= 12 && hora < 18) {
-            cumprimento = "Boa tarde";
-        } else if (hora >= 18 || hora < 5) {
-            cumprimento = "Boa noite";
-        }
-        
-        const nomeUsuario = auth.currentUser ? (auth.currentUser.displayName || auth.currentUser.email.split('@')[0]) : "Usuário";
-        greetingElement.textContent = `${cumprimento}, ${nomeUsuario}!`;
-
-        const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-        dateElement.textContent = agora.toLocaleDateString('pt-BR', options);
-    }
-    
-    // --- LÓGICA DE DADOS DO FIREBASE ---
     const refs = {
       os: database.ref("ordens_servico"),
       transacoes: database.ref("transacoes"),
@@ -527,18 +206,30 @@
       estoque: database.ref("estoque"),
       anotacoes: database.ref("anotacoes"),
     };
+    const configRef = database.ref('configuracoes');
+    let dashboardData = {};
 
+    // --- AUTENTICAÇÃO E INICIALIZAÇÃO ---
     auth.onAuthStateChanged(user => {
       if (user) {
-        // Popula perfil do usuário
         const nome = user.displayName || user.email.split('@')[0];
         const iniciais = nome.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
         document.getElementById('userName').textContent = nome;
         document.getElementById('userEmail').textContent = user.email;
         document.getElementById('userAvatar').textContent = iniciais;
         updateHeader();
+        
+        // Listener para aplicar o tema escuro
+        configRef.on('value', (snapshot) => {
+            const config = snapshot.val() || {};
+            if (config.darkMode) {
+                document.body.classList.add('dark-mode');
+            } else {
+                document.body.classList.remove('dark-mode');
+            }
+        });
 
-        // Anexa os listeners de dados
+        // Anexa os listeners de dados do painel
         Object.keys(refs).forEach(key => {
             refs[key].on("value", snapshot => {
                 const data = snapshot.val() || {};
@@ -548,36 +239,49 @@
       }
     });
 
-    let dashboardData = {};
+    // --- FUNÇÕES DE ATUALIZAÇÃO DA INTERFACE ---
+
+    function updateHeader() {
+        const agora = new Date();
+        const hora = agora.getHours();
+        let cumprimento = "Bom dia";
+        if (hora >= 12 && hora < 18) { cumprimento = "Boa tarde"; }
+        else if (hora >= 18 || hora < 5) { cumprimento = "Boa noite"; }
+        
+        const nomeUsuario = auth.currentUser ? (auth.currentUser.displayName || auth.currentUser.email.split('@')[0]) : "Usuário";
+        greetingElement.textContent = `${cumprimento}, ${nomeUsuario}!`;
+        
+        const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+        dateElement.textContent = agora.toLocaleDateString('pt-BR', options);
+    }
 
     function updateDashboard(key, data) {
         dashboardData[key] = data;
-        
         updateSummaryCards();
         updateTransactionList();
         updateTaskList();
     }
-    
+
+    function formatarMoeda(valor) {
+      return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(valor || 0);
+    }
+
     function updateSummaryCards() {
-        if (!dashboardData.os) return; // Aguarda os dados carregarem
+        if (!dashboardData.os) return; 
         const hoje = new Date().toISOString().slice(0, 10);
         
-        // OS em Andamento
         const osEmAndamento = Object.values(dashboardData.os || {}).filter(os => ['aguardando', 'em_andamento'].includes(os.statusOS)).length;
         document.getElementById('stat-os-andamento').textContent = osEmAndamento;
 
-        // Receita do Dia
         const receitaDia = Object.values(dashboardData.transacoes || {})
             .filter(t => t.tipo === 'entrada' && t.dataTransacao === hoje && t.statusTransacao === 'pago')
             .reduce((sum, t) => sum + parseFloat(t.valor), 0);
         document.getElementById('stat-receita-dia').textContent = formatarMoeda(receitaDia);
 
-        // Agendamentos Hoje
         const agendamentosHoje = Object.values(dashboardData.agendamentos || {})
             .filter(ag => ag.dataAgendamento === hoje).length;
         document.getElementById('stat-agendamentos-hoje').textContent = agendamentosHoje;
 
-        // Estoque Baixo
         const estoqueBaixo = Object.values(dashboardData.estoque || {})
             .filter(item => item.quantidade <= item.estoqueMinimo).length;
         document.getElementById('stat-estoque-baixo').textContent = estoqueBaixo;
@@ -598,7 +302,7 @@
         listaTransacoes.innerHTML = '';
         transacoes.forEach(t => {
             const isIncome = t.tipo === 'entrada';
-            const item = `
+            const itemHTML = `
                 <div class="list-item">
                     <div class="list-item-icon">${isIncome ? '↓' : '↑'}</div>
                     <div class="list-item-details">
@@ -608,21 +312,19 @@
                     <span class="list-item-value ${isIncome ? 'income' : 'expense'}">
                         ${isIncome ? '+' : '-'} ${formatarMoeda(t.valor)}
                     </span>
-                </div>
-            `;
-            listaTransacoes.innerHTML += item;
+                </div>`;
+            listaTransacoes.innerHTML += itemHTML;
         });
     }
 
     function updateTaskList() {
         if (!dashboardData.agendamentos || !dashboardData.anotacoes) return;
         const listaTarefas = document.getElementById('lista-tarefas');
-        
         const hoje = new Date();
-        hoje.setHours(0,0,0,0); // Normaliza para o início do dia
+        hoje.setHours(0,0,0,0);
 
         const agendamentos = Object.values(dashboardData.agendamentos || {})
-            .filter(ag => new Date(ag.dataAgendamento) >= hoje)
+            .filter(ag => new Date(ag.dataAgendamento + 'T00:00:00') >= hoje)
             .sort((a,b) => new Date(a.dataAgendamento) - new Date(b.dataAgendamento))
             .slice(0, 2);
             
@@ -641,32 +343,27 @@
         listaTarefas.innerHTML = '';
         tarefas.forEach(task => {
             let icon, title, subtitle;
-            if (task.tipoServico) { // É um agendamento
+            if (task.tipoServico) {
                 icon = '📅';
                 title = `${task.clienteNome} (${task.horaAgendamento})`;
                 subtitle = new Date(task.dataAgendamento + 'T00:00:00').toLocaleDateString('pt-BR', {weekday: 'long', day: 'numeric'});
-            } else { // É uma anotação
+            } else {
                 icon = '📝';
                 title = task.texto.substring(0, 35) + (task.texto.length > 35 ? '...' : '');
                 subtitle = "Anotação Pessoal";
             }
-            const item = `
+            const itemHTML = `
                 <div class="list-item">
                     <div class="list-item-icon">${icon}</div>
                     <div class="list-item-details">
                         <strong>${title}</strong>
                         <small>${subtitle}</small>
                     </div>
-                </div>
-            `;
-            listaTarefas.innerHTML += item;
+                </div>`;
+            listaTarefas.innerHTML += itemHTML;
         });
     }
 
-    // Função auxiliar
-    function formatarMoeda(valor) {
-      return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(valor || 0);
-    }
   </script>
 </body>
 </html>
