@@ -82,7 +82,7 @@
     .empty-state { text-align: center; padding: 80px 20px; background: var(--card-bg); border-radius: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
     .empty-state-icon { font-size: 4rem; margin-bottom: 20px; opacity: 0.5; }
 
-    /* --- Estilos dos Modais (Completos e Corrigidos) --- */
+    /* --- ESTILOS DE MODAIS E FORMULÁRIOS RESTAURADOS E ATUALIZADOS --- */
     .modal { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.6); z-index: 1000; padding: 20px; overflow-y: auto; }
     .modal.active { display: flex; align-items: center; justify-content: center; }
     .modal-content { background: var(--card-bg); border-radius: 20px; padding: 32px; max-width: 900px; width: 100%; box-shadow: 0 20px 60px rgba(0,0,0,0.3); max-height: 90vh; overflow-y: auto; }
@@ -92,6 +92,7 @@
     .btn-close:hover { background: #d1d5db; }
     .form-section { margin-bottom: 32px; }
     .form-section-title { font-size: 1.1rem; font-weight: 700; color: var(--text-primary); margin-bottom: 16px; padding-bottom: 12px; border-bottom: 2px solid var(--border-color); display: flex; align-items: center; gap: 10px; }
+    .form-group { margin-bottom: 20px; }
     .form-group label { display: block; margin-bottom: 8px; font-weight: 600; color: var(--text-primary); font-size: 0.9rem; }
     .form-group input, .form-group textarea, .form-group select { width: 100%; padding: 12px 16px; border: 2px solid var(--border-color); border-radius: 10px; font-size: 0.95rem; transition: all 0.3s; font-family: inherit; background: var(--main-bg); color: var(--text-primary); }
     .form-group input:focus, .form-group textarea:focus, .form-group select:focus { outline: none; border-color: var(--accent-green); box-shadow: 0 0 0 3px rgba(16,185,129,0.1); }
@@ -101,8 +102,6 @@
     .form-actions { display: flex; gap: 12px; margin-top: 28px; }
     .btn-submit { flex: 1; padding: 14px; background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; border: none; border-radius: 10px; font-weight: 600; cursor: pointer; transition: all 0.3s; font-size: 1rem; }
     .btn-cancel { flex: 1; padding: 14px; background: var(--main-bg); color: var(--text-primary); border: none; border-radius: 10px; font-weight: 600; cursor: pointer; transition: all 0.3s; font-size: 1rem; }
-    
-    /* ESTILOS RESTAURADOS */
     .pecas-section { background: var(--main-bg); padding: 20px; border-radius: 12px; margin-bottom: 20px; }
     .pecas-list { display: flex; flex-direction: column; gap: 12px; margin-bottom: 16px; max-height: 250px; overflow-y: auto; }
     .peca-item { background: var(--card-bg); padding: 16px; border-radius: 10px; border: 1px solid var(--border-color); display: grid; grid-template-columns: 1fr auto auto; align-items: center; gap: 16px; }
@@ -132,8 +131,7 @@
     .peca-search-item:hover { background: var(--main-bg); }
     .peca-search-item strong { display: block; }
     .peca-search-item small { color: var(--text-secondary); }
-    /* FIM DOS ESTILOS RESTAURADOS */
-
+    
     .mobile-menu-btn { display: none; background: none; border: none; font-size: 1.8rem; cursor: pointer; color: var(--text-primary); }
     .overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 99; }
     .overlay.is-open { display: block; }
@@ -307,8 +305,8 @@
         carregarAparelhosCliente(id);
     }
     
-    document.getElementById('btnNovoClienteOS').addEventListener('click', () => document.getElementById('modalNovoClienteOS').classList.add('active'));
-    function fecharModalNovoClienteOS() { document.getElementById('modalNovoClienteOS').classList.remove('active'); document.getElementById('formNovoClienteOS').reset(); }
+    document.getElementById('btnNovoClienteOS').addEventListener('click', () => { document.getElementById('formNovoClienteOS').reset(); document.getElementById('modalNovoClienteOS').classList.add('active'); });
+    function fecharModalNovoClienteOS() { document.getElementById('modalNovoClienteOS').classList.remove('active'); }
     function salvarNovoClienteOS(event) {
         event.preventDefault();
         const novoCliente = { nome: document.getElementById('novoClienteNome').value, telefone: document.getElementById('novoClienteTelefone').value, dataCadastro: new Date().toISOString() };
