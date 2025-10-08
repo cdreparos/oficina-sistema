@@ -1,18 +1,15 @@
 <!DOCTYPE html>
-
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Login - SIGO Casa dos Reparos</title>
-
   <style>
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
     }
-
     body {
       font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
       background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
@@ -22,7 +19,6 @@
       justify-content: center;
       padding: 20px;
     }
-
     .login-container {
       background: white;
       border-radius: 24px;
@@ -32,23 +28,49 @@
       padding: 48px 40px;
       animation: slideIn 0.5s ease-out;
     }
-
     @keyframes slideIn {
-      from {
-        opacity: 0;
-        transform: translateY(-30px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
+      from { opacity: 0; transform: translateY(-30px); }
+      to { opacity: 1; transform: translateY(0); }
     }
+
+    /* ESTILOS DO PERSONAGEM */
+    .mascote-container {
+      width: 150px;
+      height: 100px;
+      margin: 0 auto -20px auto;
+      position: relative;
+      z-index: 1;
+    }
+    #mascote-login {
+      width: 100%;
+      height: 100%;
+    }
+    .olho {
+      transition: all 0.3s ease-in-out;
+    }
+    .pupila {
+      transition: transform 0.1s ease-out;
+    }
+    #mascote-login .palpebra {
+      transform: translateY(-100%);
+      transition: all 0.3s ease-in-out;
+    }
+    #mascote-login.peek .palpebra,
+    #mascote-login.error .palpebra {
+      transform: translateY(0);
+    }
+    #mascote-login .boca {
+      transition: all 0.3s ease-in-out;
+    }
+    #mascote-login.happy #boca-normal { display: none; }
+    #mascote-login.happy #boca-feliz { display: block; }
+    #mascote-login.error #boca-normal { display: none; }
+    #mascote-login.error #boca-triste { display: block; }
 
     .login-header {
       text-align: center;
       margin-bottom: 40px;
     }
-
     .logo {
       width: 80px;
       height: 80px;
@@ -61,41 +83,34 @@
       margin: 0 auto 20px;
       box-shadow: 0 8px 24px rgba(59, 130, 246, 0.3);
     }
-
     .login-header h1 {
       font-size: 1.8rem;
       color: #1f2937;
       margin-bottom: 8px;
       font-weight: 700;
     }
-
     .login-header p {
       color: #6b7280;
       font-size: 0.95rem;
     }
-
     .login-form {
       display: flex;
       flex-direction: column;
       gap: 20px;
     }
-
     .form-group {
       display: flex;
       flex-direction: column;
       gap: 8px;
     }
-
     .form-group label {
       font-weight: 600;
       color: #374151;
       font-size: 0.9rem;
     }
-
     .input-wrapper {
       position: relative;
     }
-
     .input-icon {
       position: absolute;
       left: 16px;
@@ -104,7 +119,6 @@
       font-size: 1.2rem;
       color: #9ca3af;
     }
-
     .form-group input {
       width: 100%;
       padding: 14px 16px 14px 48px;
@@ -114,17 +128,11 @@
       transition: all 0.3s;
       font-family: inherit;
     }
-
     .form-group input:focus {
       outline: none;
       border-color: #3b82f6;
       box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
     }
-
-    .form-group input::placeholder {
-      color: #9ca3af;
-    }
-
     .password-toggle {
       position: absolute;
       right: 16px;
@@ -138,11 +146,9 @@
       padding: 4px;
       transition: color 0.3s;
     }
-
     .password-toggle:hover {
       color: #3b82f6;
     }
-
     .error-message {
       background: #fee2e2;
       color: #991b1b;
@@ -154,15 +160,7 @@
       gap: 10px;
       border-left: 4px solid #ef4444;
     }
-
-    .error-message.show {
-      display: flex;
-    }
-
-    .error-icon {
-      font-size: 1.2rem;
-    }
-
+    .error-message.show { display: flex; }
     .success-message {
       background: #d1fae5;
       color: #065f46;
@@ -174,252 +172,127 @@
       gap: 10px;
       border-left: 4px solid #10b981;
     }
-
-    .success-message.show {
-      display: flex;
-    }
-
-    .remember-forgot {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-top: -8px;
-    }
-
-    .remember-me {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .remember-me input[type="checkbox"] {
-      width: 18px;
-      height: 18px;
-      cursor: pointer;
-      accent-color: #3b82f6;
-    }
-
-    .remember-me label {
-      font-size: 0.9rem;
-      color: #6b7280;
-      cursor: pointer;
-      user-select: none;
-    }
-
-    .forgot-password {
-      color: #3b82f6;
-      text-decoration: none;
-      font-size: 0.9rem;
-      font-weight: 500;
-      transition: color 0.3s;
-    }
-
-    .forgot-password:hover {
-      color: #2563eb;
-      text-decoration: underline;
-    }
-
-    .btn {
-      padding: 14px 24px;
-      border: none;
-      border-radius: 12px;
-      font-weight: 600;
-      font-size: 0.95rem;
-      cursor: pointer;
-      transition: all 0.3s;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
-    }
-
-    .btn-primary {
-      background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
-      color: white;
-      box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
-      margin-top: 8px;
-    }
-
-    .btn-primary:hover:not(:disabled) {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4);
-    }
-
-    .btn-primary:active {
-      transform: translateY(0);
-    }
-
-    .btn-primary:disabled {
-      opacity: 0.6;
-      cursor: not-allowed;
-      transform: none;
-    }
-
-    .spinner {
-      width: 20px;
-      height: 20px;
-      border: 3px solid rgba(255, 255, 255, 0.3);
-      border-top-color: white;
-      border-radius: 50%;
-      animation: spin 0.8s linear infinite;
-      display: none;
-    }
-
-    .btn-primary.loading .spinner {
-      display: block;
-    }
-
-    .btn-primary.loading .btn-text {
-      display: none;
-    }
-
-    @keyframes spin {
-      to { transform: rotate(360deg); }
-    }
-
-    .login-footer {
-      text-align: center;
-      margin-top: 32px;
-      padding-top: 24px;
-      border-top: 1px solid #e5e7eb;
-      color: #6b7280;
-      font-size: 0.85rem;
-    }
-
-    @media (max-width: 480px) {
-      .login-container {
-        padding: 32px 24px;
-      }
-
-      .login-header h1 {
-        font-size: 1.5rem;
-      }
-
-      .logo {
-        width: 64px;
-        height: 64px;
-        font-size: 2rem;
-      }
-    }
+    .success-message.show { display: flex; }
+    .remember-forgot { display: flex; justify-content: space-between; align-items: center; margin-top: -8px; }
+    .remember-me { display: flex; align-items: center; gap: 8px; }
+    .remember-me input[type="checkbox"] { width: 18px; height: 18px; cursor: pointer; accent-color: #3b82f6; }
+    .remember-me label { font-size: 0.9rem; color: #6b7280; cursor: pointer; user-select: none; }
+    .forgot-password { color: #3b82f6; text-decoration: none; font-size: 0.9rem; font-weight: 500; transition: color 0.3s; }
+    .forgot-password:hover { color: #2563eb; text-decoration: underline; }
+    .btn { padding: 14px 24px; border: none; border-radius: 12px; font-weight: 600; font-size: 0.95rem; cursor: pointer; transition: all 0.3s; display: flex; align-items: center; justify-content: center; gap: 10px; }
+    .btn-primary { background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); color: white; box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3); margin-top: 8px; }
+    .btn-primary:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4); }
+    .btn-primary:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+    .spinner { width: 20px; height: 20px; border: 3px solid rgba(255, 255, 255, 0.3); border-top-color: white; border-radius: 50%; animation: spin 0.8s linear infinite; display: none; }
+    .btn-primary.loading .spinner { display: block; }
+    .btn-primary.loading .btn-text { display: none; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .login-footer { text-align: center; margin-top: 32px; padding-top: 24px; border-top: 1px solid #e5e7eb; color: #6b7280; font-size: 0.85rem; }
   </style>
-
 </head>
 <body>
   <div class="login-container">
+    
+    <div class="mascote-container">
+      <svg id="mascote-login" viewBox="0 0 150 100">
+        <defs>
+          <clipPath id="clip-olho-esq">
+            <circle cx="50" cy="50" r="20"/>
+          </clipPath>
+          <clipPath id="clip-olho-dir">
+            <circle cx="100" cy="50" r="20"/>
+          </clipPath>
+        </defs>
+        <path d="M 0,100 C 0,50 20,20 75,20 S 150,50 150,100 Z" fill="#3B82F6"/>
+        <g id="olhos">
+          <circle class="olho" cx="50" cy="50" r="20" fill="white"/>
+          <circle class="olho" cx="100" cy="50" r="20" fill="white"/>
+          <g clip-path="url(#clip-olho-esq)">
+            <circle id="pupila-esq" class="pupila" cx="50" cy="50" r="10" fill="black"/>
+          </g>
+          <g clip-path="url(#clip-olho-dir)">
+            <circle id="pupila-dir" class="pupila" cx="100" cy="50" r="10" fill="black"/>
+          </g>
+          <rect id="palpebra-esq" class="palpebra" x="30" y="30" width="40" height="25" fill="#3B82F6"/>
+          <rect id="palpebra-dir" class="palpebra" x="80" y="30" width="40" height="25" fill="#3B82F6"/>
+        </g>
+        <g id="boca">
+          <path id="boca-normal" class="boca" d="M 65,80 Q 75,85 85,80" stroke="white" stroke-width="4" fill="none" stroke-linecap="round"/>
+          <path id="boca-feliz" class="boca" d="M 60,80 Q 75,95 90,80" stroke="white" stroke-width="4" fill="none" stroke-linecap="round" style="display: none;"/>
+          <path id="boca-triste" class="boca" d="M 60,85 Q 75,75 90,85" stroke="white" stroke-width="4" fill="none" stroke-linecap="round" style="display: none;"/>
+        </g>
+      </svg>
+    </div>
+
     <div class="login-header">
       <div class="logo">🔧</div>
       <h1>SIGO Casa dos Reparos</h1>
       <p>Sistema Integrado de Gerenciamento de Oficina</p>
     </div>
 
-
-<div class="error-message" id="errorMessage">
-  <span class="error-icon">⚠️</span>
-  <span id="errorText">Erro ao fazer login</span>
-</div>
-
-<div class="success-message" id="successMessage">
-  <span class="error-icon">✓</span>
-  <span id="successText">Login realizado com sucesso!</span>
-</div>
-
-<form class="login-form" id="loginForm">
-  <div class="form-group">
-    <label for="email">E-mail</label>
-    <div class="input-wrapper">
-      <span class="input-icon">📧</span>
-      <input 
-        type="email" 
-        id="email" 
-        placeholder="seu@email.com" 
-        required
-        autocomplete="email"
-      />
+    <div class="error-message" id="errorMessage">
+      <span id="errorText">Erro ao fazer login</span>
     </div>
-  </div>
+    <div class="success-message" id="successMessage">
+      <span id="successText">Login realizado!</span>
+    </div>
 
-  <div class="form-group">
-    <label for="password">Senha</label>
-    <div class="input-wrapper">
-      <span class="input-icon">🔒</span>
-      <input 
-        type="password" 
-        id="password" 
-        placeholder="Digite sua senha" 
-        required
-        autocomplete="current-password"
-      />
-      <button type="button" class="password-toggle" id="togglePassword">
-        👁️
+    <form class="login-form" id="loginForm">
+      <div class="form-group">
+        <label for="email">E-mail</label>
+        <div class="input-wrapper">
+          <span class="input-icon">📧</span>
+          <input type="email" id="email" placeholder="seu@email.com" required autocomplete="email" />
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="password">Senha</label>
+        <div class="input-wrapper">
+          <span class="input-icon">🔒</span>
+          <input type="password" id="password" placeholder="Digite sua senha" required autocomplete="current-password" />
+          <button type="button" class="password-toggle" id="togglePassword">👁️</button>
+        </div>
+      </div>
+      <div class="remember-forgot">
+        <div class="remember-me">
+          <input type="checkbox" id="rememberMe">
+          <label for="rememberMe">Lembrar-me</label>
+        </div>
+        <a href="#" class="forgot-password" id="forgotPassword">Esqueceu a senha?</a>
+      </div>
+      <button type="submit" class="btn btn-primary" id="btnLogin">
+        <span class="spinner"></span>
+        <span class="btn-text">Entrar no Sistema</span>
       </button>
-    </div>
+    </form>
+    <div class="login-footer">SIGO - Sistema de Gerenciamento © 2025</div>
   </div>
-
-  <div class="remember-forgot">
-    <div class="remember-me">
-      <input type="checkbox" id="rememberMe">
-      <label for="rememberMe">Lembrar-me</label>
-    </div>
-    <a href="#" class="forgot-password" id="forgotPassword">Esqueceu a senha?</a>
-  </div>
-
-  <button type="submit" class="btn btn-primary" id="btnLogin">
-    <span class="spinner"></span>
-    <span class="btn-text">Entrar no Sistema</span>
-  </button>
-</form>
-
-<div class="login-footer">
-  SIGO - Sistema de Gerenciamento © 2025
-</div>
-
-
-  </div>
-
-  <!-- Firebase SDK -->
 
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
-
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
-
-  <!-- Arquivos compartilhados -->
-
   <script src="firebase-config.js"></script>
-
   <script src="utils.js"></script>
 
   <script>
-    // Se já estiver autenticado, redirecionar para o painel
-    auth.onAuthStateChanged(user => {
-      if (user) {
-        window.location.href = 'painel.html';
-      }
-    });
+    auth.onAuthStateChanged(user => { if (user) window.location.href = 'painel.html'; });
 
-    // Toggle de visualização de senha
     const togglePassword = document.getElementById('togglePassword');
     const passwordInput = document.getElementById('password');
-
     togglePassword.addEventListener('click', () => {
       const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
       passwordInput.setAttribute('type', type);
       togglePassword.textContent = type === 'password' ? '👁️' : '🙈';
     });
 
-    // Lembrar-me (localStorage)
     const rememberMeCheckbox = document.getElementById('rememberMe');
     const emailInput = document.getElementById('email');
-
-    // Carregar email salvo
     const savedEmail = localStorage.getItem('rememberedEmail');
     if (savedEmail) {
       emailInput.value = savedEmail;
       rememberMeCheckbox.checked = true;
     }
 
-    // Formulário de login
     const loginForm = document.getElementById('loginForm');
     const btnLogin = document.getElementById('btnLogin');
     const errorMessage = document.getElementById('errorMessage');
@@ -429,45 +302,24 @@
 
     loginForm.addEventListener('submit', async (e) => {
       e.preventDefault();
-      
       const email = emailInput.value.trim();
       const password = passwordInput.value;
+      if (!validarEmail(email)) { mostrarErro('E-mail inválido'); return; }
+      if (password.length < 6) { mostrarErro('A senha deve ter no mínimo 6 caracteres'); return; }
 
-      // Validação básica
-      if (!validarEmail(email)) {
-        mostrarErro('E-mail inválido');
-        return;
-      }
-
-      if (password.length < 6) {
-        mostrarErro('A senha deve ter no mínimo 6 caracteres');
-        return;
-      }
-
-      // Iniciar loading
       btnLogin.classList.add('loading');
       btnLogin.disabled = true;
       ocultarMensagens();
 
       try {
-        // Tentar fazer login
         await auth.signInWithEmailAndPassword(email, password);
-
-        // Salvar email se "lembrar-me" estiver marcado
         if (rememberMeCheckbox.checked) {
           localStorage.setItem('rememberedEmail', email);
         } else {
           localStorage.removeItem('rememberedEmail');
         }
-
-        // Mostrar sucesso
         mostrarSucesso('Login realizado! Redirecionando...');
-
-        // Redirecionar após 1 segundo
-        setTimeout(() => {
-          window.location.href = 'painel.html';
-        }, 1000);
-
+        setTimeout(() => { window.location.href = 'painel.html'; }, 1000);
       } catch (error) {
         console.error('Erro no login:', error);
         mostrarErro(traduzirErroFirebase(error.code));
@@ -476,72 +328,82 @@
       }
     });
 
-    // Esqueci a senha
-    document.getElementById('forgotPassword').addEventListener('click', (e) => {
-      e.preventDefault();
-      
-      const email = emailInput.value.trim();
-      
-      if (!email) {
-        mostrarErro('Digite seu e-mail para recuperar a senha');
-        emailInput.focus();
-        return;
-      }
+    // --- LÓGICA DO PERSONAGEM ANIMADO ---
+    const mascote = document.getElementById('mascote-login');
+    const pupilaEsq = document.getElementById('pupila-esq');
+    const pupilaDir = document.getElementById('pupila-dir');
 
-      if (!validarEmail(email)) {
-        mostrarErro('Digite um e-mail válido');
-        return;
-      }
+    // 1. Olhos seguindo o mouse
+    window.addEventListener('mousemove', (e) => {
+      const { clientX, clientY } = e;
+      const rect = mascote.getBoundingClientRect();
+      const mascoteX = rect.left + rect.width / 2;
+      const mascoteY = rect.top + rect.height / 2;
 
-      if (confirm(`Enviar e-mail de recuperação para:\n${email}?`)) {
-        auth.sendPasswordResetEmail(email)
-          .then(() => {
-            mostrarSucesso(`E-mail de recuperação enviado para ${email}. Verifique sua caixa de entrada.`);
-          })
-          .catch(error => {
-            console.error('Erro ao enviar e-mail:', error);
-            mostrarErro(traduzirErroFirebase(error.code));
-          });
+      const deltaX = clientX - mascoteX;
+      const deltaY = clientY - mascoteY;
+
+      const angle = Math.atan2(deltaY, deltaX);
+      const moveX = Math.cos(angle) * 5; // 5 é o raio do movimento da pupila
+      const moveY = Math.sin(angle) * 5;
+
+      pupilaEsq.style.transform = `translate(${moveX}px, ${moveY}px)`;
+      pupilaDir.style.transform = `translate(${moveX}px, ${moveY}px)`;
+    });
+
+    // Função para resetar a expressão do mascote
+    function resetarMascote() {
+      mascote.classList.remove('happy', 'error', 'peek');
+    }
+
+    // Resetar ao digitar
+    emailInput.addEventListener('input', resetarMascote);
+    passwordInput.addEventListener('input', resetarMascote);
+
+    // 2. Reação ao ver a senha
+    togglePassword.addEventListener('click', () => {
+      resetarMascote();
+      // Se a senha ESTÁ visível, o mascote "fecha os olhos"
+      if (passwordInput.getAttribute('type') === 'text') {
+        mascote.classList.add('peek');
       }
     });
 
-    // Funções auxiliares de mensagens
+    // Funções para mostrar erro/sucesso (MODIFICADAS para incluir o mascote)
     function mostrarErro(mensagem) {
       errorText.textContent = mensagem;
       errorMessage.classList.add('show');
       successMessage.classList.remove('show');
+      // 3. Reação de erro
+      mascote.classList.add('error');
     }
-
     function mostrarSucesso(mensagem) {
       successText.textContent = mensagem;
       successMessage.classList.add('show');
       errorMessage.classList.remove('show');
+      // 4. Reação de sucesso
+      mascote.classList.add('happy');
     }
-
     function ocultarMensagens() {
       errorMessage.classList.remove('show');
       successMessage.classList.remove('show');
+      resetarMascote();
     }
 
-    // Enter para focar no próximo campo
-    emailInput.addEventListener('keypress', (e) => {
-      if (e.key === 'Enter') {
-        e.preventDefault();
-        passwordInput.focus();
+    // --- FIM DA LÓGICA DO PERSONAGEM ---
+
+    // Outras funções da página
+    document.getElementById('forgotPassword').addEventListener('click', (e) => {
+      e.preventDefault();
+      const email = emailInput.value.trim();
+      if (!validarEmail(email)) { mostrarErro('Digite um e-mail válido para recuperar a senha'); return; }
+      if (confirm(`Enviar e-mail de recuperação para:\n${email}?`)) {
+        auth.sendPasswordResetEmail(email)
+          .then(() => mostrarSucesso(`E-mail de recuperação enviado para ${email}.`))
+          .catch(error => mostrarErro(traduzirErroFirebase(error.code)));
       }
     });
 
-    // Focar no email ao carregar
-    window.addEventListener('load', () => {
-      if (!emailInput.value) {
-        emailInput.focus();
-      } else {
-        passwordInput.focus();
-      }
-    });
-
-    console.log('🔐 Sistema de Login - SIGO Casa dos Reparos');
   </script>
-
 </body>
 </html>
