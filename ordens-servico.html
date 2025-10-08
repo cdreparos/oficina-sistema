@@ -5,103 +5,110 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Ordens de Serviço - SIGO</title>
   <style>
+    :root {
+      --sidebar-bg: #1e293b;
+      --sidebar-bg-hover: #334155;
+      --main-bg: #e2e8f0;
+      --card-bg: #ffffff;
+      --text-primary: #1e293b;
+      --text-secondary: #64748b;
+      --accent-blue: #3b82f6;
+      --accent-green: #10b981;
+      --border-color: #e2e8f0;
+      --accent-red: #ef4444;
+    }
+
+    body.dark-mode {
+        --main-bg: #0f172a;
+        --card-bg: #1e293b;
+        --text-primary: #f1f5f9;
+        --text-secondary: #94a3b8;
+        --border-color: #334155;
+    }
+
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { font-family: 'Inter', sans-serif; background: #f0f2f5; min-height: 100vh; }
-    header { background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%); color: white; padding: 30px 40px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
-    .header-content { max-width: 1400px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
-    .header-left h1 { font-size: 1.8rem; font-weight: 700; margin-bottom: 5px; }
-    .header-left p { font-size: 0.9rem; opacity: 0.85; }
-    .btn-voltar { background: rgba(255,255,255,0.15); color: white; border: none; padding: 12px 24px; border-radius: 10px; font-weight: 600; cursor: pointer; transition: all 0.3s; display: flex; align-items: center; gap: 8px; }
-    .btn-voltar:hover { background: rgba(255,255,255,0.25); transform: translateY(-2px); }
-    .container { max-width: 1400px; margin: 30px auto; padding: 0 40px; }
-    .actions-bar { background: white; padding: 20px 30px; border-radius: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); margin-bottom: 24px; display: flex; justify-content: space-between; align-items: center; gap: 20px; flex-wrap: wrap; }
-    .filter-tabs { display: flex; gap: 8px; background: #f3f4f6; padding: 4px; border-radius: 10px; flex-wrap: wrap; }
-    .filter-tab { padding: 10px 20px; border: none; background: transparent; border-radius: 8px; cursor: pointer; font-weight: 600; transition: all 0.3s; color: #6b7280; font-size: 0.85rem; }
-    .filter-tab.active { background: white; color: #10b981; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+    body { font-family: 'Inter', sans-serif; background: var(--main-bg); color: var(--text-primary); transition: background-color 0.3s, color 0.3s; }
+    .dashboard-container { display: grid; grid-template-columns: 240px 1fr; min-height: 100vh; }
+
+    /* --- Sidebar --- */
+    .sidebar { background: var(--sidebar-bg); color: #fff; display: flex; flex-direction: column; padding: 24px 16px; position: fixed; left: 0; top: 0; height: 100%; width: 240px; z-index: 100; transition: transform 0.3s ease-in-out; }
+    .sidebar-header { display: flex; align-items: center; gap: 12px; padding-bottom: 24px; margin-bottom: 16px; border-bottom: 1px solid var(--sidebar-bg-hover); }
+    .sidebar-logo { width: 40px; height: 40px; background: var(--accent-blue); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; font-weight: bold; }
+    .sidebar-header h1 { font-size: 1.1rem; font-weight: 600; }
+    .nav-list { list-style: none; flex-grow: 1; }
+    .nav-list a { color: #cbd5e1; text-decoration: none; display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-radius: 8px; font-weight: 500; transition: all 0.2s ease-in-out; margin-bottom: 4px; }
+    .nav-list a:hover { background: var(--sidebar-bg-hover); color: #fff; }
+    .nav-list a.active { background: var(--accent-blue); color: #fff; }
+    .nav-icon { font-size: 1.2rem; }
+    .sidebar-footer { border-top: 1px solid var(--sidebar-bg-hover); padding-top: 16px; }
+    .logout-btn { width: 100%; background: none; border: none; color: #cbd5e1; display: flex; align-items: center; gap: 12px; padding: 12px 16px; font-size: 1rem; cursor: pointer; text-align: left; font-family: inherit; border-radius: 8px; transition: all 0.2s ease-in-out; }
+    .logout-btn:hover { background: var(--accent-red); color: #fff; }
+
+    /* --- Main Content --- */
+    .main-content { grid-column: 2 / 3; padding: 32px; }
+    .main-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 32px; }
+    .main-header h1 { font-size: 1.8rem; font-weight: 700; color: var(--text-primary); }
+    
+    .actions-bar { background: var(--card-bg); padding: 20px 30px; border-radius: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); margin-bottom: 24px; display: flex; justify-content: space-between; align-items: center; gap: 20px; flex-wrap: wrap; }
+    .filter-tabs { display: flex; gap: 8px; background: var(--main-bg); padding: 4px; border-radius: 10px; flex-wrap: wrap; }
+    .filter-tab { padding: 10px 20px; border: none; background: transparent; border-radius: 8px; cursor: pointer; font-weight: 600; transition: all 0.3s; color: var(--text-secondary); font-size: 0.85rem; }
+    .filter-tab.active { background: var(--card-bg); color: var(--accent-green); box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
     .btn-primary { background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; border: none; padding: 14px 28px; border-radius: 10px; font-weight: 600; cursor: pointer; transition: all 0.3s; box-shadow: 0 4px 12px rgba(16,185,129,0.3); display: flex; align-items: center; gap: 8px; }
     .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(16,185,129,0.4); }
+
     .os-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(380px, 1fr)); gap: 20px; }
-    .os-card { background: white; border-radius: 16px; padding: 24px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); border: 1px solid #e5e7eb; transition: all 0.3s; }
-    .os-card:hover { box-shadow: 0 8px 24px rgba(0,0,0,0.12); transform: translateY(-4px); border-color: #10b981; }
-    .os-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px; padding-bottom: 16px; border-bottom: 2px solid #f3f4f6; }
-    .os-numero { font-size: 1.4rem; font-weight: 800; color: #10b981; }
+    .os-card { background: var(--card-bg); border-radius: 16px; padding: 24px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); border: 1px solid var(--border-color); transition: all 0.3s; }
+    .os-card:hover { box-shadow: 0 8px 24px rgba(0,0,0,0.12); transform: translateY(-4px); border-color: var(--accent-green); }
+    .os-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px; padding-bottom: 16px; border-bottom: 2px solid var(--border-color); }
+    .os-numero { font-size: 1.4rem; font-weight: 800; color: var(--accent-green); }
     .os-status { padding: 6px 14px; border-radius: 20px; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; }
     .status-aguardando { background: #fef3c7; color: #92400e; }
     .status-em_andamento { background: #dbeafe; color: #1e40af; }
     .status-concluido { background: #d1fae5; color: #065f46; }
     .status-entregue { background: #e0e7ff; color: #3730a3; }
-    .os-cliente { font-size: 1.1rem; font-weight: 600; color: #1f2937; margin-bottom: 8px; }
-    .os-aparelho { color: #6b7280; font-size: 0.9rem; margin-bottom: 16px; }
+    .os-cliente { font-size: 1.1rem; font-weight: 600; color: var(--text-primary); margin-bottom: 8px; }
+    .os-aparelho { color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 16px; }
     .os-details { display: flex; flex-direction: column; gap: 10px; margin-bottom: 16px; }
-    .detail-row { display: flex; align-items: center; gap: 10px; font-size: 0.85rem; color: #374151; }
-    .detail-icon { width: 28px; height: 28px; background: #f3f4f6; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 0.9rem; flex-shrink: 0; }
-    .os-valor { background: #f9fafb; padding: 12px; border-radius: 10px; margin-bottom: 16px; text-align: center; }
-    .os-valor-label { font-size: 0.75rem; color: #6b7280; margin-bottom: 4px; }
-    .os-valor-total { font-size: 1.5rem; font-weight: 800; color: #10b981; }
+    .detail-row { display: flex; align-items: center; gap: 10px; font-size: 0.85rem; color: var(--text-primary); }
+    .detail-icon { width: 28px; height: 28px; background: var(--main-bg); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 0.9rem; flex-shrink: 0; }
+    .os-valor { background: var(--main-bg); padding: 12px; border-radius: 10px; margin-bottom: 16px; text-align: center; }
+    .os-valor-label { font-size: 0.75rem; color: var(--text-secondary); margin-bottom: 4px; }
+    .os-valor-total { font-size: 1.5rem; font-weight: 800; color: var(--accent-green); }
     .os-actions { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
     .btn-action { padding: 10px; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; transition: all 0.3s; font-size: 0.8rem; display: flex; align-items: center; justify-content: center; gap: 6px; }
-    .btn-finish { background: #d1fae5; color: #065f46; }
-    .btn-finish:hover { background: #10b981; color: white; }
-    .btn-edit { background: #dbeafe; color: #1e40af; }
-    .btn-edit:hover { background: #3b82f6; color: white; }
-    .btn-delete { background: #fee2e2; color: #991b1b; }
-    .btn-delete:hover { background: #ef4444; color: white; }
-    .empty-state { text-align: center; padding: 80px 20px; background: white; border-radius: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
+    .btn-finish { background: #d1fae5; color: #065f46; } .btn-finish:hover { background: #10b981; color: white; }
+    .btn-edit { background: #dbeafe; color: #1e40af; } .btn-edit:hover { background: #3b82f6; color: white; }
+    .btn-delete { background: #fee2e2; color: #991b1b; } .btn-delete:hover { background: #ef4444; color: white; }
+    .empty-state { text-align: center; padding: 80px 20px; background: var(--card-bg); border-radius: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
     .empty-state-icon { font-size: 4rem; margin-bottom: 20px; opacity: 0.5; }
+
+    /* --- Modals --- */
     .modal { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.6); z-index: 1000; padding: 20px; overflow-y: auto; }
     .modal.active { display: flex; align-items: center; justify-content: center; }
-    .modal-content { background: white; border-radius: 20px; padding: 32px; max-width: 900px; width: 100%; box-shadow: 0 20px 60px rgba(0,0,0,0.3); max-height: 90vh; overflow-y: auto; }
-    .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; padding-bottom: 16px; border-bottom: 2px solid #f3f4f6; }
-    .modal-header h2 { font-size: 1.5rem; color: #1f2937; display: flex; align-items: center; gap: 12px; }
-    .btn-close { background: #f3f4f6; border: none; width: 36px; height: 36px; border-radius: 8px; cursor: pointer; font-size: 1.2rem; transition: all 0.3s; }
-    .btn-close:hover { background: #e5e7eb; transform: rotate(90deg); }
-    .form-section { margin-bottom: 32px; }
-    .form-section-title { font-size: 1.1rem; font-weight: 700; color: #1f2937; margin-bottom: 16px; padding-bottom: 12px; border-bottom: 2px solid #f3f4f6; display: flex; align-items: center; gap: 10px; }
-    .form-group { margin-bottom: 20px; }
-    .form-group label { display: block; margin-bottom: 8px; font-weight: 600; color: #374151; font-size: 0.9rem; }
-    .form-group input, .form-group textarea, .form-group select { width: 100%; padding: 12px 16px; border: 2px solid #e5e7eb; border-radius: 10px; font-size: 0.95rem; transition: all 0.3s; font-family: inherit; }
-    .form-group input:focus, .form-group textarea:focus, .form-group select:focus { outline: none; border-color: #10b981; box-shadow: 0 0 0 3px rgba(16,185,129,0.1); }
-    .form-group textarea { resize: vertical; min-height: 80px; }
+    .modal-content { background: var(--card-bg); border-radius: 20px; padding: 32px; max-width: 900px; width: 100%; box-shadow: 0 20px 60px rgba(0,0,0,0.3); max-height: 90vh; overflow-y: auto; }
+    .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; padding-bottom: 16px; border-bottom: 2px solid var(--border-color); }
+    .modal-header h2 { font-size: 1.5rem; color: var(--text-primary); display: flex; align-items: center; gap: 12px; }
+    .btn-close { background: var(--main-bg); border: none; width: 36px; height: 36px; border-radius: 8px; cursor: pointer; font-size: 1.2rem; transition: all 0.3s; color: var(--text-secondary); }
+    .btn-close:hover { background: #d1d5db; }
+    .form-section-title { font-size: 1.1rem; font-weight: 700; color: var(--text-primary); margin-bottom: 16px; padding-bottom: 12px; border-bottom: 2px solid var(--border-color); display: flex; align-items: center; gap: 10px; }
+    .form-group label { display: block; margin-bottom: 8px; font-weight: 600; color: var(--text-primary); font-size: 0.9rem; }
+    .form-group input, .form-group textarea, .form-group select { width: 100%; padding: 12px 16px; border: 2px solid var(--border-color); border-radius: 10px; font-size: 0.95rem; transition: all 0.3s; font-family: inherit; background: var(--main-bg); color: var(--text-primary); }
+    .form-group input:focus, .form-group textarea:focus, .form-group select:focus { outline: none; border-color: var(--accent-green); box-shadow: 0 0 0 3px rgba(16,185,129,0.1); }
     .form-row { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
     .form-row-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
     .form-actions { display: flex; gap: 12px; margin-top: 28px; }
     .btn-submit { flex: 1; padding: 14px; background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; border: none; border-radius: 10px; font-weight: 600; cursor: pointer; transition: all 0.3s; font-size: 1rem; }
-    .btn-submit:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(16,185,129,0.4); }
-    .btn-cancel { flex: 1; padding: 14px; background: #f3f4f6; color: #374151; border: none; border-radius: 10px; font-weight: 600; cursor: pointer; transition: all 0.3s; font-size: 1rem; }
-    .btn-cancel:hover { background: #e5e7eb; }
-    .pecas-section { background: #f9fafb; padding: 20px; border-radius: 12px; margin-bottom: 20px; }
-    .pecas-list { display: flex; flex-direction: column; gap: 12px; margin-bottom: 16px; max-height: 250px; overflow-y: auto; }
-    .peca-item { background: white; padding: 16px; border-radius: 10px; border: 1px solid #e5e7eb; display: grid; grid-template-columns: 1fr auto auto; align-items: center; gap: 16px; }
-    .peca-info strong { display: block; color: #1f2937; margin-bottom: 4px; }
-    .peca-info small { color: #6b7280; }
-    .btn-add-peca { width: 100%; padding: 12px; background: #dbeafe; color: #1e40af; border: 2px dashed #3b82f6; border-radius: 10px; font-weight: 600; cursor: pointer; transition: all 0.3s; }
-    .btn-add-peca:hover { background: #3b82f6; color: white; border-style: solid; }
-    .btn-remove-peca { background: #fee2e2; color: #991b1b; border: none; padding: 8px 12px; border-radius: 8px; cursor: pointer; font-size: 0.8rem; transition: all 0.3s; }
-    .btn-remove-peca:hover { background: #ef4444; color: white; }
-    .resumo-financeiro { background: #f9fafb; padding: 20px; border-radius: 12px; margin-bottom: 20px; }
-    .resumo-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid #e5e7eb; }
-    .resumo-item:last-child { border-bottom: none; padding-top: 16px; margin-top: 8px; border-top: 2px solid #10b981; }
-    .resumo-label { font-weight: 600; color: #374151; }
-    .resumo-valor { font-weight: 700; color: #10b981; font-size: 1.1rem; }
-    .resumo-item:last-child .resumo-valor { font-size: 1.5rem; }
-    .cliente-search-wrapper { position: relative; display: flex; align-items: center; gap: 8px; }
-    .cliente-suggestions { position: absolute; top: 100%; left: 0; right: 0; background: white; border: 2px solid #e5e7eb; border-top: none; border-radius: 0 0 10px 10px; max-height: 200px; overflow-y: auto; z-index: 10; display: none; }
-    .cliente-suggestions.show { display: block; }
-    .cliente-suggestion-item { padding: 12px 16px; cursor: pointer; transition: background 0.2s; border-bottom: 1px solid #f3f4f6; }
-    .cliente-suggestion-item:hover { background: #f9fafb; }
-    .cliente-suggestion-item strong { display: block; color: #1f2937; }
-    .cliente-suggestion-item small { color: #6b7280; }
-    .btn-link { background: none; border: none; color: #3b82f6; font-weight: 600; cursor: pointer; padding: 0; font-size: 0.85rem; }
-    .btn-link:hover { text-decoration: underline; }
-    .peca-search-results { max-height: 200px; overflow-y: auto; border: 1px solid #e5e7eb; border-radius: 8px; margin-top: 8px; }
-    .peca-search-item { padding: 12px; cursor: pointer; border-bottom: 1px solid #f3f4f6; }
-    .peca-search-item:hover { background: #f9fafb; }
-    .peca-search-item strong { display: block; }
-    .peca-search-item small { color: #6b7280; }
+    .btn-cancel { flex: 1; padding: 14px; background: var(--main-bg); color: var(--text-primary); border: none; border-radius: 10px; font-weight: 600; cursor: pointer; transition: all 0.3s; font-size: 1rem; }
+    
+    .mobile-menu-btn { display: none; background: none; border: none; font-size: 1.8rem; cursor: pointer; color: var(--text-primary); }
+    .overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 99; }
+    .overlay.is-open { display: block; }
     @media (max-width: 768px) {
-      .container { padding: 0 20px; }
-      header { padding: 20px; }
-      .header-content { flex-direction: column; gap: 15px; }
+      .dashboard-container { grid-template-columns: 1fr; }
+      .sidebar { transform: translateX(-100%); }
+      .sidebar.is-open { transform: translateX(0); }
+      .main-content { grid-column: 1 / 2; padding: 16px; }
+      .mobile-menu-btn { display: block; }
       .actions-bar { flex-direction: column; align-items: stretch; }
       .filter-tabs { width: 100%; }
       .os-grid { grid-template-columns: 1fr; }
@@ -110,305 +117,62 @@
   </style>
 </head>
 <body>
-  <header>
-    <div class="header-content">
-      <div class="header-left">
-        <h1>🛠️ Ordens de Serviço</h1>
-        <p>Gerenciamento completo de consertos e reparos</p>
+  <div class="dashboard-container">
+    <nav class="sidebar" id="sidebar">
+      <div>
+        <div class="sidebar-header"><div class="sidebar-logo">S</div><h1>SIGO Casa dos Reparos</h1></div>
+        <ul class="nav-list">
+          <li><a href="painel.html"><span class="nav-icon">🏠</span> Painel</a></li>
+          <li><a href="ordens-servico.html" class="active"><span class="nav-icon">🛠️</span> Ordens de Serviço</a></li>
+          <li><a href="clientes.html"><span class="nav-icon">👥</span> Clientes</a></li>
+          <li><a href="agendamentos.html"><span class="nav-icon">📅</span> Agenda</a></li>
+          <li><a href="estoque.html"><span class="nav-icon">📦</span> Estoque</a></li>
+          <li><a href="contas_financeiro.html"><span class="nav-icon">💰</span> Financeiro</a></li>
+          <li><a href="anotacoes.html"><span class="nav-icon">📝</span> Anotações</a></li>
+          <li><a href="configuracoes.html"><span class="nav-icon">⚙️</span> Configurações</a></li>
+        </ul>
       </div>
-      <button class="btn-voltar" onclick="window.location.href='painel.html'">
-        <span>←</span>
-        <span>Voltar</span>
-      </button>
-    </div>
-  </header>
-
-  <div class="container">
-    <div class="actions-bar">
-      <div class="filter-tabs">
-        <button class="filter-tab active" data-filter="todas">Todas</button>
-        <button class="filter-tab" data-filter="aguardando">Aguardando</button>
-        <button class="filter-tab" data-filter="em_andamento">Em Andamento</button>
-        <button class="filter-tab" data-filter="concluido">Concluído</button>
-        <button class="filter-tab" data-filter="entregue">Entregue</button>
-      </div>
-      <button class="btn-primary" id="btnNovaOS">
-        <span>➕</span>
-        <span>Nova OS</span>
-      </button>
-    </div>
-
-    <div id="osContainer">
-      <div class="os-grid" id="osGrid"></div>
-      <div class="empty-state" id="emptyState" style="display: none;">
-        <div class="empty-state-icon">🛠️</div>
-        <h3>Nenhuma ordem de serviço cadastrada</h3>
-        <p>Comece criando sua primeira OS</p>
-        <button class="btn-primary" onclick="document.getElementById('btnNovaOS').click()">
-          <span>➕</span>
-          <span>Nova Ordem de Serviço</span>
+      <div class="sidebar-footer">
+        <button class="logout-btn" onclick="logout()">
+          <span class="nav-icon">🚪</span> Sair do Sistema
         </button>
       </div>
-    </div>
-  </div>
+    </nav>
+    <div class="overlay" id="overlay"></div>
 
-  <div class="modal" id="modalOS">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h2><span id="modalIcon">➕</span> <span id="modalTitle">Nova Ordem de Serviço</span></h2>
-        <button class="btn-close" onclick="fecharModal()">✕</button>
+    <main class="main-content">
+      <header class="main-header">
+        <h1>Ordens de Serviço</h1>
+        <button class="mobile-menu-btn" id="mobileMenuBtn">☰</button>
+      </header>
+
+      <div class="actions-bar">
+        <div class="filter-tabs">
+          <button class="filter-tab active" data-filter="todas">Todas</button>
+          <button class="filter-tab" data-filter="aguardando">Aguardando</button>
+          <button class="filter-tab" data-filter="em_andamento">Em Andamento</button>
+          <button class="filter-tab" data-filter="concluido">Concluído</button>
+          <button class="filter-tab" data-filter="entregue">Entregue</button>
+        </div>
+        <button class="btn-primary" id="btnNovaOS"><span>➕</span> Nova OS</button>
       </div>
-      <form id="formOS" onsubmit="salvarOS(event)">
-        <input type="hidden" id="osId">
-        <input type="hidden" id="numeroOS">
 
-        <div class="form-section">
-          <div class="form-section-title"><span>👤</span> Dados do Cliente</div>
-          <div class="form-group cliente-search-wrapper">
-            <div style="flex: 1; position: relative;">
-              <label for="clienteNome">Cliente *</label>
-              <input type="text" id="clienteNome" required placeholder="Digite o nome do cliente...">
-              <div class="cliente-suggestions" id="clienteSuggestions"></div>
-              <input type="hidden" id="clienteId">
-            </div>
-            <button type="button" class="btn-link" style="margin-top: 30px;" id="btnNovoClienteOS">[+ Novo Cliente]</button>
-          </div>
-          <div class="form-group">
-            <label for="telefoneCliente">Telefone *</label>
-            <input type="tel" id="telefoneCliente" required placeholder="(00) 00000-0000">
-          </div>
+      <div id="osContainer">
+        <div class="os-grid" id="osGrid"></div>
+        <div class="empty-state" id="emptyState" style="display: none;">
+          <div class="empty-state-icon">🛠️</div>
+          <h3>Nenhuma OS encontrada</h3>
+          <p>Tente um filtro diferente ou crie uma nova ordem de serviço.</p>
         </div>
-
-        <div class="form-section">
-          <div class="form-section-title"><span>🔧</span> Dados do Aparelho</div>
-          <div class="form-group">
-            <label for="aparelhoSelect">Aparelho do Cliente *</label>
-            <div style="display: flex; gap: 8px; align-items: center;">
-              <select id="aparelhoSelect" required style="flex: 1;"></select>
-              <button type="button" class="btn-link" id="btnNovoAparelhoOS">[+ Novo Aparelho]</button>
-            </div>
-            <input type="hidden" id="aparelho" />
-            <input type="hidden" id="marca" />
-            <input type="hidden" id="modelo" />
-          </div>
-          <div class="form-group">
-            <label for="defeitoRelatado">Defeito Relatado *</label>
-            <textarea id="defeitoRelatado" required placeholder="Descreva o problema..."></textarea>
-          </div>
-          <div class="form-group">
-            <label for="diagnostico">Diagnóstico Técnico</label>
-            <textarea id="diagnostico" placeholder="Diagnóstico após análise..."></textarea>
-          </div>
-        </div>
-
-        <div class="form-section">
-          <div class="form-section-title"><span>🔩</span> Peças Utilizadas</div>
-          <div class="pecas-section">
-            <div class="pecas-list" id="pecasList"></div>
-            <button type="button" class="btn-add-peca" id="btnAddPeca">➕ Adicionar Peça do Estoque</button>
-          </div>
-        </div>
-
-        <div class="form-section">
-          <div class="form-section-title"><span>💰</span> Valores</div>
-          <div class="form-row">
-            <div class="form-group">
-              <label for="valorMaoObra">Mão de Obra (R$) *</label>
-              <input type="number" id="valorMaoObra" required step="0.01" min="0" value="0">
-            </div>
-            <div class="form-group">
-              <label for="desconto">Desconto (R$)</label>
-              <input type="number" id="desconto" step="0.01" min="0" value="0">
-            </div>
-          </div>
-          <div class="resumo-financeiro">
-            <div class="resumo-item">
-              <span class="resumo-label">Peças (Loja):</span>
-              <span class="resumo-valor" id="totalPecas">R$ 0,00</span>
-            </div>
-            <div class="resumo-item">
-              <span class="resumo-label">Mão de Obra (+ Peças Oficina):</span>
-              <span class="resumo-valor" id="totalMaoObra">R$ 0,00</span>
-            </div>
-            <div class="resumo-item">
-              <span class="resumo-label">Desconto:</span>
-              <span class="resumo-valor" id="valorDesconto">- R$ 0,00</span>
-            </div>
-            <div class="resumo-item">
-              <span class="resumo-label">TOTAL:</span>
-              <span class="resumo-valor" id="valorTotalFinal">R$ 0,00</span>
-            </div>
-          </div>
-        </div>
-
-        <div class="form-section">
-          <div class="form-section-title"><span>📋</span> Status e Prazos</div>
-          <div class="form-row-3">
-            <div class="form-group">
-              <label for="statusOS">Status *</label>
-              <select id="statusOS" required>
-                <option value="aguardando">Aguardando</option>
-                <option value="em_andamento">Em Andamento</option>
-                <option value="concluido">Concluído</option>
-                <option value="entregue">Entregue (Pago)</option>
-              </select>
-            </div>
-            <div class="form-group">
-              <label for="dataEntrada">Data Entrada *</label>
-              <input type="date" id="dataEntrada" required>
-            </div>
-            <div class="form-group">
-              <label for="prazoEntrega">Prazo Entrega</label>
-              <input type="date" id="prazoEntrega">
-            </div>
-          </div>
-          <div class="form-group">
-            <label for="observacoes">Observações</label>
-            <textarea id="observacoes" placeholder="Observações gerais..."></textarea>
-          </div>
-        </div>
-
-        <div class="form-actions">
-          <button type="button" class="btn-cancel" onclick="fecharModal()">Cancelar</button>
-          <button type="submit" class="btn-submit">Salvar OS</button>
-        </div>
-      </form>
-    </div>
-  </div>
-
-  <div class="modal" id="modalPeca">
-    <div class="modal-content" style="max-width: 600px;">
-      <div class="modal-header">
-        <h2>🔩 Adicionar Peça do Estoque</h2>
-        <button class="btn-close" onclick="fecharModalPeca()">✕</button>
       </div>
-      <form id="formPeca" onsubmit="adicionarPeca(event)">
-        <input type="hidden" id="pecaIdEstoque">
-        <input type="hidden" id="pecaNomeEstoque">
-        <input type="hidden" id="pecaValorEstoque">
-
-        <div class="form-group">
-          <label for="pecaSearch">Buscar Peça</label>
-          <input type="text" id="pecaSearch" placeholder="Digite o nome, código ou categoria da peça...">
-          <div class="peca-search-results" id="pecaSearchResults"></div>
-        </div>
-        
-        <div class="form-row">
-          <div class="form-group">
-            <label for="quantidadePeca">Quantidade *</label>
-            <input type="number" id="quantidadePeca" required min="1" value="1">
-          </div>
-          <div class="form-group">
-            <label>Valor Unitário</label>
-            <input type="text" id="valorPecaDisplay" readonly style="background: #f3f4f6; font-weight: 700;">
-          </div>
-        </div>
-
-        <div class="form-group" style="background: #fef3c7; padding: 12px; border-radius: 8px; border-left: 4px solid #f59e0b;">
-          <label for="pecaOficina" style="display: flex; align-items: center; gap: 8px; margin: 0;">
-            <input type="checkbox" id="pecaOficina" style="width: 20px; height: 20px;">
-            <span>Peça da oficina (incluir custo na mão de obra)</span>
-          </label>
-        </div>
-
-        <div class="form-actions">
-          <button type="button" class="btn-cancel" onclick="fecharModalPeca()">Cancelar</button>
-          <button type="submit" class="btn-submit">Adicionar</button>
-        </div>
-      </form>
-    </div>
+    </main>
   </div>
 
-  <div class="modal" id="modalConcluirOS">
-    <div class="modal-content" style="max-width: 550px;">
-      <div class="modal-header">
-        <h2>✔ Finalizar e Receber OS</h2>
-        <button class="btn-close" onclick="fecharModalConcluirOS()">✕</button>
-      </div>
-      <form id="formConcluirOS" onsubmit="salvarPagamento(event)">
-        <input type="hidden" id="concluirOsId">
-        <div style="text-align: center; margin-bottom: 24px;">
-          <p style="font-size: 1rem; color: #6b7280;" id="concluirOsInfo">OS #0000 - Cliente</p>
-          <p style="font-size: 2.5rem; font-weight: 800; color: #10b981;" id="concluirValorTotal">R$ 0,00</p>
-        </div>
-        
-        <div class="form-row">
-          <div class="form-group">
-            <label for="formaPagamento">Forma de Pagamento *</label>
-            <select id="formaPagamento" required>
-              <option value="Dinheiro">Dinheiro</option>
-              <option value="PIX">PIX</option>
-              <option value="Cartão de Débito">Cartão de Débito</option>
-              <option value="Cartão de Crédito">Cartão de Crédito</option>
-              <option value="Múltiplo">Múltiplo (descrever abaixo)</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label for="valorRecebido">Valor Efetivo Recebido *</label>
-            <input type="number" id="valorRecebido" required step="0.01" min="0" placeholder="0.00">
-          </div>
-        </div>
-        <div class="form-group">
-            <label for="obsPagamento">Observações do Pagamento</label>
-            <textarea id="obsPagamento" placeholder="Ex: R$50 no PIX, R$100 no crédito. Taxa da máquina: R$4,50..."></textarea>
-        </div>
-        <div class="form-actions">
-          <button type="button" class="btn-cancel" onclick="fecharModalConcluirOS()">Cancelar</button>
-          <button type="submit" class="btn-submit">Confirmar Recebimento</button>
-        </div>
-      </form>
-    </div>
-  </div>
-
-  <div class="modal" id="modalNovoClienteOS">
-    <div class="modal-content" style="max-width: 500px;">
-        <div class="modal-header">
-            <h2>👤 Novo Cliente</h2>
-            <button class="btn-close" onclick="fecharModalNovoClienteOS()">✕</button>
-        </div>
-        <form id="formNovoClienteOS" onsubmit="salvarNovoClienteOS(event)">
-            <div class="form-group">
-                <label for="novoClienteNome">Nome Completo *</label>
-                <input type="text" id="novoClienteNome" required>
-            </div>
-            <div class="form-group">
-                <label for="novoClienteTelefone">Telefone *</label>
-                <input type="tel" id="novoClienteTelefone" required>
-            </div>
-            <div class="form-actions">
-                <button type="button" class="btn-cancel" onclick="fecharModalNovoClienteOS()">Cancelar</button>
-                <button type="submit" class="btn-submit">Salvar Cliente</button>
-            </div>
-        </form>
-    </div>
-  </div>
-
-  <div class="modal" id="modalNovoAparelhoOS">
-      <div class="modal-content" style="max-width: 500px;">
-          <div class="modal-header">
-              <h2>🔧 Novo Aparelho</h2>
-              <button class="btn-close" onclick="fecharModalNovoAparelhoOS()">✕</button>
-          </div>
-          <form id="formNovoAparelhoOS" onsubmit="salvarNovoAparelhoOS(event)">
-              <div class="form-group">
-                  <label for="novoAparelhoTipo">Tipo de Aparelho *</label>
-                  <input type="text" id="novoAparelhoTipo" required placeholder="Ex: Lavadora, Geladeira">
-              </div>
-              <div class="form-group">
-                  <label for="novoAparelhoMarca">Marca *</label>
-                  <input type="text" id="novoAparelhoMarca" required placeholder="Ex: Brastemp">
-              </div>
-              <div class="form-group">
-                  <label for="novoAparelhoModelo">Modelo</label>
-                  <input type="text" id="novoAparelhoModelo" placeholder="Ex: BWK12A">
-              </div>
-              <div class="form-actions">
-                  <button type="button" class="btn-cancel" onclick="fecharModalNovoAparelhoOS()">Cancelar</button>
-                  <button type="submit" class="btn-submit">Salvar Aparelho</button>
-              </div>
-          </form>
-      </div>
-  </div>
+  <div class="modal" id="modalOS"><div class="modal-content"><div class="modal-header"><h2><span id="modalIcon">➕</span> <span id="modalTitle">Nova Ordem de Serviço</span></h2><button class="btn-close" onclick="fecharModal()">✕</button></div><form id="formOS" onsubmit="salvarOS(event)"><input type="hidden" id="osId"><input type="hidden" id="numeroOS"><div class="form-section"><div class="form-section-title"><span>👤</span> Dados do Cliente</div><div class="form-group cliente-search-wrapper"><div style="flex: 1; position: relative;"><label for="clienteNome">Cliente *</label><input type="text" id="clienteNome" required placeholder="Digite o nome do cliente..."><div class="cliente-suggestions" id="clienteSuggestions"></div><input type="hidden" id="clienteId"></div><button type="button" class="btn-link" style="margin-top: 30px;" id="btnNovoClienteOS">[+ Novo Cliente]</button></div><div class="form-group"><label for="telefoneCliente">Telefone *</label><input type="tel" id="telefoneCliente" required placeholder="(00) 00000-0000"></div></div><div class="form-section"><div class="form-section-title"><span>🔧</span> Dados do Aparelho</div><div class="form-group"><label for="aparelhoSelect">Aparelho do Cliente *</label><div style="display: flex; gap: 8px; align-items: center;"><select id="aparelhoSelect" required style="flex: 1;"></select><button type="button" class="btn-link" id="btnNovoAparelhoOS">[+ Novo Aparelho]</button></div><input type="hidden" id="aparelho" /><input type="hidden" id="marca" /><input type="hidden" id="modelo" /></div><div class="form-group"><label for="defeitoRelatado">Defeito Relatado *</label><textarea id="defeitoRelatado" required placeholder="Descreva o problema..."></textarea></div><div class="form-group"><label for="diagnostico">Diagnóstico Técnico</label><textarea id="diagnostico" placeholder="Diagnóstico após análise..."></textarea></div></div><div class="form-section"><div class="form-section-title"><span>🔩</span> Peças Utilizadas</div><div class="pecas-section"><div class="pecas-list" id="pecasList"></div><button type="button" class="btn-add-peca" id="btnAddPeca">➕ Adicionar Peça do Estoque</button></div></div><div class="form-section"><div class="form-section-title"><span>💰</span> Valores</div><div class="form-row"><div class="form-group"><label for="valorMaoObra">Mão de Obra (R$) *</label><input type="number" id="valorMaoObra" required step="0.01" min="0" value="0"></div><div class="form-group"><label for="desconto">Desconto (R$)</label><input type="number" id="desconto" step="0.01" min="0" value="0"></div></div><div class="resumo-financeiro"><div class="resumo-item"><span class="resumo-label">Peças (Loja):</span><span class="resumo-valor" id="totalPecas">R$ 0,00</span></div><div class="resumo-item"><span class="resumo-label">Mão de Obra (+ Peças Oficina):</span><span class="resumo-valor" id="totalMaoObra">R$ 0,00</span></div><div class="resumo-item"><span class="resumo-label">Desconto:</span><span class="resumo-valor" id="valorDesconto">- R$ 0,00</span></div><div class="resumo-item"><span class="resumo-label">TOTAL:</span><span class="resumo-valor" id="valorTotalFinal">R$ 0,00</span></div></div></div><div class="form-section"><div class="form-section-title"><span>📋</span> Status e Prazos</div><div class="form-row-3"><div class="form-group"><label for="statusOS">Status *</label><select id="statusOS" required><option value="aguardando">Aguardando</option><option value="em_andamento">Em Andamento</option><option value="concluido">Concluído</option><option value="entregue">Entregue (Pago)</option></select></div><div class="form-group"><label for="dataEntrada">Data Entrada *</label><input type="date" id="dataEntrada" required></div><div class="form-group"><label for="prazoEntrega">Prazo Entrega</label><input type="date" id="prazoEntrega"></div></div><div class="form-group"><label for="observacoes">Observações</label><textarea id="observacoes" placeholder="Observações gerais..."></textarea></div></div><div class="form-actions"><button type="button" class="btn-cancel" onclick="fecharModal()">Cancelar</button><button type="submit" class="btn-submit">Salvar OS</button></div></form></div></div>
+  <div class="modal" id="modalPeca"><div class="modal-content" style="max-width: 600px;"><div class="modal-header"><h2>🔩 Adicionar Peça do Estoque</h2><button class="btn-close" onclick="fecharModalPeca()">✕</button></div><form id="formPeca" onsubmit="adicionarPeca(event)"><input type="hidden" id="pecaIdEstoque"><input type="hidden" id="pecaNomeEstoque"><input type="hidden" id="pecaValorEstoque"><div class="form-group"><label for="pecaSearch">Buscar Peça</label><input type="text" id="pecaSearch" placeholder="Digite o nome, código ou categoria da peça..."><div class="peca-search-results" id="pecaSearchResults"></div></div><div class="form-row"><div class="form-group"><label for="quantidadePeca">Quantidade *</label><input type="number" id="quantidadePeca" required min="1" value="1"></div><div class="form-group"><label>Valor Unitário</label><input type="text" id="valorPecaDisplay" readonly style="background: #f3f4f6; font-weight: 700;"></div></div><div class="form-group" style="background: #fef3c7; padding: 12px; border-radius: 8px; border-left: 4px solid #f59e0b;"><label for="pecaOficina" style="display: flex; align-items: center; gap: 8px; margin: 0;"><input type="checkbox" id="pecaOficina" style="width: 20px; height: 20px;"><span>Peça da oficina (incluir custo na mão de obra)</span></label></div><div class="form-actions"><button type="button" class="btn-cancel" onclick="fecharModalPeca()">Cancelar</button><button type="submit" class="btn-submit">Adicionar</button></div></form></div></div>
+  <div class="modal" id="modalConcluirOS"><div class="modal-content" style="max-width: 550px;"><div class="modal-header"><h2>✔ Finalizar e Receber OS</h2><button class="btn-close" onclick="fecharModalConcluirOS()">✕</button></div><form id="formConcluirOS" onsubmit="salvarPagamento(event)"><input type="hidden" id="concluirOsId"><div style="text-align: center; margin-bottom: 24px;"><p style="font-size: 1rem; color: #6b7280;" id="concluirOsInfo">OS #0000 - Cliente</p><p style="font-size: 2.5rem; font-weight: 800; color: #10b981;" id="concluirValorTotal">R$ 0,00</p></div><div class="form-row"><div class="form-group"><label for="formaPagamento">Forma de Pagamento *</label><select id="formaPagamento" required><option value="Dinheiro">Dinheiro</option><option value="PIX">PIX</option><option value="Cartão de Débito">Cartão de Débito</option><option value="Cartão de Crédito">Cartão de Crédito</option><option value="Múltiplo">Múltiplo (descrever abaixo)</option></select></div><div class="form-group"><label for="valorRecebido">Valor Efetivo Recebido *</label><input type="number" id="valorRecebido" required step="0.01" min="0" placeholder="0.00"></div></div><div class="form-group"><label for="obsPagamento">Observações do Pagamento</label><textarea id="obsPagamento" placeholder="Ex: R$50 no PIX, R$100 no crédito. Taxa da máquina: R$4,50..."></textarea></div><div class="form-actions"><button type="button" class="btn-cancel" onclick="fecharModalConcluirOS()">Cancelar</button><button type="submit" class="btn-submit">Confirmar Recebimento</button></div></form></div></div>
+  <div class="modal" id="modalNovoClienteOS"><div class="modal-content" style="max-width: 500px;"><div class="modal-header"><h2>👤 Novo Cliente</h2><button class="btn-close" onclick="fecharModalNovoClienteOS()">✕</button></div><form id="formNovoClienteOS" onsubmit="salvarNovoClienteOS(event)"><div class="form-group"><label for="novoClienteNome">Nome Completo *</label><input type="text" id="novoClienteNome" required></div><div class="form-group"><label for="novoClienteTelefone">Telefone *</label><input type="tel" id="novoClienteTelefone" required></div><div class="form-actions"><button type="button" class="btn-cancel" onclick="fecharModalNovoClienteOS()">Cancelar</button><button type="submit" class="btn-submit">Salvar Cliente</button></div></form></div></div>
+  <div class="modal" id="modalNovoAparelhoOS"><div class="modal-content" style="max-width: 500px;"><div class="modal-header"><h2>🔧 Novo Aparelho</h2><button class="btn-close" onclick="fecharModalNovoAparelhoOS()">✕</button></div><form id="formNovoAparelhoOS" onsubmit="salvarNovoAparelhoOS(event)"><div class="form-group"><label for="novoAparelhoTipo">Tipo de Aparelho *</label><input type="text" id="novoAparelhoTipo" required placeholder="Ex: Lavadora, Geladeira"></div><div class="form-group"><label for="novoAparelhoMarca">Marca *</label><input type="text" id="novoAparelhoMarca" required placeholder="Ex: Brastemp"></div><div class="form-group"><label for="novoAparelhoModelo">Modelo</label><input type="text" id="novoAparelhoModelo" placeholder="Ex: BWK12A"></div><div class="form-actions"><button type="button" class="btn-cancel" onclick="fecharModalNovoAparelhoOS()">Cancelar</button><button type="submit" class="btn-submit">Salvar Aparelho</button></div></form></div></div>
 
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
@@ -417,10 +181,33 @@
   <script src="utils.js"></script>
 
   <script>
+    protegerPagina();
+
+    // LÓGICA DE RESPONSIVIDADE (MENU MOBILE)
+    const sidebar = document.getElementById('sidebar');
+    const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+    const overlay = document.getElementById('overlay');
+    if (mobileMenuBtn) { // Adicionado para evitar erro caso o elemento não exista
+        mobileMenuBtn.addEventListener('click', () => { sidebar.classList.toggle('is-open'); overlay.classList.toggle('is-open'); });
+        overlay.addEventListener('click', () => { sidebar.classList.remove('is-open'); overlay.classList.remove('is-open'); });
+    }
+
+    // --- LÓGICA DE DADOS E FUNCIONALIDADES DA PÁGINA ---
+    const configRef = database.ref('configuracoes');
     const osRef = database.ref("ordens_servico");
     const clientesRef = database.ref("clientes");
     const estoqueRef = database.ref("estoque");
     const transacoesRef = database.ref("transacoes");
+
+    auth.onAuthStateChanged(user => {
+      if(user) {
+        configRef.on('value', (snapshot) => {
+            const config = snapshot.val() || {};
+            if (config.darkMode) { document.body.classList.add('dark-mode'); } 
+            else { document.body.classList.remove('dark-mode'); }
+        });
+      }
+    });
 
     let osData = {}, clientesData = {}, estoqueData = {}, editandoId = null, filtroAtual = 'todas', pecasTemp = [], proximoNumeroOS = 1;
     let clienteSelecionadoId = null;
@@ -434,20 +221,28 @@
       proximoNumeroOS = numeros.length > 0 ? Math.max(...numeros) + 1 : 1;
     }
 
+    function formatarMoeda(valor) {
+      return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(valor || 0);
+    }
+
     function renderizarOS() {
       const grid = document.getElementById('osGrid'), emptyState = document.getElementById('emptyState');
       grid.innerHTML = '';
       const osArray = Object.entries(osData).map(([id, data]) => ({ id, ...data }));
       const osFiltradas = filtroAtual === 'todas' ? osArray : osArray.filter(os => os.statusOS === filtroAtual);
+      
       if (osFiltradas.length === 0) { emptyState.style.display = 'block'; grid.style.display = 'none'; return; }
       emptyState.style.display = 'none'; grid.style.display = 'grid';
+      
       osFiltradas.sort((a, b) => parseInt(b.numeroOS) - parseInt(a.numeroOS));
       osFiltradas.forEach(os => {
         const card = document.createElement('div'); card.className = 'os-card';
         const statusTexto = { aguardando: 'Aguardando', em_andamento: 'Em Andamento', concluido: 'Concluído', entregue: 'Entregue' };
-        const dataEntrada = new Date(os.dataEntrada).toLocaleDateString();
-        const prazo = os.prazoEntrega ? new Date(os.prazoEntrega).toLocaleDateString() : 'Não definido';
-        const isConcluido = os.statusOS === 'concluido';
+        
+        // CORREÇÃO DAS DATAS PARA EVITAR PROBLEMAS DE FUSO HORÁRIO
+        const dataEntrada = new Date(os.dataEntrada + 'T00:00:00').toLocaleDateString('pt-BR');
+        const prazo = os.prazoEntrega ? new Date(os.prazoEntrega + 'T00:00:00').toLocaleDateString('pt-BR') : 'Não definido';
+        
         const isEntregue = os.statusOS === 'entregue';
         
         card.innerHTML = `
@@ -466,15 +261,9 @@
             <div class="os-valor-total">${formatarMoeda(os.valorTotalFinal || 0)}</div>
           </div>
           <div class="os-actions">
-            <button class="btn-action btn-finish" onclick="abrirModalConcluirOS('${os.id}')" ${isEntregue ? 'disabled' : ''}>
-              ✔ Finalizar/Receber
-            </button>
-            <button class="btn-action btn-edit" onclick="editarOS('${os.id}')" ${isEntregue ? 'disabled' : ''}>
-              ✏️ Editar
-            </button>
-            <button class="btn-action btn-delete" onclick="excluirOS('${os.id}', '${os.numeroOS}')">
-              🗑️ Excluir
-            </button>
+            <button class="btn-action btn-finish" onclick="abrirModalConcluirOS('${os.id}')" ${isEntregue ? 'disabled' : ''}>✔ Finalizar/Receber</button>
+            <button class="btn-action btn-edit" onclick="editarOS('${os.id}')" ${isEntregue ? 'disabled' : ''}>✏️ Editar</button>
+            <button class="btn-action btn-delete" onclick="excluirOS('${os.id}', '${os.numeroOS}')">🗑️ Excluir</button>
           </div>
         `;
         grid.appendChild(card);
@@ -488,7 +277,6 @@
       });
     });
 
-    // --- LÓGICA DE CLIENTES ---
     document.getElementById('clienteNome').addEventListener('input', function() {
       const termo = this.value.toLowerCase(), suggestions = document.getElementById('clienteSuggestions');
       if (termo.length < 2) { suggestions.classList.remove('show'); return; }
@@ -530,10 +318,10 @@
         });
     }
 
-    // --- LÓGICA DE APARELHOS ---
     function carregarAparelhosCliente(clienteId, aparelhoSelecionado = null) {
         const select = document.getElementById('aparelhoSelect');
         select.innerHTML = '<option value="">Selecione ou cadastre um aparelho...</option>';
+        if (!clienteId) return;
         const cliente = clientesData[clienteId];
         if (cliente && cliente.aparelhos) {
             cliente.aparelhos.forEach(aparelho => {
@@ -556,14 +344,15 @@
             document.getElementById('aparelho').value = aparelho.tipo;
             document.getElementById('marca').value = aparelho.marca;
             document.getElementById('modelo').value = aparelho.modelo;
+        } else {
+            document.getElementById('aparelho').value = '';
+            document.getElementById('marca').value = '';
+            document.getElementById('modelo').value = '';
         }
     }
 
     document.getElementById('btnNovoAparelhoOS').addEventListener('click', () => {
-        if (!clienteSelecionadoId) {
-            alert('Selecione um cliente primeiro!');
-            return;
-        }
+        if (!clienteSelecionadoId) { alert('Selecione um cliente primeiro!'); return; }
         document.getElementById('modalNovoAparelhoOS').classList.add('active');
     });
     function fecharModalNovoAparelhoOS() { document.getElementById('modalNovoAparelhoOS').classList.remove('active'); }
@@ -574,10 +363,8 @@
             marca: document.getElementById('novoAparelhoMarca').value,
             modelo: document.getElementById('novoAparelhoModelo').value,
         };
-        
-        const aparelhosAtuais = clientesData[clienteSelecionadoId].aparelhos || [];
+        const aparelhosAtuais = (clientesData[clienteSelecionadoId] && clientesData[clienteSelecionadoId].aparelhos) || [];
         aparelhosAtuais.push(novoAparelho);
-        
         clientesRef.child(clienteSelecionadoId).update({ aparelhos: aparelhosAtuais }).then(() => {
             alert('Aparelho salvo para o cliente!');
             fecharModalNovoAparelhoOS();
@@ -585,7 +372,6 @@
         });
     }
 
-    // --- LÓGICA DA OS (ABERTURA E EDIÇÃO) ---
     document.getElementById('btnNovaOS').addEventListener('click', () => {
       editandoId = null; pecasTemp = []; clienteSelecionadoId = null;
       document.getElementById('modalTitle').textContent = 'Nova Ordem de Serviço';
@@ -603,18 +389,14 @@
     function fecharModal() { document.getElementById('modalOS').classList.remove('active'); }
     
     function editarOS(id) {
-      editandoId = id;
-      const os = osData[id];
+      editandoId = id; const os = osData[id];
       selecionarCliente(os.clienteId);
-
       document.getElementById('modalTitle').textContent = `Editar OS #${String(os.numeroOS).padStart(4, '0')}`;
       document.getElementById('modalIcon').textContent = '✏️';
       document.getElementById('osId').value = id;
       document.getElementById('numeroOS').value = os.numeroOS;
-      
       const aparelhoSelecionado = { tipo: os.aparelho, marca: os.marca, modelo: os.modelo };
       carregarAparelhosCliente(os.clienteId, aparelhoSelecionado);
-
       document.getElementById('defeitoRelatado').value = os.defeitoRelatado;
       document.getElementById('diagnostico').value = os.diagnostico || '';
       document.getElementById('valorMaoObra').value = os.valorMaoObra || 0;
@@ -628,7 +410,6 @@
       document.getElementById('modalOS').classList.add('active');
     }
 
-    // --- LÓGICA DE PEÇAS ---
     document.getElementById('btnAddPeca').addEventListener('click', () => {
         document.getElementById('formPeca').reset();
         document.getElementById('pecaSearchResults').innerHTML = '';
@@ -641,15 +422,12 @@
         const resultsContainer = document.getElementById('pecaSearchResults');
         resultsContainer.innerHTML = '';
         if (termo.length < 2) return;
-        
         const pecasFiltradas = Object.entries(estoqueData).filter(([id, peca]) => 
             (peca.nomePeca && peca.nomePeca.toLowerCase().includes(termo)) ||
             (peca.codigoPeca && peca.codigoPeca.toLowerCase().includes(termo))
         ).slice(0, 10);
-
         pecasFiltradas.forEach(([id, peca]) => {
-            const item = document.createElement('div');
-            item.className = 'peca-search-item';
+            const item = document.createElement('div'); item.className = 'peca-search-item';
             item.innerHTML = `<strong>${peca.nomePeca}</strong><small>Código: ${peca.codigoPeca || 'N/A'} | Estoque: ${peca.quantidade}</small>`;
             item.onclick = () => selecionarPeca(id, peca);
             resultsContainer.appendChild(item);
@@ -679,47 +457,26 @@
     }
 
     function renderizarPecas() {
-      const lista = document.getElementById('pecasList');
-      lista.innerHTML = '';
-      if (pecasTemp.length === 0) {
-        lista.innerHTML = '<p style="text-align: center; color: #9ca3af;">Nenhuma peça adicionada</p>';
-        return;
-      }
+      const lista = document.getElementById('pecasList'); lista.innerHTML = '';
+      if (pecasTemp.length === 0) { lista.innerHTML = '<p style="text-align: center; color: var(--text-secondary);">Nenhuma peça adicionada</p>'; return; }
       pecasTemp.forEach((peca, index) => {
         const item = document.createElement('div'); item.className = 'peca-item';
         const subtotal = peca.quantidade * peca.valorUnitario;
         const tipoLabel = peca.tipo === 'oficina' ? ' (Oficina)' : '';
-        item.innerHTML = `
-          <div class="peca-info">
-            <strong>${peca.nome}${tipoLabel}</strong>
-            <small>${peca.quantidade}x ${formatarMoeda(peca.valorUnitario)}</small>
-          </div>
-          <span style="font-weight: 700; color: #10b981;">${formatarMoeda(subtotal)}</span>
-          <button type="button" class="btn-remove-peca" onclick="removerPeca(${index})">✕</button>
-        `;
+        item.innerHTML = `<div class="peca-info"><strong>${peca.nome}${tipoLabel}</strong><small>${peca.quantidade}x ${formatarMoeda(peca.valorUnitario)}</small></div><span style="font-weight: 700; color: var(--accent-green);">${formatarMoeda(subtotal)}</span><button type="button" class="btn-remove-peca" onclick="removerPeca(${index})">✕</button>`;
         lista.appendChild(item);
       });
     }
 
-    function removerPeca(index) {
-        pecasTemp.splice(index, 1); renderizarPecas(); calcularTotais();
-    }
+    function removerPeca(index) { pecasTemp.splice(index, 1); renderizarPecas(); calcularTotais(); }
 
     function calcularTotais() {
       const maoObraBase = parseFloat(document.getElementById('valorMaoObra').value) || 0;
       const desconto = parseFloat(document.getElementById('desconto').value) || 0;
-      
-      const totalPecasLoja = pecasTemp
-        .filter(p => p.tipo === 'loja')
-        .reduce((sum, p) => sum + (p.quantidade * p.valorUnitario), 0);
-      
-      const custoPecasOficina = pecasTemp
-        .filter(p => p.tipo === 'oficina')
-        .reduce((sum, p) => sum + (p.quantidade * p.valorUnitario), 0);
-
+      const totalPecasLoja = pecasTemp.filter(p => p.tipo === 'loja').reduce((sum, p) => sum + (p.quantidade * p.valorUnitario), 0);
+      const custoPecasOficina = pecasTemp.filter(p => p.tipo === 'oficina').reduce((sum, p) => sum + (p.quantidade * p.valorUnitario), 0);
       const maoObraFinal = maoObraBase + custoPecasOficina;
       const totalGeral = totalPecasLoja + maoObraFinal - desconto;
-
       document.getElementById('totalPecas').textContent = formatarMoeda(totalPecasLoja);
       document.getElementById('totalMaoObra').textContent = formatarMoeda(maoObraFinal);
       document.getElementById('valorDesconto').textContent = `- ${formatarMoeda(desconto)}`;
@@ -728,8 +485,6 @@
     document.getElementById('valorMaoObra').addEventListener('input', calcularTotais);
     document.getElementById('desconto').addEventListener('input', calcularTotais);
 
-
-    // --- LÓGICA DE SALVAR E EXCLUIR OS ---
     function salvarOS(event) {
       event.preventDefault();
       const maoObraBase = parseFloat(document.getElementById('valorMaoObra').value) || 0;
@@ -738,45 +493,15 @@
       const custoPecasOficina = pecasTemp.filter(p => p.tipo === 'oficina').reduce((sum, p) => sum + (p.quantidade * p.valorUnitario), 0);
       const maoObraFinal = maoObraBase + custoPecasOficina;
       const totalFinal = totalPecasLoja + maoObraFinal - desconto;
-
       const osDataObj = {
-        numeroOS: document.getElementById('numeroOS').value,
-        clienteId: document.getElementById('clienteId').value,
-        clienteNome: document.getElementById('clienteNome').value,
-        telefoneCliente: document.getElementById('telefoneCliente').value,
-        aparelho: document.getElementById('aparelho').value,
-        marca: document.getElementById('marca').value,
-        modelo: document.getElementById('modelo').value,
-        defeitoRelatado: document.getElementById('defeitoRelatado').value,
-        diagnostico: document.getElementById('diagnostico').value,
-        pecas: pecasTemp,
-        valorPecas: totalPecasLoja,
-        valorMaoObra: maoObraFinal,
-        desconto: desconto,
-        valorTotalFinal: totalFinal,
-        statusOS: document.getElementById('statusOS').value,
-        dataEntrada: document.getElementById('dataEntrada').value,
-        prazoEntrega: document.getElementById('prazoEntrega').value,
-        observacoes: document.getElementById('observacoes').value,
-        tecnicoResponsavel: auth.currentUser.email,
-        criadoEm: editandoId ? osData[editandoId].criadoEm : new Date().toISOString(),
-        atualizadoEm: new Date().toISOString()
+        numeroOS: document.getElementById('numeroOS').value, clienteId: document.getElementById('clienteId').value, clienteNome: document.getElementById('clienteNome').value, telefoneCliente: document.getElementById('telefoneCliente').value, aparelho: document.getElementById('aparelho').value, marca: document.getElementById('marca').value, modelo: document.getElementById('modelo').value, defeitoRelatado: document.getElementById('defeitoRelatado').value, diagnostico: document.getElementById('diagnostico').value, pecas: pecasTemp, valorPecas: totalPecasLoja, valorMaoObra: maoObraFinal, desconto: desconto, valorTotalFinal: totalFinal, statusOS: document.getElementById('statusOS').value, dataEntrada: document.getElementById('dataEntrada').value, prazoEntrega: document.getElementById('prazoEntrega').value, observacoes: document.getElementById('observacoes').value, tecnicoResponsavel: auth.currentUser.email, criadoEm: editandoId ? osData[editandoId].criadoEm : new Date().toISOString(), atualizadoEm: new Date().toISOString()
       };
-
-      if (editandoId) {
-        osRef.child(editandoId).update(osDataObj).then(() => { alert('OS atualizada com sucesso!'); fecharModal(); });
-      } else {
-        osRef.push(osDataObj).then(() => { alert('OS cadastrada com sucesso!'); fecharModal(); });
-      }
+      if (editandoId) { osRef.child(editandoId).update(osDataObj).then(() => { alert('OS atualizada com sucesso!'); fecharModal(); }); } 
+      else { osRef.push(osDataObj).then(() => { alert('OS cadastrada com sucesso!'); fecharModal(); }); }
     }
     
-    function excluirOS(id, numeroOS) {
-        if (confirm(`Tem certeza que deseja excluir a OS #${numeroOS}? Esta ação não pode ser desfeita.`)) {
-            osRef.child(id).remove().then(() => alert("OS excluída com sucesso!"));
-        }
-    }
+    function excluirOS(id, numeroOS) { if (confirm(`Tem certeza que deseja excluir a OS #${numeroOS}? Esta ação não pode ser desfeita.`)) { osRef.child(id).remove().then(() => alert("OS excluída com sucesso!")); } }
     
-    // --- LÓGICA DE CONCLUSÃO E PAGAMENTO ---
     function abrirModalConcluirOS(id) {
         const os = osData[id];
         document.getElementById('concluirOsId').value = id;
@@ -786,56 +511,27 @@
         document.getElementById('modalConcluirOS').classList.add('active');
     }
     
-    function fecharModalConcluirOS() {
-        document.getElementById('modalConcluirOS').classList.remove('active');
-    }
+    function fecharModalConcluirOS() { document.getElementById('modalConcluirOS').classList.remove('active'); }
     
     async function salvarPagamento(event) {
         event.preventDefault();
         const osId = document.getElementById('concluirOsId').value;
         const os = osData[osId];
-        const osUpdates = {};
-
-        // 1. Atualizar o estoque
-        const pecasUtilizadas = os.pecas || [];
         const estoqueUpdates = {};
-        for (const peca of pecasUtilizadas) {
+        for (const peca of (os.pecas || [])) {
             const estoqueAtual = estoqueData[peca.pecaId];
-            if (estoqueAtual) {
-                const novaQuantidade = estoqueAtual.quantidade - peca.quantidade;
-                estoqueUpdates[`/${peca.pecaId}/quantidade`] = novaQuantidade;
-            }
+            if (estoqueAtual) { estoqueUpdates[`/${peca.pecaId}/quantidade`] = estoqueAtual.quantidade - peca.quantidade; }
         }
         await database.ref('estoque').update(estoqueUpdates);
-
-        // 2. Criar a transação financeira
         const transacao = {
-            tipo: 'entrada',
-            descricao: `Recebimento OS #${String(os.numeroOS).padStart(4, '0')}`,
-            categoria: 'servicos',
-            valor: parseFloat(document.getElementById('valorRecebido').value),
-            dataTransacao: new Date().toISOString().split('T')[0],
-            statusTransacao: 'pago',
-            formaPagamento: document.getElementById('formaPagamento').value,
-            observacoes: document.getElementById('obsPagamento').value,
-            referenciaOS: osId,
-            criadoPor: auth.currentUser.email,
-            criadoEm: new Date().toISOString()
+            tipo: 'entrada', descricao: `Recebimento OS #${String(os.numeroOS).padStart(4, '0')}`, categoria: 'servicos', valor: parseFloat(document.getElementById('valorRecebido').value), dataTransacao: new Date().toISOString().split('T')[0], statusTransacao: 'pago', formaPagamento: document.getElementById('formaPagamento').value, observacoes: document.getElementById('obsPagamento').value, referenciaOS: osId, criadoPor: auth.currentUser.email, criadoEm: new Date().toISOString()
         };
         await transacoesRef.push(transacao);
-
-        // 3. Atualizar o status da OS
         await osRef.child(osId).update({
-            statusOS: 'entregue',
-            dataPagamento: new Date().toISOString(),
-            pagamentoInfo: {
-                forma: transacao.formaPagamento,
-                valorRecebido: transacao.valor,
-                obs: transacao.observacoes
-            }
+            statusOS: 'entregue', dataPagamento: new Date().toISOString(),
+            pagamentoInfo: { forma: transacao.formaPagamento, valorRecebido: transacao.valor, obs: transacao.observacoes }
         });
-
-        alert(`OS #${os.numeroOS} finalizada e recebimento registrado com sucesso!`);
+        alert(`OS #${os.numeroOS} finalizada e recebimento registrado!`);
         fecharModalConcluirOS();
     }
 
