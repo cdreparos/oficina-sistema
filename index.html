@@ -78,8 +78,8 @@
     }
 
     /* Estado de espiar a senha */
-    #mascote-login.peek .pupila {
-      transform: translate(45px, 46px); /* Move a pupila para cima, dentro do olho */
+    #mascote-login.peek .pupila-wrapper {
+      transform: translateY(-8px);
     }
     #mascote-login.peek .sobrancelha {
       transform: translateY(-3px);
@@ -223,24 +223,18 @@
       <div class="logo">
          <svg id="mascote-login" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
             <defs>
-              <linearGradient id="gearGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stop-color="#FDE047" />
-                <stop offset="100%" stop-color="#F59E0B" />
-              </linearGradient>
-              <linearGradient id="gearInnerGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stop-color="#F97316" />
-                <stop offset="100%" stop-color="#EA580C" />
-              </linearGradient>
-               <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+              <radialGradient id="gearGradient" cx="50%" cy="50%" r="50%" fx="50%" fy="50%">
+                <stop offset="0%" stop-color="#FDE047"/>
+                <stop offset="60%" stop-color="#F59E0B"/>
+                <stop offset="100%" stop-color="#D97706"/>
+              </radialGradient>
+              <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
                 <feDropShadow dx="0" dy="4" stdDeviation="4" flood-color="#000000" flood-opacity="0.25"/>
               </filter>
             </defs>
             
             <g filter="url(#shadow)">
-              <path d="M105,60a45,45 0 0 1-45,45V15a45,45 0 0 1 45,45Z" fill="#FB923C"/>
-               <path d="M60,15a45,45 0 0 1-45,45,45,45 0 0 1 45-45Z" fill="url(#gearGradient)"/>
-               <path fill-rule="evenodd" clip-rule="evenodd" d="M60,15V1.2c2.6,0,5.2.2,7.8.6l3.9-6.8c.8-1.4,2.5-2,4-1.3l9,5.2c1.5.9,2.2,2.8,1.4,4.2l-4,6.9c1.9,2,3.6,4.2,5.1,6.5l6.9-4c1.4-.8,3.3-.2,4.2,1.4l5.2,9c.9,1.5.2,3.3-1.3,4.1l-6.8,3.9c.4,2.6.6,5.2.6,7.8H118.8c0-2.6-.2-5.2-.6-7.8l6.8-3.9c1.5-.9,2.2-2.8,1.4-4.2l-5.2-9c-.9-1.5-2.8-2.2-4.2-1.4l-6.9,4c-1.5-2.3-3.2-4.5-5.1-6.5l4-6.9c.8-1.4.2-3.3-1.4-4.1l-9-5.2c-1.5-.9-3.2-.3-4,1.3l-3.9,6.8c-2.6-.4-5.2-.6-7.8-.6V15Zm0,90V118.8c-2.6,0-5.2-.2-7.8-.6l-3.9,6.8c-.8,1.4-2.5,2-4,1.3l-9-5.2c-1.5-.9-2.2-2.8-1.4-4.2l4-6.9c-1.9-2-3.6-4.2-5.1-6.5l-6.9,4c-1.4.8-3.3.2-4.2-1.4l-5.2-9c-.9-1.5-.2-3.3,1.3-4.1l6.8-3.9c-.4-2.6-.6-5.2-.6-7.8H1.2c0,2.6.2,5.2.6,7.8l-6.8,3.9c-1.5.9-2.2,2.8-1.4,4.2l5.2,9c.9,1.5,2.8,2.2,4.2,1.4l6.9-4c1.5,2.3,3.2,4.5,5.1,6.5l-4,6.9c-.8,1.4-.2,3.3,1.4,4.1l9,5.2c1.5.9,3.2.3,4-1.3l3.9-6.8c2.6.4,5.2.6,7.8.6V105Z" transform="translate(-1.2 -1.2)" fill="url(#gearGradient)"/>
-               <circle cx="60" cy="60" r="34" fill="url(#gearInnerGradient)"/>
+              <path d="M101.5,86.2l-15.1-4.7c-2.8-0.9-5.8-0.2-7.9,1.7l-9.9,8.9c-2.4,2.2-6,2.4-8.6,0.5l-11.3-8.3 c-2.9-2.1-4.7-5.5-4.7-9.2V60v-4.1c0-3.7,1.8-7.1,4.7-9.2L60,38.4c2.6-1.9,6.2-1.7,8.6,0.5l9.9,8.9c2.1,1.9,5.1,2.5,7.9,1.7 l15.1-4.7c2.9-0.9,5.2-3.6,5.2-6.7V33.8c0-3.1-2.3-5.8-5.2-6.7L96.4,22.4c-2.8-0.9-5.1-3.2-5.8-6.1l-4.7-15.1 C85.2,0.3,82.5-1,79.7,0.3L68.4,8.6c-2.9,2.1-6.8,2.7-10.2,1.5L46.9,6.3C44.1,5.2,41.1,6,39,8l-9.9,8.9c-2.4,2.2-5.8,2.8-8.6,1.3 L9.2,11.5C6.3,10.2,3.5,12,2.8,15L-1.9,30.1c-0.8,2.9,0.3,6,2.6,7.7l11.3,8.3c2.9,2.1,4.7,5.5,4.7,9.2V60v4.1 c0,3.7-1.8,7.1-4.7,9.2L-1.3,81.6c-2.3,1.7-3.3,4.7-2.6,7.7l4.7,15.1c0.7,2.9,3.5,4.8,6.4,3.5l11.3-8.3 c3.4-1.2,7.3-0.6,10.2,1.5l11.3,8.3c2.8,1.3,5.8,0.5,7.9-1.7l9.9-8.9c2.4-2.2,6-2.4,8.6-0.5l11.3,8.3 c2.9,2.1,6.8,1.5,9.2-1.3l9.9-8.9c2.1-1.9,5.1-2.5,7.9-1.7l15.1,4.7c2.9,0.9,5.2,3.6,5.2,6.7v4.1 C106.7,82.6,104.4,85.3,101.5,86.2z" transform="scale(0.5) translate(60,60)" fill="url(#gearGradient)"/>
                <circle cx="60" cy="60" r="30" fill="#1E293B"/>
             </g>
             
@@ -251,13 +245,13 @@
                 <g id="olhos">
                   <circle class="olho-fundo" cx="45" cy="55" r="12" fill="white"/>
                   <circle class="olho-fundo" cx="75" cy="55" r="12" fill="white"/>
-                  <g class="pupila" id="pupila-esq" transform="translate(45, 55)">
-                    <circle r="7" fill="black"/>
-                    <circle cx="2" cy="-2" r="2" fill="white"/>
+                  <g class="pupila-wrapper" id="pupila-esq">
+                    <circle r="7" fill="black" cx="45" cy="55"/>
+                    <circle cx="47" cy="53" r="2.5" fill="white" fill-opacity="0.9"/>
                   </g>
-                   <g class="pupila" id="pupila-dir" transform="translate(75, 55)">
-                    <circle r="7" fill="black"/>
-                    <circle cx="2" cy="-2" r="2" fill="white"/>
+                   <g class="pupila-wrapper" id="pupila-dir">
+                    <circle r="7" fill="black" cx="75" cy="55"/>
+                    <circle cx="77" cy="53" r="2.5" fill="white" fill-opacity="0.9"/>
                   </g>
                 </g>
 
@@ -376,16 +370,15 @@
     window.addEventListener('mousemove', (e) => {
       if (isPeeking) return;
 
-      const { clientX, clientY } = e;
       const rect = mascote.getBoundingClientRect();
-      const mascoteX = rect.left + rect.width / 2;
-      const mascoteY = rect.top + rect.height / 2;
       
-      // Coordenadas do centro dos olhos
+      // Coordenadas do centro dos olhos (baseado no viewBox 120x120)
       const olhoEsqX = rect.left + (45 * rect.width / 120);
       const olhoEsqY = rect.top + (55 * rect.height / 120);
       const olhoDirX = rect.left + (75 * rect.width / 120);
       const olhoDirY = rect.top + (55 * rect.height / 120);
+      
+      const { clientX, clientY } = e;
 
       // Movimento da pupila esquerda
       const deltaEsqX = clientX - olhoEsqX;
@@ -393,7 +386,7 @@
       const angleEsq = Math.atan2(deltaEsqY, deltaEsqX);
       const moveEsqX = Math.cos(angleEsq) * 4;
       const moveEsqY = Math.sin(angleEsq) * 4;
-      pupilaEsq.style.transform = `translate(${45 + moveEsqX}px, ${55 + moveEsqY}px)`;
+      pupilaEsq.style.transform = `translate(${moveEsqX}px, ${moveEsqY}px)`;
       
       // Movimento da pupila direita
       const deltaDirX = clientX - olhoDirX;
@@ -401,7 +394,7 @@
       const angleDir = Math.atan2(deltaDirY, deltaDirX);
       const moveDirX = Math.cos(angleDir) * 4;
       const moveDirY = Math.sin(angleDir) * 4;
-      pupilaDir.style.transform = `translate(${75 + moveDirX}px, ${55 + moveDirY}px)`;
+      pupilaDir.style.transform = `translate(${moveDirX}px, ${moveDirY}px)`;
     });
 
     // Lógica para espiar a senha
@@ -415,8 +408,6 @@
       if (type === 'text') {
         isPeeking = true;
         mascote.classList.add('peek');
-        pupilaEsq.style.transform = 'translate(45px, 47px)';
-        pupilaDir.style.transform = 'translate(75px, 47px)';
       } else {
         isPeeking = false;
         mascote.classList.remove('peek');
