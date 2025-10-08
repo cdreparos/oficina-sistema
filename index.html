@@ -47,33 +47,16 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      cursor: pointer;
+      /* O cursor foi removido pois a engrenagem é fixa */
     }
 
     #mascote-login {
-      width: 100%;
-      height: 100%;
+      /* O mascote agora é apenas o rosto, que será animado */
       transition: transform 0.3s ease-out;
-      animation: breathe 4s ease-in-out infinite;
     }
-
-    @keyframes breathe {
-      0%, 100% { transform: scale(1); }
-      50% { transform: scale(1.03); }
-    }
-
-    #mascote-login.dodging {
-      animation: dodge 0.5s ease-out;
-    }
-
-    @keyframes dodge {
-      0% { transform: rotate(0deg) scale(1); }
-      50% { transform: rotate(45deg) scale(0.9); }
-      100% { transform: rotate(0deg) scale(1); }
-    }
-
+    
     /* Estilos e transições para as partes da face */
-    .pupila, .boca, .sobrancelha, .olho-fundo {
+    .pupila-wrapper, .boca, .sobrancelha, .olho-fundo {
       transition: all 0.3s ease-in-out;
     }
 
@@ -105,7 +88,7 @@
       transform: translateY(3px) rotate(-15deg);
     }
     #mascote-login.error .olho-fundo {
-        fill: #f3f4f6; /* Fundo do olho fica levemente cinza */
+        fill: #f3f4f6;
     }
 
 
@@ -221,7 +204,7 @@
     
     <div class="login-header">
       <div class="logo">
-         <svg id="mascote-login" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+         <svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
             <defs>
               <radialGradient id="gearGradient" cx="50%" cy="50%" r="50%" fx="50%" fy="50%">
                 <stop offset="0%" stop-color="#FDE047"/>
@@ -233,12 +216,12 @@
               </filter>
             </defs>
             
-            <g filter="url(#shadow)">
-              <path d="M101.5,86.2l-15.1-4.7c-2.8-0.9-5.8-0.2-7.9,1.7l-9.9,8.9c-2.4,2.2-6,2.4-8.6,0.5l-11.3-8.3 c-2.9-2.1-4.7-5.5-4.7-9.2V60v-4.1c0-3.7,1.8-7.1,4.7-9.2L60,38.4c2.6-1.9,6.2-1.7,8.6,0.5l9.9,8.9c2.1,1.9,5.1,2.5,7.9,1.7 l15.1-4.7c2.9-0.9,5.2-3.6,5.2-6.7V33.8c0-3.1-2.3-5.8-5.2-6.7L96.4,22.4c-2.8-0.9-5.1-3.2-5.8-6.1l-4.7-15.1 C85.2,0.3,82.5-1,79.7,0.3L68.4,8.6c-2.9,2.1-6.8,2.7-10.2,1.5L46.9,6.3C44.1,5.2,41.1,6,39,8l-9.9,8.9c-2.4,2.2-5.8,2.8-8.6,1.3 L9.2,11.5C6.3,10.2,3.5,12,2.8,15L-1.9,30.1c-0.8,2.9,0.3,6,2.6,7.7l11.3,8.3c2.9,2.1,4.7,5.5,4.7,9.2V60v4.1 c0,3.7-1.8,7.1-4.7,9.2L-1.3,81.6c-2.3,1.7-3.3,4.7-2.6,7.7l4.7,15.1c0.7,2.9,3.5,4.8,6.4,3.5l11.3-8.3 c3.4-1.2,7.3-0.6,10.2,1.5l11.3,8.3c2.8,1.3,5.8,0.5,7.9-1.7l9.9-8.9c2.4-2.2,6-2.4,8.6-0.5l11.3,8.3 c2.9,2.1,6.8,1.5,9.2-1.3l9.9-8.9c2.1-1.9,5.1-2.5,7.9-1.7l15.1,4.7c2.9,0.9,5.2,3.6,5.2,6.7v4.1 C106.7,82.6,104.4,85.3,101.5,86.2z" transform="scale(0.5) translate(60,60)" fill="url(#gearGradient)"/>
+            <g id="gear-body" filter="url(#shadow)">
+               <path d="M101.5,86.2l-15.1-4.7c-2.8-0.9-5.8-0.2-7.9,1.7l-9.9,8.9c-2.4,2.2-6,2.4-8.6,0.5l-11.3-8.3 c-2.9-2.1-4.7-5.5-4.7-9.2V60v-4.1c0-3.7,1.8-7.1,4.7-9.2L60,38.4c2.6-1.9,6.2-1.7,8.6,0.5l9.9,8.9c2.1,1.9,5.1,2.5,7.9,1.7 l15.1-4.7c2.9-0.9,5.2-3.6,5.2-6.7V33.8c0-3.1-2.3-5.8-5.2-6.7L96.4,22.4c-2.8-0.9-5.1-3.2-5.8-6.1l-4.7-15.1 C85.2,0.3,82.5-1,79.7,0.3L68.4,8.6c-2.9,2.1-6.8,2.7-10.2,1.5L46.9,6.3C44.1,5.2,41.1,6,39,8l-9.9,8.9c-2.4,2.2-5.8,2.8-8.6,1.3 L9.2,11.5C6.3,10.2,3.5,12,2.8,15L-1.9,30.1c-0.8,2.9,0.3,6,2.6,7.7l11.3,8.3c2.9,2.1,4.7,5.5,4.7,9.2V60v4.1 c0,3.7-1.8,7.1-4.7,9.2L-1.3,81.6c-2.3,1.7-3.3,4.7-2.6,7.7l4.7,15.1c0.7,2.9,3.5,4.8,6.4,3.5l11.3-8.3 c3.4-1.2,7.3-0.6,10.2,1.5l11.3,8.3c2.8,1.3,5.8,0.5,7.9-1.7l9.9-8.9c2.4-2.2,6-2.4,8.6-0.5l11.3,8.3 c2.9,2.1,6.8,1.5,9.2-1.3l9.9-8.9c2.1-1.9,5.1-2.5,7.9-1.7l15.1,4.7c2.9,0.9,5.2,3.6,5.2,6.7v4.1 C106.7,82.6,104.4,85.3,101.5,86.2z" transform="scale(0.5) translate(60,60)" fill="url(#gearGradient)"/>
                <circle cx="60" cy="60" r="30" fill="#1E293B"/>
             </g>
             
-            <g id="face">
+            <g id="mascote-login">
                 <path id="sobrancelha-esq" class="sobrancelha" d="M 35,42 Q 45,39 55,42" stroke="#FDE047" stroke-width="3" fill="none" stroke-linecap="round"/>
                 <path id="sobrancelha-dir" class="sobrancelha" d="M 65,42 Q 75,39 85,42" stroke="#FDE047" stroke-width="3" fill="none" stroke-linecap="round"/>
 
@@ -360,7 +343,7 @@
 
     // --- LÓGICA DO MASCOTE/LOGO ANIMADO ---
     const logoContainer = document.querySelector('.logo');
-    const mascote = document.getElementById('mascote-login');
+    const mascote = document.getElementById('mascote-login'); // Agora é o grupo da FACE
     const pupilaEsq = document.getElementById('pupila-esq');
     const pupilaDir = document.getElementById('pupila-dir');
     const togglePassword = document.getElementById('togglePassword');
@@ -370,17 +353,13 @@
     window.addEventListener('mousemove', (e) => {
       if (isPeeking) return;
 
-      const rect = mascote.getBoundingClientRect();
-      
-      // Coordenadas do centro dos olhos (baseado no viewBox 120x120)
-      const olhoEsqX = rect.left + (45 * rect.width / 120);
-      const olhoEsqY = rect.top + (55 * rect.height / 120);
-      const olhoDirX = rect.left + (75 * rect.width / 120);
-      const olhoDirY = rect.top + (55 * rect.height / 120);
+      const rect = logoContainer.getBoundingClientRect(); // Usar o container da logo como referência
       
       const { clientX, clientY } = e;
 
       // Movimento da pupila esquerda
+      const olhoEsqX = rect.left + (45 * rect.width / 120);
+      const olhoEsqY = rect.top + (55 * rect.height / 120);
       const deltaEsqX = clientX - olhoEsqX;
       const deltaEsqY = clientY - olhoEsqY;
       const angleEsq = Math.atan2(deltaEsqY, deltaEsqX);
@@ -389,6 +368,8 @@
       pupilaEsq.style.transform = `translate(${moveEsqX}px, ${moveEsqY}px)`;
       
       // Movimento da pupila direita
+      const olhoDirX = rect.left + (75 * rect.width / 120);
+      const olhoDirY = rect.top + (55 * rect.height / 120);
       const deltaDirX = clientX - olhoDirX;
       const deltaDirY = clientY - olhoDirY;
       const angleDir = Math.atan2(deltaDirY, deltaDirX);
@@ -414,16 +395,6 @@
       }
     });
     
-    // Lógica para se esquivar (girar)
-    logoContainer.addEventListener('mouseenter', () => {
-        mascote.classList.add('dodging');
-    });
-    mascote.addEventListener('animationend', (e) => {
-        if (e.animationName === 'dodge') {
-            mascote.classList.remove('dodging');
-        }
-    });
-
     function resetarMascote() {
       mascote.classList.remove('happy', 'error');
       if (passwordInput.getAttribute('type') !== 'text') {
