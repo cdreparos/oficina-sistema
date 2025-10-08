@@ -9,7 +9,7 @@
     :root {
       --sidebar-bg: #1e293b;
       --sidebar-bg-hover: #334155;
-      --main-bg: #f1f5f9;
+      --main-bg: #e2e8f0; /* COR DO FUNDO ALTERADA */
       --card-bg: #ffffff;
       --text-primary: #1e293b;
       --text-secondary: #64748b;
@@ -50,6 +50,8 @@
       top: 0;
       height: 100%;
       width: 240px;
+      z-index: 100;
+      transition: transform 0.3s ease-in-out; /* Para animação mobile */
     }
 
     .sidebar-header {
@@ -176,6 +178,9 @@
     }
 
     .main-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
       margin-bottom: 32px;
     }
 
@@ -303,6 +308,29 @@
       color: var(--text-secondary);
     }
     
+    /* --- RESPONSIVIDADE --- */
+    .mobile-menu-btn {
+        display: none; /* Oculto em telas grandes */
+        background: none;
+        border: none;
+        font-size: 1.8rem;
+        cursor: pointer;
+    }
+
+    .overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0,0,0,0.5);
+        z-index: 99;
+    }
+    .overlay.is-open {
+        display: block;
+    }
+
     @media (max-width: 1024px) {
       .main-dashboard {
         grid-template-columns: 1fr;
@@ -311,14 +339,26 @@
     
     @media (max-width: 768px) {
       .dashboard-container {
-        grid-template-columns: 1fr;
+        grid-template-columns: 1fr; /* Coluna única em telas pequenas */
       }
       .sidebar {
-        /* Em telas pequenas, a sidebar pode ser ocultada ou se tornar um menu hamburguer */
-        display: none;
+        transform: translateX(-100%); /* Esconde a sidebar fora da tela */
+      }
+      .sidebar.is-open {
+        transform: translateX(0); /* Mostra a sidebar */
       }
       .main-content {
+        grid-column: 1 / 2; /* Ocupa a grid inteira */
         padding: 16px;
+      }
+      .mobile-menu-btn {
+        display: block; /* Mostra o botão de menu */
+      }
+      .main-header {
+        gap: 16px;
+      }
+      .main-header div {
+        flex-grow: 1;
       }
     }
   </style>
@@ -326,7 +366,7 @@
 <body>
 
   <div class="dashboard-container">
-    <nav class="sidebar">
+    <nav class="sidebar" id="sidebar">
       <div>
         <div class="sidebar-header">
           <div class="sidebar-logo">S</div>
@@ -341,6 +381,7 @@
           <li><a href="estoque.html"><span class="nav-icon">📦</span> Estoque</a></li>
           <li><a href="contas_financeiro.html"><span class="nav-icon">💰</span> Financeiro</a></li>
           <li><a href="anotacoes.html"><span class="nav-icon">📝</span> Anotações</a></li>
+          <li><a href="configuracoes.html"><span class="nav-icon">⚙️</span> Configurações</a></li>
         </ul>
       </div>
 
@@ -357,11 +398,16 @@
         </button>
       </div>
     </nav>
+    
+    <div class="overlay" id="overlay"></div>
 
     <main class="main-content">
       <header class="main-header">
-        <h2 id="greeting">Boa tarde, Usuário!</h2>
-        <p id="currentDate">Quarta-feira, 8 de Outubro de 2025</p>
+        <div>
+          <h2 id="greeting">Boa tarde, Usuário!</h2>
+          <p id="currentDate">Quarta-feira, 8 de Outubro de 2025</p>
+        </div>
+        <button class="mobile-menu-btn" id="mobileMenuBtn">☰</button>
       </header>
 
       <section class="summary-grid">
@@ -436,8 +482,21 @@
   <script>
     protegerPagina();
 
+    // --- LÓGICA DE RESPONSIVIDADE (MENU MOBILE) ---
+    const sidebar = document.getElementById('sidebar');
+    const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+    const overlay = document.getElementById('overlay');
+
+    mobileMenuBtn.addEventListener('click', () => {
+        sidebar.classList.toggle('is-open');
+        overlay.classList.toggle('is-open');
+    });
+    overlay.addEventListener('click', () => {
+        sidebar.classList.remove('is-open');
+        overlay.classList.remove('is-open');
+    });
+
     // --- DINÂMICA DO CABEÇALHO E DATA ---
-    const userNameElement = document.getElementById('userName');
     const greetingElement = document.getElementById('greeting');
     const dateElement = document.getElementById('currentDate');
 
@@ -448,7 +507,7 @@
         let cumprimento = "Bom dia";
         if (hora >= 12 && hora < 18) {
             cumprimento = "Boa tarde";
-        } else if (hora >= 18) {
+        } else if (hora >= 18 || hora < 5) {
             cumprimento = "Boa noite";
         }
         
@@ -466,7 +525,6 @@
       agendamentos: database.ref("agendamentos"),
       estoque: database.ref("estoque"),
       anotacoes: database.ref("anotacoes"),
-      pecasPedir: database.ref("pecas_pedir"),
     };
 
     auth.onAuthStateChanged(user => {
@@ -494,19 +552,17 @@
     function updateDashboard(key, data) {
         dashboardData[key] = data;
         
-        // Atualiza os cards de resumo
         updateSummaryCards();
-
-        // Atualiza as listas
         updateTransactionList();
         updateTaskList();
     }
     
     function updateSummaryCards() {
+        if (!dashboardData.os) return; // Aguarda os dados carregarem
         const hoje = new Date().toISOString().slice(0, 10);
         
         // OS em Andamento
-        const osEmAndamento = Object.values(dashboardData.os || {}).filter(os => os.statusOS === 'em_andamento').length;
+        const osEmAndamento = Object.values(dashboardData.os || {}).filter(os => ['aguardando', 'em_andamento'].includes(os.statusOS)).length;
         document.getElementById('stat-os-andamento').textContent = osEmAndamento;
 
         // Receita do Dia
@@ -527,9 +583,10 @@
     }
 
     function updateTransactionList() {
+        if (!dashboardData.transacoes) return;
         const listaTransacoes = document.getElementById('lista-transacoes');
         const transacoes = Object.values(dashboardData.transacoes || {})
-            .sort((a,b) => new Date(b.criadoEm) - new Date(a.criadoEm))
+            .sort((a,b) => new Date(b.criadoEm || 0) - new Date(a.criadoEm || 0))
             .slice(0, 3);
 
         if (transacoes.length === 0) {
@@ -545,7 +602,7 @@
                     <div class="list-item-icon">${isIncome ? '↓' : '↑'}</div>
                     <div class="list-item-details">
                         <strong>${t.descricao.substring(0, 30)}${t.descricao.length > 30 ? '...' : ''}</strong>
-                        <small>${new Date(t.dataTransacao).toLocaleDateString()}</small>
+                        <small>${new Date(t.dataTransacao).toLocaleDateString('pt-BR')}</small>
                     </div>
                     <span class="list-item-value ${isIncome ? 'income' : 'expense'}">
                         ${isIncome ? '+' : '-'} ${formatarMoeda(t.valor)}
@@ -557,9 +614,12 @@
     }
 
     function updateTaskList() {
+        if (!dashboardData.agendamentos || !dashboardData.anotacoes) return;
         const listaTarefas = document.getElementById('lista-tarefas');
         
         const hoje = new Date();
+        hoje.setHours(0,0,0,0); // Normaliza para o início do dia
+
         const agendamentos = Object.values(dashboardData.agendamentos || {})
             .filter(ag => new Date(ag.dataAgendamento) >= hoje)
             .sort((a,b) => new Date(a.dataAgendamento) - new Date(b.dataAgendamento))
@@ -567,6 +627,7 @@
             
         const anotacoes = Object.values(dashboardData.anotacoes || {})
             .filter(a => !a.arquivada)
+            .sort((a,b) => new Date(b.criadoEm) - new Date(a.criadoEm))
             .slice(0, 2);
 
         const tarefas = [...agendamentos, ...anotacoes];
@@ -582,7 +643,7 @@
             if (task.tipoServico) { // É um agendamento
                 icon = '📅';
                 title = `${task.clienteNome} (${task.horaAgendamento})`;
-                subtitle = task.tipoServico;
+                subtitle = new Date(task.dataAgendamento + 'T00:00:00').toLocaleDateString('pt-BR', {weekday: 'long', day: 'numeric'});
             } else { // É uma anotação
                 icon = '📝';
                 title = task.texto.substring(0, 35) + (task.texto.length > 35 ? '...' : '');
