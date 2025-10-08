@@ -36,7 +36,7 @@
     /* ESTILOS DO PERSONAGEM */
     .mascote-container {
       width: 150px;
-      height: 100px;
+      height: 110px; /* Aumentar altura para o braço */
       margin: 0 auto -20px auto;
       position: relative;
       z-index: 1;
@@ -79,9 +79,9 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 2.5rem;
       margin: 0 auto 20px;
       box-shadow: 0 8px 24px rgba(59, 130, 246, 0.3);
+      padding: 10px; /* Espaçamento para a logo SVG */
     }
     .login-header h1 {
       font-size: 1.8rem;
@@ -194,25 +194,16 @@
   <div class="login-container">
     
     <div class="mascote-container">
-      <svg id="mascote-login" viewBox="0 0 150 100">
+      <svg id="mascote-login" viewBox="0 0 150 110">
         <defs>
-          <clipPath id="clip-olho-esq">
-            <circle cx="50" cy="50" r="20"/>
-          </clipPath>
-          <clipPath id="clip-olho-dir">
-            <circle cx="100" cy="50" r="20"/>
-          </clipPath>
+          <clipPath id="clip-olho-esq"><circle cx="50" cy="50" r="20"/></clipPath>
+          <clipPath id="clip-olho-dir"><circle cx="100" cy="50" r="20"/></clipPath>
         </defs>
         <path d="M 0,100 C 0,50 20,20 75,20 S 150,50 150,100 Z" fill="#3B82F6"/>
         <g id="olhos">
-          <circle class="olho" cx="50" cy="50" r="20" fill="white"/>
-          <circle class="olho" cx="100" cy="50" r="20" fill="white"/>
-          <g clip-path="url(#clip-olho-esq)">
-            <circle id="pupila-esq" class="pupila" cx="50" cy="50" r="10" fill="black"/>
-          </g>
-          <g clip-path="url(#clip-olho-dir)">
-            <circle id="pupila-dir" class="pupila" cx="100" cy="50" r="10" fill="black"/>
-          </g>
+          <circle class="olho" cx="50" cy="50" r="20" fill="white"/><circle class="olho" cx="100" cy="50" r="20" fill="white"/>
+          <g clip-path="url(#clip-olho-esq)"><circle id="pupila-esq" class="pupila" cx="50" cy="50" r="10" fill="black"/></g>
+          <g clip-path="url(#clip-olho-dir)"><circle id="pupila-dir" class="pupila" cx="100" cy="50" r="10" fill="black"/></g>
           <rect id="palpebra-esq" class="palpebra" x="30" y="30" width="40" height="25" fill="#3B82F6"/>
           <rect id="palpebra-dir" class="palpebra" x="80" y="30" width="40" height="25" fill="#3B82F6"/>
         </g>
@@ -221,11 +212,31 @@
           <path id="boca-feliz" class="boca" d="M 60,80 Q 75,95 90,80" stroke="white" stroke-width="4" fill="none" stroke-linecap="round" style="display: none;"/>
           <path id="boca-triste" class="boca" d="M 60,85 Q 75,75 90,85" stroke="white" stroke-width="4" fill="none" stroke-linecap="round" style="display: none;"/>
         </g>
+        <g id="braco-ferramenta">
+          <path d="M 120,90 C 130,70 140,70 140,80" fill="none" stroke="#3B82F6" stroke-width="12" stroke-linecap="round"/>
+          <g transform="translate(135, 75) rotate(45)">
+            <rect x="-20" y="-5" width="30" height="10" fill="white" rx="3"/>
+            <path d="M 10,-10 L 20,0 L 10,10" fill="none" stroke="white" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+          </g>
+        </g>
       </svg>
     </div>
 
     <div class="login-header">
-      <div class="logo">🔧</div>
+      <div class="logo">
+         <svg viewBox="0 0 150 110" fill="white">
+            <path d="M 0,100 C 0,50 20,20 75,20 S 150,50 150,100 Z" />
+            <circle cx="50" cy="50" r="20" fill="#3B82F6"/>
+            <circle cx="100" cy="50" r="20" fill="#3B82F6"/>
+            <circle cx="50" cy="50" r="10" fill="white"/>
+            <circle cx="100" cy="50" r="10" fill="white"/>
+            <g transform="translate(135, 75) rotate(45)">
+              <rect x="-20" y="-5" width="30" height="10" fill="#3B82F6" rx="3"/>
+              <path d="M 10,-10 L 20,0 L 10,10" fill="none" stroke="#3B82F6" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+            </g>
+             <path d="M 120,90 C 130,70 140,70 140,80" fill="none" stroke="white" stroke-width="12" stroke-linecap="round"/>
+          </svg>
+      </div>
       <h1>SIGO Casa dos Reparos</h1>
       <p>Sistema Integrado de Gerenciamento de Oficina</p>
     </div>
@@ -339,49 +350,38 @@
       const rect = mascote.getBoundingClientRect();
       const mascoteX = rect.left + rect.width / 2;
       const mascoteY = rect.top + rect.height / 2;
-
       const deltaX = clientX - mascoteX;
       const deltaY = clientY - mascoteY;
-
       const angle = Math.atan2(deltaY, deltaX);
-      const moveX = Math.cos(angle) * 5; // 5 é o raio do movimento da pupila
+      const moveX = Math.cos(angle) * 5;
       const moveY = Math.sin(angle) * 5;
-
       pupilaEsq.style.transform = `translate(${moveX}px, ${moveY}px)`;
       pupilaDir.style.transform = `translate(${moveX}px, ${moveY}px)`;
     });
 
-    // Função para resetar a expressão do mascote
     function resetarMascote() {
       mascote.classList.remove('happy', 'error', 'peek');
     }
-
-    // Resetar ao digitar
     emailInput.addEventListener('input', resetarMascote);
     passwordInput.addEventListener('input', resetarMascote);
 
-    // 2. Reação ao ver a senha
     togglePassword.addEventListener('click', () => {
       resetarMascote();
-      // Se a senha ESTÁ visível, o mascote "fecha os olhos"
       if (passwordInput.getAttribute('type') === 'text') {
         mascote.classList.add('peek');
       }
     });
 
-    // Funções para mostrar erro/sucesso (MODIFICADAS para incluir o mascote)
     function mostrarErro(mensagem) {
       errorText.textContent = mensagem;
       errorMessage.classList.add('show');
       successMessage.classList.remove('show');
-      // 3. Reação de erro
       mascote.classList.add('error');
     }
     function mostrarSucesso(mensagem) {
       successText.textContent = mensagem;
       successMessage.classList.add('show');
       errorMessage.classList.remove('show');
-      // 4. Reação de sucesso
       mascote.classList.add('happy');
     }
     function ocultarMensagens() {
@@ -392,7 +392,6 @@
 
     // --- FIM DA LÓGICA DO PERSONAGEM ---
 
-    // Outras funções da página
     document.getElementById('forgotPassword').addEventListener('click', (e) => {
       e.preventDefault();
       const email = emailInput.value.trim();
@@ -403,7 +402,6 @@
           .catch(error => mostrarErro(traduzirErroFirebase(error.code)));
       }
     });
-
   </script>
 </body>
 </html>
