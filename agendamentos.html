@@ -109,6 +109,7 @@
     .btn-link { background: none; border: none; color: var(--accent-blue); font-weight: 600; cursor: pointer; padding: 0 8px; font-size: 0.85rem; }
     .input-group { display: flex; align-items: center; gap: 8px; }
     .cliente-suggestions { position: absolute; top: 100%; left: 0; right: 0; background: var(--card-bg); border: 1px solid var(--border-color); border-top: none; z-index: 10; display: none; max-height: 150px; overflow-y: auto; }
+    .cliente-suggestions.show { display: block; } /* REGRA DE CSS CORRIGIDA */
     .cliente-suggestion-item { padding: 12px; cursor: pointer; } .cliente-suggestion-item:hover { background: var(--main-bg); }
 
     /* Responsividade */
@@ -193,14 +194,12 @@
   <script>
     protegerPagina();
 
-    // LÓGICA DE RESPONSIVIDADE (MENU MOBILE)
     const sidebar = document.getElementById('sidebar');
     const mobileMenuBtn = document.getElementById('mobileMenuBtn');
     const overlay = document.getElementById('overlay');
     mobileMenuBtn.addEventListener('click', () => { sidebar.classList.toggle('is-open'); overlay.classList.toggle('is-open'); });
     overlay.addEventListener('click', () => { sidebar.classList.remove('is-open'); overlay.classList.remove('is-open'); });
     
-    // --- LÓGICA DE DADOS E FUNCIONALIDADES DA PÁGINA ---
     const configRef = database.ref('configuracoes');
     const agendamentosRef = database.ref("agendamentos");
     const clientesRef = database.ref("clientes");
@@ -298,7 +297,7 @@
             let mapsLink = '';
             if (ag.enderecoAtendimento) {
                 const encodedAddress = encodeURIComponent(ag.enderecoAtendimento);
-                mapsLink = `<a href="https://www.google.com/maps/search/?api=1&query=Rua+Exemplo,+123,+Sao+Paulo" class="maps-link" target="_blank" onclick="event.stopPropagation()" title="Ver no Google Maps">📍</a>`;
+                mapsLink = `<a href="https://www.google.com/maps/search/?api=1&query=${encodedAddress}" class="maps-link" target="_blank" onclick="event.stopPropagation()" title="Ver no Google Maps">📍</a>`;
             }
             card.innerHTML = `<div class="appointment-header"><span class="appointment-time">${ag.horaAgendamento}</span> ${mapsLink}</div> <div class="appointment-client">${ag.clienteNome}</div> <div class="appointment-service"><span>🔧</span> <span>${ag.tipoServico}${ag.aparelho ? ` - ${ag.aparelho.tipo} ${ag.aparelho.marca}` : ''}</span></div> <span class="status-badge status-${ag.statusAgendamento}">${ag.statusAgendamento}</span>`;
             lista.appendChild(card);
