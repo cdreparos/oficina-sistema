@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Impressão - SIGO</title>
+    <style>
+        :root {
+            --sidebar-bg: #1e293b; --sidebar-bg-hover: #334155; --main-bg: #e2e8f0;
+            --card-bg: #ffffff; --text-primary: #1e293b; --text-secondary: #64748b;
+            --accent-blue: #3b82f6; --border-color: #e2e8f0; --accent-red: #ef4444;
+        }
+        body.dark-mode {
+            --main-bg: #0f172a; --card-bg: #1e293b; --text-primary: #f1f5f9;
+            --text-secondary: #94a3b8; --border-color: #334155;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: var(--main-bg); color: var(--text-primary); }
+        .dashboard-container { display: grid; grid-template-columns: 240px 1fr; min-height: 100vh; }
+        .sidebar { background: var(--sidebar-bg); color: #fff; display: flex; flex-direction: column; padding: 24px 16px; position: fixed; left: 0; top: 0; height: 100%; width: 240px; z-index: 100; transition: transform 0.3s ease-in-out; }
+        .sidebar-header { display: flex; align-items: center; gap: 12px; padding-bottom: 24px; margin-bottom: 16px; border-bottom: 1px solid var(--sidebar-bg-hover); }
+        .sidebar-logo { width: 40px; height: 40px; background: var(--accent-blue); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; font-weight: bold; }
+        .sidebar-header h1 { font-size: 1.1rem; font-weight: 600; }
+        .nav-list { list-style: none; flex-grow: 1; }
+        .nav-list a { color: #cbd5e1; text-decoration: none; display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-radius: 8px; font-weight: 500; transition: all 0.2s ease-in-out; margin-bottom: 4px; }
+        .nav-list a:hover { background: var(--sidebar-bg-hover); color: #fff; }
+        .nav-list a.active { background: var(--accent-blue); color: #fff; }
+        .nav-icon { font-size: 1.2rem; }
+        .sidebar-footer { border-top: 1px solid var(--sidebar-bg-hover); padding-top: 16px; }
+        .logout-btn { width: 100%; background: none; border: none; color: #cbd5e1; display: flex; align-items: center; gap: 12px; padding: 12px 16px; font-size: 1rem; cursor: pointer; text-align: left; font-family: inherit; border-radius: 8px; transition: all 0.2s ease-in-out; }
+        .logout-btn:hover { background: var(--accent-red); color: #fff; }
+
+        .main-content { grid-column: 2 / 3; padding: 32px; }
+        .main-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 32px; }
+        .main-header h1 { font-size: 1.8rem; font-weight: 700; color: var(--text-primary); }
+
+        .print-container { display: grid; grid-template-columns: 350px 1fr; gap: 24px; }
+        .selection-panel, .preview-panel { background: var(--card-bg); padding: 24px; border-radius: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+        .search-box { position: relative; margin-bottom: 16px; }
+        .search-box input { width: 100%; padding: 12px 16px; border: 2px solid var(--border-color); border-radius: 8px; background: var(--main-bg); color: var(--text-primary); font-size: 1rem; }
+        .search-results { max-height: 400px; overflow-y: auto; }
+        .search-item { padding: 12px; border-bottom: 1px solid var(--border-color); cursor: pointer; }
+        .search-item:hover, .search-item.selected { background-color: var(--main-bg); }
+        .search-item strong { display: block; font-size: 0.9rem; }
+        .search-item small { color: var(--text-secondary); }
+
+        #preview-placeholder { text-align: center; padding: 80px 20px; color: var(--text-secondary); }
+        #print-actions { margin-top: 24px; display: flex; flex-direction: column; gap: 12px; }
+        .btn { width: 100%; padding: 12px; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 1rem; }
+        .btn-primary { background: var(--accent-blue); color: white; }
+        .btn-secondary { background: var(--main-bg); color: var(--text-primary); }
+        .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+        /* Estilos para o documento de impressão (pré-visualização) */
+        .print-document { border: 1px solid var(--border-color); padding: 2rem; }
+        .print-header { display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 2px solid var(--text-primary); padding-bottom: 1rem; margin-bottom: 1.5rem; }
+        .print-header .company-info h2 { font-size: 1.5rem; }
+        .print-header .os-info { text-align: right; }
+        .print-section { margin-bottom: 1.5rem; }
+        .print-section h3 { font-size: 0.9rem; text-transform: uppercase; color: var(--text-secondary); border-bottom: 1px solid var(--border-color); padding-bottom: 0.5rem; margin-bottom: 1rem; }
+        .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+        .info-grid p, .print-section p { margin-bottom: 0.5rem; }
+        .info-grid strong, .print-section strong { color: var(--text-secondary); display: block; font-size: 0.8rem; }
+        .print-table { width: 100%; border-collapse: collapse; margin-top: 1rem; }
+        .print-table th, .print-table td { padding: 0.75rem; text-align: left; border-bottom: 1px solid var(--border-color); }
+        .print-table thead { background: var(--main-bg); }
+        .print-footer { border-top: 2px solid var(--text-primary); margin-top: 2rem; padding-top: 1.5rem; }
+        .print-footer p { font-size: 0.8rem; color: var(--text-secondary); }
+        .signature-area { margin-top: 4rem; text-align: center; }
+
+        .mobile-menu-btn { display: none; } .overlay { display: none; }
+        @media (max-width: 768px) { /* ... estilos responsivos ... */ }
+        
+        /* ESTILOS DE IMPRESSÃO */
+        @media print {
+            body * { visibility: hidden; }
+            .print-document, .print-document * { visibility: visible; }
+            .print-document {
+                position: absolute; left: 0; top: 0; width: 100%; margin: 0; padding: 0;
+                border: none; font-size: 12pt; color: #000;
+            }
+            .print-header .company-info h2 { font-size: 18pt; }
+        }
+
+    </style>
+</head>
+<body>
+  <div class="dashboard-container">
+    <nav class="sidebar" id="sidebar">
+      <div>
+        <div class="sidebar-header"><div class="sidebar-logo">S</div><h1>SIGO Casa dos Reparos</h1></div>
+        <ul class="nav-list">
+          <li><a href="painel.html"><span class="nav-icon">🏠</span> Painel</a></li>
+          <li><a href="ordens-servico.html"><span class="nav-icon">🛠️</span> Ordens de Serviço</a></li>
+          <li><a href="clientes.html"><span class="nav-icon">👥</span> Clientes</a></li>
+          <li><a href="agendamentos.html"><span class="nav-icon">📅</span> Agenda</a></li>
+          <li><a href="estoque.html"><span class="nav-icon">📦</span> Estoque</a></li>
+          <li><a href="contas_financeiro.html"><span class="nav-icon">💰</span> Financeiro</a></li>
+          <li><a href="anotacoes.html"><span class="nav-icon">📝</span> Anotações</a></li>
+          <li><a href="pecas.html"><span class="nav-icon">🔩</span> Peças para Pedir</a></li>
+          <li><a href="impressao.html" class="active"><span class="nav-icon">🖨️</span> Impressão</a></li>
+          <li><a href="configuracoes.html"><span class="nav-icon">⚙️</span> Configurações</a></li>
+        </ul>
+      </div>
+      <div class="sidebar-footer">
+        <button class="logout-btn" onclick="logout()">
+          <span class="nav-icon">🚪</span> Sair do Sistema
+        </button>
+      </div>
+    </nav>
+    <div class="overlay" id="overlay"></div>
+
+    <main class="main-content">
+      <header class="main-header">
+        <h1>Impressão de Documentos</h1>
+        <button class="mobile-menu-btn" id="mobileMenuBtn">☰</button>
+      </header>
+
+      <div class="print-container">
+        <aside class="selection-panel">
+          <h3>Selecionar OS</h3>
+          <div class="search-box">
+            <input type="text" id="searchInput" placeholder="Nº da OS ou nome do cliente...">
+          </div>
+          <div class="search-results" id="searchResults">
+            <p style="text-align: center; color: var(--text-secondary); padding: 16px;">Digite para buscar uma OS.</p>
+          </div>
+          <div id="print-actions">
+            <button class="btn btn-primary" id="btnImprimirOS" disabled>🖨️ Imprimir Ordem de Serviço</button>
+            <button class="btn btn-secondary" id="btnImprimirGarantia" disabled>📄 Imprimir Termo de Garantia</button>
+          </div>
+        </aside>
+        <section class="preview-panel">
+          <div id="preview-placeholder">
+            <p style="font-size: 2rem; opacity: 0.5;">🖨️</p>
+            <p>Selecione uma Ordem de Serviço à esquerda para pré-visualizar o documento aqui.</p>
+          </div>
+          <div id="print-preview-container"></div>
+        </section>
+      </div>
+
+    </main>
+  </div>
+
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+  <script src="firebase-config.js"></script>
+  <script src="utils.js"></script>
+
+  <script>
+    protegerPagina();
+
+    const sidebar = document.getElementById('sidebar');
+    const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+    const overlay = document.getElementById('overlay');
+    mobileMenuBtn.addEventListener('click', () => { sidebar.classList.toggle('is-open'); overlay.classList.toggle('is-open'); });
+    overlay.addEventListener('click', () => { sidebar.classList.remove('is-open'); overlay.classList.remove('is-open'); });
+    
+    const configRef = database.ref('configuracoes');
+    const osRef = database.ref('ordens_servico');
+    
+    let configData = {}, osData = {}, selectedOsId = null;
+
+    auth.onAuthStateChanged(user => {
+      if(user) {
+        configRef.on('value', (snapshot) => {
+            configData = snapshot.val() || {};
+            if (configData.darkMode) { document.body.classList.add('dark-mode'); }
+            else { document.body.classList.remove('dark-mode'); }
+        });
+        osRef.on('value', (snapshot) => {
+            osData = snapshot.val() || {};
+        });
+      }
+    });
+
+    const searchInput = document.getElementById('searchInput');
+    const searchResults = document.getElementById('searchResults');
+    const previewContainer = document.getElementById('print-preview-container');
+    const placeholder = document.getElementById('preview-placeholder');
+    const btnImprimirOS = document.getElementById('btnImprimirOS');
+    const btnImprimirGarantia = document.getElementById('btnImprimirGarantia');
+    
+    searchInput.addEventListener('input', () => {
+        const termo = searchInput.value.toLowerCase();
+        if (termo.length < 2) {
+            searchResults.innerHTML = '<p style="text-align: center; color: var(--text-secondary); padding: 16px;">Digite para buscar uma OS.</p>';
+            return;
+        }
+
+        const resultados = Object.entries(osData).filter(([id, os]) => 
+            os.numeroOS.includes(termo) || os.clienteNome.toLowerCase().includes(termo)
+        ).sort((a,b) => b[1].numeroOS - a[1].numeroOS).slice(0, 10);
+        
+        searchResults.innerHTML = '';
+        if(resultados.length === 0) {
+            searchResults.innerHTML = '<p style="text-align: center; color: var(--text-secondary); padding: 16px;">Nenhuma OS encontrada.</p>';
+            return;
+        }
+
+        resultados.forEach(([id, os]) => {
+            const item = document.createElement('div');
+            item.className = 'search-item';
+            item.innerHTML = `<strong>OS #${String(os.numeroOS).padStart(4, '0')}</strong><small>${os.clienteNome}</small>`;
+            item.onclick = () => selecionarOS(id, item);
+            searchResults.appendChild(item);
+        });
+    });
+
+    function selecionarOS(osId, element) {
+        selectedOsId = osId;
+        document.querySelectorAll('.search-item').forEach(el => el.classList.remove('selected'));
+        element.classList.add('selected');
+
+        btnImprimirOS.disabled = false;
+        btnImprimirGarantia.disabled = false;
+        placeholder.style.display = 'none';
+        
+        gerarPreviewOS(osId);
+    }
+
+    function gerarPreviewOS(osId) {
+        const os = osData[osId];
+        const empresa = configData || {};
+        const printConfig = {
+            cpf: empresa.printCpfCliente || false,
+            detalharPecas: empresa.printDetalharPecas !== false, // Padrão é true
+            assinatura: empresa.printAssinatura !== false, // Padrão é true
+        };
+
+        let pecasHtml = '';
+        if (os.pecas && os.pecas.length > 0) {
+            pecasHtml = `
+                <div class="print-section">
+                    <h3>Peças Utilizadas</h3>
+                    <table class="print-table">
+                        <thead><tr><th>Item</th><th>Qtd.</th><th>Valor Unit.</th><th>Subtotal</th></tr></thead>
+                        <tbody>
+                            ${os.pecas.map(p => `
+                                <tr>
+                                    <td>${p.nome}</td>
+                                    <td>${p.quantidade}</td>
+                                    <td>${printConfig.detalharPecas ? formatarMoeda(p.valorUnitario) : '***'}</td>
+                                    <td>${printConfig.detalharPecas ? formatarMoeda(p.valorUnitario * p.quantidade) : '***'}</td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                </div>`;
+        }
+
+        previewContainer.innerHTML = `
+            <div class="print-document" id="documento-para-impressao">
+                <header class="print-header">
+                    <div class="company-info">
+                        <h2>${empresa.nomeOficina || 'Nome da Oficina'}</h2>
+                        <p>${empresa.endereco || 'Endereço da Oficina'}</p>
+                        <p>${empresa.telefone || 'Telefone da Oficina'}</p>
+                    </div>
+                    <div class="os-info">
+                        <h3>ORDEM DE SERVIÇO</h3>
+                        <h1>#${String(os.numeroOS).padStart(4, '0')}</h1>
+                        <p>Data: ${new Date(os.dataEntrada + 'T00:00:00').toLocaleDateString('pt-BR')}</p>
+                    </div>
+                </header>
+                <section class="print-section">
+                    <h3>Dados do Cliente</h3>
+                    <div class="info-grid">
+                        <p><strong>Nome:</strong> ${os.clienteNome}</p>
+                        <p><strong>Telefone:</strong> ${os.telefoneCliente}</p>
+                    </div>
+                </section>
+                <section class="print-section">
+                    <h3>Dados do Aparelho</h3>
+                    <div class="info-grid">
+                        <p><strong>Tipo:</strong> ${os.aparelho}</p>
+                        <p><strong>Marca/Modelo:</strong> ${os.marca || ''} ${os.modelo || ''}</p>
+                    </div>
+                </section>
+                <section class="print-section">
+                    <h3>Descrição do Problema</h3>
+                    <p>${os.defeitoRelatado}</p>
+                </section>
+                <section class="print-section">
+                    <h3>Diagnóstico Técnico / Serviços Realizados</h3>
+                    <p>${os.diagnostico || 'Não informado'}</p>
+                </section>
+                ${pecasHtml}
+                <section class="print-section">
+                    <h3>Valores</h3>
+                    <div class="info-grid">
+                        <p><strong>Serviços / Mão de Obra:</strong> ${formatarMoeda(os.valorMaoObra)}</p>
+                        <p><strong>Peças:</strong> ${formatarMoeda(os.valorPecas)}</p>
+                        <p><strong>Desconto:</strong> - ${formatarMoeda(os.desconto)}</p>
+                        <p><strong>TOTAL:</strong> <strong style="font-size: 1.2rem; color: var(--text-primary);">${formatarMoeda(os.valorTotalFinal)}</strong></p>
+                    </div>
+                </section>
+                ${printConfig.assinatura ? `<section class="signature-area"><p>_________________________________________</p><p>${os.clienteNome}</p></section>` : ''}
+                <footer class="print-footer">
+                    <p>${empresa.rodapeDocumentos || ''}</p>
+                </footer>
+            </div>
+        `;
+    }
+    
+    function gerarPreviewGarantia(osId) {
+        const os = osData[osId];
+        const empresa = configData || {};
+        previewContainer.innerHTML = `
+            <div class="print-document" id="documento-para-impressao">
+                 <header class="print-header">
+                    <div class="company-info"><h2>${empresa.nomeOficina || 'Nome da Oficina'}</h2></div>
+                    <div class="os-info"><h3>TERMO DE GARANTIA</h3></div>
+                </header>
+                <section class="print-section">
+                    <p>Referente à Ordem de Serviço <strong>#${String(os.numeroOS).padStart(4, '0')}</strong>, emitida em <strong>${new Date(os.dataEntrada + 'T00:00:00').toLocaleDateString('pt-BR')}</strong>.</p>
+                    <p><strong>Cliente:</strong> ${os.clienteNome}</p>
+                    <p><strong>Aparelho:</strong> ${os.aparelho} ${os.marca || ''}</p>
+                    <p><strong>Serviço Realizado:</strong> ${os.diagnostico || 'Conforme descrito na OS.'}</p>
+                </section>
+                <section class="print-section">
+                    <h3>Termos e Condições</h3>
+                    <p style="white-space: pre-wrap;">${empresa.rodapeDocumentos || 'Termo de garantia padrão não configurado.'}</p>
+                </section>
+                <section class="signature-area"><p>_________________________________________</p><p>${os.clienteNome}</p></section>
+            </div>
+        `;
+    }
+
+    btnImprimirOS.addEventListener('click', () => {
+        if(selectedOsId) {
+            gerarPreviewOS(selectedOsId);
+            setTimeout(() => window.print(), 200); // Pequeno delay para garantir a renderização
+        }
+    });
+
+    btnImprimirGarantia.addEventListener('click', () => {
+        if(selectedOsId) {
+            gerarPreviewGarantia(selectedOsId);
+            setTimeout(() => window.print(), 200);
+        }
+    });
+    
+    function formatarMoeda(valor) {
+      return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(valor || 0);
+    }
+  </script>
+</body>
+</html>
