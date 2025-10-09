@@ -49,7 +49,6 @@
         .btn-primary { background: var(--accent-blue); color: white; }
         .btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
-        /* Estilos para o documento de impressão (pré-visualização) */
         .print-document { border: 1px solid var(--border-color); padding: 2rem; }
         .print-header { display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 2px solid var(--text-primary); padding-bottom: 1rem; margin-bottom: 1.5rem; }
         .company-logo { max-width: 150px; max-height: 70px; margin-right: 20px; object-fit: contain; }
@@ -58,40 +57,43 @@
         .print-section { margin-bottom: 1.5rem; }
         .print-section h3 { font-size: 0.9rem; text-transform: uppercase; color: var(--text-secondary); border-bottom: 1px solid var(--border-color); padding-bottom: 0.5rem; margin-bottom: 1rem; }
         .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
-        .info-grid p, .print-section p { margin-bottom: 0.5rem; }
+        .info-grid p, .print-section p { margin-bottom: 0.5rem; line-height: 1.4; }
         .info-grid strong, .print-section strong { color: var(--text-secondary); display: block; font-size: 0.8rem; }
         .print-table { width: 100%; border-collapse: collapse; margin-top: 1rem; }
         .print-table th, .print-table td { padding: 0.75rem; text-align: left; border-bottom: 1px solid var(--border-color); }
         .print-table thead { background: var(--main-bg); }
         .print-footer { border-top: 2px solid var(--text-primary); margin-top: 2rem; padding-top: 1.5rem; }
         .print-footer p { font-size: 0.8rem; color: var(--text-secondary); white-space: pre-wrap; }
-        .signature-area { margin-top: 4rem; text-align: center; }
+        
+        .signature-container { margin-top: 3rem; display: flex; justify-content: space-around; gap: 2rem; }
+        .signature-box { text-align: center; }
+        .signature-box p { font-size: 0.9rem; }
 
-        .mobile-menu-btn { display: none; background: none; border: none; } .overlay { display: none; }
+        .mobile-menu-btn { display: none; } .overlay { display: none; }
         @media (max-width: 768px) { /* ... estilos responsivos ... */ }
         
-        /* ESTILOS DE IMPRESSÃO CORRIGIDOS */
+        /* ESTILOS DE IMPRESSÃO CORRIGIDOS E OTIMIZADOS */
         @media print {
             body { background: #fff; }
-            .sidebar, .main-header, .selection-panel, .mobile-menu-btn {
-                display: none;
-            }
+            .sidebar, .main-header, .selection-panel, .mobile-menu-btn, #print-actions { display: none; }
             .dashboard-container, .main-content, .print-container, .preview-panel {
-                display: block;
-                grid-template-columns: 1fr;
-                padding: 0;
-                margin: 0;
-                box-shadow: none;
+                display: block; grid-template-columns: 1fr; padding: 0; margin: 0; box-shadow: none;
             }
             .print-document {
                 visibility: visible;
-                width: 100%;
-                border: none;
-                box-shadow: none;
-                font-size: 12pt;
-                color: #000;
+                position: absolute; left: 0; top: 0; width: 100%;
+                margin: 0; padding: 0; border: none; 
+                font-size: 10pt; color: #000;
             }
-            .print-header .company-info h2 { font-size: 18pt; }
+            .print-header { margin-bottom: 1rem; }
+            .print-header .company-info h2 { font-size: 16pt; }
+            .print-section { margin-bottom: 1rem; }
+            .print-section h3 { font-size: 8pt; margin-bottom: 0.5rem; }
+            .info-grid p, .print-section p { margin-bottom: 0.3rem; line-height: 1.3; }
+            .print-table { font-size: 9pt; }
+            .print-table th, .print-table td { padding: 0.4rem; }
+            .print-footer { margin-top: 1.5rem; padding-top: 1rem; }
+            .signature-container { margin-top: 2.5rem; page-break-inside: avoid; }
         }
     </style>
 </head>
@@ -285,14 +287,26 @@
                     <h3>Termos de Garantia</h3>
                     <p>${empresa.rodapeDocumentos || 'Garantia padrão de 90 dias para peças e serviços, conforme CDC.'}</p>
                 </footer>
-                ${printConfig.assinatura ? `<section class="signature-area"><p>_________________________________________</p><p>${os.clienteNome}</p></section>` : ''}
+                ${printConfig.assinatura ? `
+                    <section class="signature-container">
+                        <div class="signature-box">
+                            <p>_________________________________________</p>
+                            <p>${os.clienteNome}</p>
+                            <p>(Cliente)</p>
+                        </div>
+                        <div class="signature-box">
+                            <p>_________________________________________</p>
+                            <p>${empresa.nomeOficina || 'Técnico Responsável'}</p>
+                            <p>(Empresa / Técnico)</p>
+                        </div>
+                    </section>
+                ` : ''}
             </div>
         `;
     }
     
     btnImprimir.addEventListener('click', () => {
         if(selectedOsId) {
-            // A pré-visualização já é o documento final, então apenas chamamos a impressão.
             window.print();
         }
     });
