@@ -141,6 +141,8 @@
           <li><a href="estoque.html" class="active"><span class="nav-icon">📦</span> Estoque</a></li>
           <li><a href="contas_financeiro.html"><span class="nav-icon">💰</span> Financeiro</a></li>
           <li><a href="anotacoes.html"><span class="nav-icon">📝</span> Anotações</a></li>
+          <li><a href="pecas.html"><span class="nav-icon">🔩</span> Peças para Pedir</a></li>
+          <li><a href="impressao.html"><span class="nav-icon">🖨️</span> Impressão</a></li>
           <li><a href="configuracoes.html"><span class="nav-icon">⚙️</span> Configurações</a></li>
         </ul>
       </div>
@@ -311,6 +313,7 @@
         const card = document.createElement('div');
         card.className = 'estoque-card';
         const alertaBaixo = (peca.quantidade || 0) <= (peca.estoqueMinimo || 0);
+        if(alertaBaixo) card.classList.add('alerta-baixo');
         const qtdClass = (peca.quantidade || 0) === 0 ? 'qtd-critica' : (alertaBaixo ? 'qtd-baixa' : 'qtd-normal');
         const destinoTexto = peca.destino === 'oficina' ? 'Oficina' : 'Loja';
         const destinoClass = peca.destino === 'oficina' ? 'destino-oficina' : 'destino-loja';
