@@ -5,628 +5,423 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Estoque - SIGO Casa dos Reparos</title>
   <style>
+    :root {
+      --sidebar-bg: #1e293b;
+      --sidebar-bg-hover: #334155;
+      --main-bg: #e2e8f0;
+      --card-bg: #ffffff;
+      --text-primary: #1e293b;
+      --text-secondary: #64748b;
+      --accent-blue: #3b82f6;
+      --accent-indigo: #6366f1;
+      --border-color: #e2e8f0;
+      --accent-red: #ef4444;
+      --accent-green: #10b981;
+      --accent-yellow: #f59e0b;
+    }
+
+    body.dark-mode {
+        --main-bg: #0f172a;
+        --card-bg: #1e293b;
+        --text-primary: #f1f5f9;
+        --text-secondary: #94a3b8;
+        --border-color: #334155;
+    }
+    
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { font-family: 'Inter', sans-serif; background: #f0f2f5; min-height: 100vh; }
-    header { background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%); color: white; padding: 30px 40px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
-    .header-content { max-width: 1400px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
-    .header-left h1 { font-size: 1.8rem; font-weight: 700; margin-bottom: 5px; }
-    .header-left p { font-size: 0.9rem; opacity: 0.85; }
-    .btn-voltar { background: rgba(255,255,255,0.15); color: white; border: none; padding: 12px 24px; border-radius: 10px; font-weight: 600; cursor: pointer; transition: all 0.3s; display: flex; align-items: center; gap: 8px; }
-    .btn-voltar:hover { background: rgba(255,255,255,0.25); transform: translateY(-2px); }
-    .container { max-width: 1400px; margin: 30px auto; padding: 0 40px; }
-    .actions-bar { background: white; padding: 20px 30px; border-radius: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); margin-bottom: 24px; display: flex; justify-content: space-between; align-items: center; gap: 20px; flex-wrap: wrap; }
-    .search-box { flex: 1; min-width: 300px; position: relative; }
-    .search-box input { width: 100%; padding: 14px 20px 14px 50px; border: 2px solid #e5e7eb; border-radius: 10px; font-size: 0.95rem; transition: all 0.3s; }
-    .search-box input:focus { outline: none; border-color: #6366f1; box-shadow: 0 0 0 3px rgba(99,102,241,0.1); }
-    .search-box::before { content: '🔍'; position: absolute; left: 18px; top: 50%; transform: translateY(-50%); font-size: 1.2rem; }
+    body { font-family: 'Inter', sans-serif; background: var(--main-bg); color: var(--text-primary); transition: background-color 0.3s; }
+    .dashboard-container { display: grid; grid-template-columns: 240px 1fr; min-height: 100vh; }
+
+    .sidebar { background: var(--sidebar-bg); color: #fff; display: flex; flex-direction: column; padding: 24px 16px; position: fixed; left: 0; top: 0; height: 100%; width: 240px; z-index: 100; transition: transform 0.3s ease-in-out; }
+    .sidebar-header { display: flex; align-items: center; gap: 12px; padding-bottom: 24px; margin-bottom: 16px; border-bottom: 1px solid var(--sidebar-bg-hover); }
+    .sidebar-logo { width: 40px; height: 40px; background: var(--accent-blue); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; font-weight: bold; }
+    .sidebar-header h1 { font-size: 1.1rem; font-weight: 600; }
+    .nav-list { list-style: none; flex-grow: 1; }
+    .nav-list a { color: #cbd5e1; text-decoration: none; display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-radius: 8px; font-weight: 500; transition: all 0.2s ease-in-out; margin-bottom: 4px; }
+    .nav-list a:hover { background: var(--sidebar-bg-hover); color: #fff; }
+    .nav-list a.active { background: var(--accent-blue); color: #fff; }
+    .nav-icon { font-size: 1.2rem; }
+    .sidebar-footer { border-top: 1px solid var(--sidebar-bg-hover); padding-top: 16px; }
+    .logout-btn { width: 100%; background: none; border: none; color: #cbd5e1; display: flex; align-items: center; gap: 12px; padding: 12px 16px; font-size: 1rem; cursor: pointer; text-align: left; font-family: inherit; border-radius: 8px; transition: all 0.2s ease-in-out; }
+    .logout-btn:hover { background: var(--accent-red); color: #fff; }
+
+    .main-content { grid-column: 2 / 3; padding: 32px; }
+    .main-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 32px; }
+    .main-header h1 { font-size: 1.8rem; font-weight: 700; color: var(--text-primary); }
+
+    .actions-bar { background: var(--card-bg); padding: 20px; border-radius: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); margin-bottom: 24px; display: flex; justify-content: space-between; align-items: flex-end; gap: 20px; flex-wrap: wrap; }
+    .filters-container { display: flex; gap: 16px; flex-wrap: wrap; align-items: center; flex-grow: 1;}
+    .search-box { flex-grow: 1; min-width: 250px; position: relative; }
+    .search-box input, .filter-group select { width: 100%; padding: 12px 16px; border: 2px solid var(--border-color); border-radius: 10px; font-size: 0.9rem; background: var(--main-bg); color: var(--text-primary); -webkit-appearance: none; }
+    .search-box input { padding-left: 40px; }
+    .search-box::before { content: '🔍'; position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--text-secondary); }
+    .filter-group label { display: block; font-size: 0.75rem; font-weight: 600; color: var(--text-secondary); margin-bottom: 4px; }
     .btn-primary { background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%); color: white; border: none; padding: 14px 28px; border-radius: 10px; font-weight: 600; cursor: pointer; transition: all 0.3s; box-shadow: 0 4px 12px rgba(99,102,241,0.3); display: flex; align-items: center; gap: 8px; }
     .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(99,102,241,0.4); }
+
     .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px; margin-bottom: 24px; }
-    .stat-card { background: white; border-radius: 16px; padding: 24px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); border-left: 4px solid #6366f1; }
-    .stat-card.alert { border-left-color: #ef4444; }
-    .stat-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
-    .stat-icon { width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; background: #e0e7ff; }
-    .stat-card.alert .stat-icon { background: #fee2e2; }
-    .stat-label { font-size: 0.9rem; color: #6b7280; margin-bottom: 8px; }
-    .stat-value { font-size: 2rem; font-weight: 800; color: #6366f1; }
-    .stat-card.alert .stat-value { color: #ef4444; }
+    .stat-card { background: var(--card-bg); border-radius: 16px; padding: 24px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); border-left: 4px solid var(--accent-indigo); }
+    .stat-card .stat-label { font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 8px; }
+    .stat-card.alert { border-left-color: var(--accent-red); }
+    .stat-value { font-size: 2rem; font-weight: 800; color: var(--accent-indigo); }
+    .stat-card.alert .stat-value { color: var(--accent-red); }
+
     .estoque-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 20px; }
-    .estoque-card { background: white; border-radius: 16px; padding: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); border: 1px solid #e5e7eb; transition: all 0.3s; position: relative; }
-    .estoque-card:hover { box-shadow: 0 8px 24px rgba(0,0,0,0.12); transform: translateY(-4px); border-color: #6366f1; }
-    .estoque-card.alerta-baixo { border-left: 4px solid #ef4444; }
-    .estoque-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px; padding-bottom: 12px; border-bottom: 2px solid #f3f4f6; }
-    .estoque-titulo h3 { font-size: 1.1rem; color: #1f2937; margin-bottom: 4px; }
-    .estoque-codigo { font-size: 0.8rem; color: #9ca3af; }
+    .estoque-card { background: var(--card-bg); border-radius: 16px; padding: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); border: 1px solid var(--border-color); transition: all 0.3s; position: relative; }
+    .estoque-card:hover { box-shadow: 0 8px 24px rgba(0,0,0,0.12); transform: translateY(-4px); border-color: var(--accent-indigo); }
+    .estoque-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px solid var(--border-color); }
+    .estoque-titulo h3 { font-size: 1.1rem; color: var(--text-primary); margin-bottom: 4px; }
+    .estoque-codigo { font-size: 0.8rem; color: var(--text-secondary); }
     .quantidade-badge { padding: 6px 12px; border-radius: 20px; font-size: 0.85rem; font-weight: 700; }
-    .qtd-normal { background: #d1fae5; color: #065f46; }
-    .qtd-baixa { background: #fef3c7; color: #92400e; }
-    .qtd-critica { background: #fee2e2; color: #991b1b; }
-    .estoque-details { display: flex; flex-direction: column; gap: 10px; margin-bottom: 16px; }
-    .detail-row { display: flex; align-items: center; gap: 10px; font-size: 0.85rem; color: #374151; }
-    .detail-icon { width: 28px; height: 28px; background: #f3f4f6; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 0.9rem; flex-shrink: 0; }
-    .estoque-valor { background: #f9fafb; padding: 12px; border-radius: 8px; margin-bottom: 12px; }
-    .valor-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
-    .valor-row:last-child { margin-bottom: 0; padding-top: 8px; border-top: 1px solid #e5e7eb; }
-    .valor-label { font-size: 0.8rem; color: #6b7280; }
-    .valor-numero { font-weight: 700; color: #6366f1; }
-    .estoque-actions { display: flex; gap: 8px; }
-    .btn-action { flex: 1; padding: 10px; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; transition: all 0.3s; font-size: 0.8rem; display: flex; align-items: center; justify-content: center; gap: 6px; }
-    .btn-edit { background: #dbeafe; color: #1e40af; }
-    .btn-edit:hover { background: #3b82f6; color: white; }
-    .btn-move { background: #e0e7ff; color: #3730a3; }
-    .btn-move:hover { background: #6366f1; color: white; }
-    .btn-delete { background: #fee2e2; color: #991b1b; }
-    .btn-delete:hover { background: #ef4444; color: white; }
-    .modal { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.6); z-index: 1000; padding: 20px; overflow-y: auto; }
-    .modal.active { display: block; }
-    .modal-content { background: white; border-radius: 20px; padding: 32px; max-width: 700px; width: 100%; margin: 40px auto; box-shadow: 0 20px 60px rgba(0,0,0,0.3); }
-    .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; padding-bottom: 16px; border-bottom: 2px solid #f3f4f6; }
-    .modal-header h2 { font-size: 1.5rem; color: #1f2937; display: flex; align-items: center; gap: 12px; }
-    .btn-close { background: #f3f4f6; border: none; width: 36px; height: 36px; border-radius: 8px; cursor: pointer; font-size: 1.2rem; transition: all 0.3s; }
-    .btn-close:hover { background: #e5e7eb; transform: rotate(90deg); }
-    .form-group { margin-bottom: 20px; }
-    .form-group label { display: block; margin-bottom: 8px; font-weight: 600; color: #374151; font-size: 0.9rem; }
-    .form-group input, .form-group textarea, .form-group select { width: 100%; padding: 12px 16px; border: 2px solid #e5e7eb; border-radius: 10px; font-size: 0.95rem; transition: all 0.3s; font-family: inherit; }
-    .form-group input:focus, .form-group textarea:focus, .form-group select:focus { outline: none; border-color: #6366f1; box-shadow: 0 0 0 3px rgba(99,102,241,0.1); }
-    .form-group textarea { resize: vertical; min-height: 80px; }
-    .form-row { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
-    .form-row-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
-    .form-actions { display: flex; gap: 12px; margin-top: 28px; }
-    .btn-submit { flex: 1; padding: 14px; background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%); color: white; border: none; border-radius: 10px; font-weight: 600; cursor: pointer; transition: all 0.3s; font-size: 1rem; }
-    .btn-submit:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(99,102,241,0.4); }
-    .btn-cancel { flex: 1; padding: 14px; background: #f3f4f6; color: #374151; border: none; border-radius: 10px; font-weight: 600; cursor: pointer; transition: all 0.3s; font-size: 1rem; }
-    .btn-cancel:hover { background: #e5e7eb; }
-    .empty-state { text-align: center; padding: 80px 20px; background: white; border-radius: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
+    .qtd-normal { background: #d1fae5; color: #065f46; } .qtd-baixa { background: #fef3c7; color: #92400e; } .qtd-critica { background: #fee2e2; color: #991b1b; }
+    .destino-badge { display: inline-block; padding: 4px 10px; border-radius: 12px; font-size: 0.75rem; font-weight: 600; margin-left: 8px; }
+    .destino-oficina { background: #fef3c7; color: #92400e; }
+    .destino-loja { background: #d1fae5; color: #065f46; }
+    
+    .empty-state { text-align: center; padding: 80px 20px; background: var(--card-bg); border-radius: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
     .empty-state-icon { font-size: 4rem; margin-bottom: 20px; opacity: 0.5; }
+    
+    .modal { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.6); z-index: 1000; padding: 20px; overflow-y: auto; }
+    .modal.active { display: flex; align-items: center; justify-content: center; }
+    .modal-content { background: var(--card-bg); border-radius: 20px; padding: 32px; max-width: 700px; width: 100%; box-shadow: 0 20px 60px rgba(0,0,0,0.3); max-height: 90vh; overflow-y: auto; }
+    .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; padding-bottom: 16px; border-bottom: 1px solid var(--border-color); }
+    .modal-header h2 { font-size: 1.5rem; color: var(--text-primary); }
+    .btn-close { background: var(--main-bg); border: none; width: 36px; height: 36px; border-radius: 8px; cursor: pointer; font-size: 1.2rem; transition: all 0.3s; color: var(--text-secondary); }
+    .form-group label { display: block; margin-bottom: 8px; font-weight: 600; color: var(--text-primary); font-size: 0.9rem; }
+    .form-group input, .form-group textarea, .form-group select { width: 100%; padding: 12px 16px; border: 2px solid var(--border-color); border-radius: 10px; font-size: 0.95rem; background-color: var(--main-bg); color: var(--text-primary); }
+    .form-group input:focus, .form-group textarea:focus, .form-group select:focus { outline: none; border-color: var(--accent-indigo); }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .form-row-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+    .btn-link { background: none; border: none; color: var(--accent-blue); font-weight: 600; cursor: pointer; padding: 0 8px; font-size: 0.85rem; }
+    .input-group { display: flex; align-items: center; gap: 8px; }
+    .form-actions { display: flex; gap: 12px; margin-top: 28px; }
+    .btn-submit { flex: 1; padding: 14px; border-radius: 10px; font-weight: 600; font-size: 1rem; cursor: pointer; background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%); color: white; border: none; }
+    .btn-cancel { flex: 1; padding: 14px; border-radius: 10px; font-weight: 600; font-size: 1rem; cursor: pointer; background: var(--main-bg); color: var(--text-primary); border: none; }
+    
+    .mobile-menu-btn { display: none; background: none; border: none; font-size: 1.8rem; cursor: pointer; color: var(--text-primary); }
+    .overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 99; }
+    .overlay.is-open { display: block; }
+    @media (max-width: 1024px) {
+        .actions-bar { flex-direction: column; align-items: stretch; }
+        .filters-container { width: 100%; }
+    }
     @media (max-width: 768px) {
-      .container { padding: 0 20px; }
-      header { padding: 20px; }
-      .header-content { flex-direction: column; gap: 15px; }
-      .actions-bar { flex-direction: column; align-items: stretch; }
-      .search-box { min-width: 100%; }
+      .dashboard-container { grid-template-columns: 1fr; }
+      .sidebar { transform: translateX(-100%); }
+      .sidebar.is-open { transform: translateX(0); }
+      .main-content { grid-column: 1 / 2; padding: 16px; }
+      .mobile-menu-btn { display: block; }
+      .form-row, .form-row-3 { grid-template-columns: 1fr; }
       .stats-grid { grid-template-columns: 1fr; }
       .estoque-grid { grid-template-columns: 1fr; }
-      .form-row, .form-row-3 { grid-template-columns: 1fr; }
     }
   </style>
 </head>
 <body>
-  <header>
-    <div class="header-content">
-      <div class="header-left">
-        <h1>📦 Estoque de Peças</h1>
-        <p>Controle completo de peças e materiais</p>
+  <div class="dashboard-container">
+    <nav class="sidebar" id="sidebar">
+      <div>
+        <div class="sidebar-header"><div class="sidebar-logo">S</div><h1>SIGO Casa dos Reparos</h1></div>
+        <ul class="nav-list">
+          <li><a href="painel.html"><span class="nav-icon">🏠</span> Painel</a></li>
+          <li><a href="ordens-servico.html"><span class="nav-icon">🛠️</span> Ordens de Serviço</a></li>
+          <li><a href="clientes.html"><span class="nav-icon">👥</span> Clientes</a></li>
+          <li><a href="agendamentos.html"><span class="nav-icon">📅</span> Agenda</a></li>
+          <li><a href="estoque.html" class="active"><span class="nav-icon">📦</span> Estoque</a></li>
+          <li><a href="contas_financeiro.html"><span class="nav-icon">💰</span> Financeiro</a></li>
+          <li><a href="anotacoes.html"><span class="nav-icon">📝</span> Anotações</a></li>
+          <li><a href="configuracoes.html"><span class="nav-icon">⚙️</span> Configurações</a></li>
+        </ul>
       </div>
-      <button class="btn-voltar" onclick="window.location.href='painel.html'">
-        <span>←</span>
-        <span>Voltar</span>
-      </button>
-    </div>
-  </header>
-
-  <div class="container">
-    <div class="actions-bar">
-      <div class="search-box">
-        <input type="text" id="searchInput" placeholder="Buscar peça por nome, código ou categoria...">
-      </div>
-      <button class="btn-primary" id="btnNovaPeca">
-        <span>➕</span>
-        <span>Nova Peça</span>
-      </button>
-    </div>
-
-    <div class="stats-grid">
-      <div class="stat-card">
-        <div class="stat-header">
-          <div class="stat-icon">📦</div>
-        </div>
-        <div class="stat-label">Total de Itens</div>
-        <div class="stat-value" id="stat-total">0</div>
-      </div>
-
-      <div class="stat-card">
-        <div class="stat-header">
-          <div class="stat-icon">💰</div>
-        </div>
-        <div class="stat-label">Valor Total em Estoque</div>
-        <div class="stat-value" id="stat-valor" style="font-size: 1.5rem;">R$ 0,00</div>
-      </div>
-
-      <div class="stat-card alert">
-        <div class="stat-header">
-          <div class="stat-icon">⚠️</div>
-        </div>
-        <div class="stat-label">Itens Abaixo do Mínimo</div>
-        <div class="stat-value" id="stat-alerta">0</div>
-      </div>
-    </div>
-
-    <div id="estoqueContainer">
-      <div class="estoque-grid" id="estoqueGrid"></div>
-      <div class="empty-state" id="emptyState" style="display: none;">
-        <div class="empty-state-icon">📦</div>
-        <h3>Nenhuma peça em estoque</h3>
-        <p>Comece adicionando seu primeiro item</p>
-        <button class="btn-primary" onclick="document.getElementById('btnNovaPeca').click()">
-          <span>➕</span>
-          <span>Adicionar Peça</span>
+      <div class="sidebar-footer">
+        <button class="logout-btn" onclick="logout()">
+          <span class="nav-icon">🚪</span> Sair do Sistema
         </button>
       </div>
-    </div>
+    </nav>
+    <div class="overlay" id="overlay"></div>
+
+    <main class="main-content">
+      <header class="main-header">
+        <h1>Estoque de Peças</h1>
+        <button class="mobile-menu-btn" id="mobileMenuBtn">☰</button>
+      </header>
+
+      <div class="actions-bar">
+        <div class="filters-container">
+            <div class="search-box">
+                <input type="text" id="searchInput" placeholder="Buscar peça...">
+            </div>
+            <div class="filter-group">
+                <label for="filtroCategoria">Categoria</label>
+                <select id="filtroCategoria"><option value="todas">Todas</option></select>
+            </div>
+            <div class="filter-group">
+                <label for="filtroDestino">Destino</label>
+                <select id="filtroDestino">
+                    <option value="todos">Todos</option>
+                    <option value="oficina">Oficina</option>
+                    <option value="loja">Loja</option>
+                </select>
+            </div>
+        </div>
+        <button class="btn-primary" id="btnNovaPeca"><span>➕</span> Nova Peça</button>
+      </div>
+
+      <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-label">Total de Itens</div>
+            <div class="stat-value" id="stat-total">0</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-label">Valor Total em Estoque</div>
+            <div class="stat-value" id="stat-valor" style="font-size: 1.5rem;">R$ 0,00</div>
+        </div>
+        <div class="stat-card alert">
+            <div class="stat-label">Itens Abaixo do Mínimo</div>
+            <div class="stat-value" id="stat-alerta">0</div>
+        </div>
+      </div>
+
+      <div id="estoqueContainer">
+        <div class="estoque-grid" id="estoqueGrid"></div>
+        <div class="empty-state" id="emptyState" style="display: none;">
+          <div class="empty-state-icon">📦</div>
+          <h3>Nenhuma peça encontrada</h3>
+          <p>Tente ajustar os filtros ou adicione uma nova peça ao seu estoque.</p>
+        </div>
+      </div>
+    </main>
   </div>
 
   <div class="modal" id="modalPeca">
     <div class="modal-content">
-      <div class="modal-header">
-        <h2><span id="modalIcon">➕</span> <span id="modalTitle">Nova Peça</span></h2>
-        <button class="btn-close" onclick="fecharModal()">✕</button>
-      </div>
-
+      <div class="modal-header"><h2><span id="modalIcon">➕</span> <span id="modalTitle">Nova Peça</span></h2><button class="btn-close" onclick="fecharModal()">✕</button></div>
       <form id="formPeca" onsubmit="salvarPeca(event)">
         <input type="hidden" id="pecaId">
-
-        <div class="form-row">
-          <div class="form-group">
-            <label for="nomePeca">Nome da Peça *</label>
-            <input type="text" id="nomePeca" required placeholder="Ex: Resistência 220V">
-          </div>
-
-          <div class="form-group">
-            <label for="codigoPeca">Código/SKU</label>
-            <input type="text" id="codigoPeca" placeholder="Ex: RES220-001">
-          </div>
-        </div>
-
-        <div class="form-group">
-          <label for="descricaoPeca">Descrição</label>
-          <textarea id="descricaoPeca" placeholder="Especificações técnicas, compatibilidade..."></textarea>
-        </div>
-
+        <div class="form-row"><div class="form-group"><label for="nomePeca">Nome da Peça *</label><input type="text" id="nomePeca" required></div><div class="form-group"><label for="codigoPeca">Código/SKU</label><input type="text" id="codigoPeca"></div></div>
+        <div class="form-group"><label for="categoriaPeca">Categoria *</label><div class="input-group"><select id="categoriaPeca" required></select><button type="button" class="btn-link" id="btnNovaCategoria">[+]</button></div></div>
+        <div class="form-group"><label>Destino da Peça *</label><div style="display: flex; gap: 16px; margin-top: 8px;"><label><input type="radio" name="destino" value="oficina" required> Oficina</label><label><input type="radio" name="destino" value="loja"> Loja</label></div></div>
+        <hr style="border:none; border-top: 1px solid var(--border-color); margin: 24px 0;">
         <div class="form-row-3">
-          <div class="form-group">
-            <label for="categoriaPeca">Categoria *</label>
-            <select id="categoriaPeca" required>
-              <option value="">Selecione...</option>
-              <option value="Resistências">Resistências</option>
-              <option value="Motores">Motores</option>
-              <option value="Capacitores">Capacitores</option>
-              <option value="Termostatos">Termostatos</option>
-              <option value="Placas">Placas Eletrônicas</option>
-              <option value="Bombas">Bombas</option>
-              <option value="Sensores">Sensores</option>
-              <option value="Filtros">Filtros</option>
-              <option value="Borrachas">Borrachas e Vedações</option>
-              <option value="Outros">Outros</option>
-            </select>
-          </div>
-
-          <div class="form-group">
-            <label for="fabricantePeca">Fabricante</label>
-            <input type="text" id="fabricantePeca" placeholder="Ex: Brastemp">
-          </div>
-
-          <div class="form-group">
-            <label for="fornecedorPeca">Fornecedor</label>
-            <input type="text" id="fornecedorPeca" placeholder="Nome do fornecedor">
-          </div>
+            <div class="form-group"><label for="custoPeca">Preço de Custo (R$)</label><input type="number" id="custoPeca" step="0.01" min="0"></div>
+            <div class="form-group"><label for="margemLucro">Margem Lucro (%)</label><input type="number" id="margemLucro" step="0.01" min="0"></div>
+            <div class="form-group"><label for="valorUnitario">Preço de Venda (R$) *</label><input type="number" id="valorUnitario" required step="0.01" min="0"></div>
         </div>
-
-        <div class="form-row-3">
-          <div class="form-group">
-            <label for="quantidadePeca">Quantidade *</label>
-            <input type="number" id="quantidadePeca" required min="0" value="0">
-          </div>
-
-          <div class="form-group">
-            <label for="estoqueMinimo">Estoque Mínimo *</label>
-            <input type="number" id="estoqueMinimo" required min="1" value="5">
-          </div>
-
-          <div class="form-group">
-            <label for="localizacaoPeca">Localização</label>
-            <input type="text" id="localizacaoPeca" placeholder="Ex: Prateleira A3">
-          </div>
-        </div>
-
-        <div class="form-row">
-          <div class="form-group">
-            <label for="valorUnitario">Valor Unit. (R$) *</label>
-            <input type="number" id="valorUnitario" required step="0.01" min="0" placeholder="0.00">
-          </div>
-
-          <div class="form-group">
-            <label>Valor Total</label>
-            <input type="text" id="valorTotal" readonly style="background: #f3f4f6; font-weight: 700; color: #6366f1;" value="R$ 0,00">
-          </div>
-        </div>
-
-        <div class="form-group">
-          <label for="observacoesPeca">Observações</label>
-          <textarea id="observacoesPeca" placeholder="Informações adicionais..."></textarea>
-        </div>
-
-        <div class="form-actions">
-          <button type="button" class="btn-cancel" onclick="fecharModal()">Cancelar</button>
-          <button type="submit" class="btn-submit">Salvar Peça</button>
-        </div>
+        <hr style="border:none; border-top: 1px solid var(--border-color); margin: 24px 0;">
+        <div class="form-row"><div class="form-group"><label for="quantidadePeca">Quantidade *</label><input type="number" id="quantidadePeca" required min="0" value="0"></div><div class="form-group"><label for="estoqueMinimo">Estoque Mínimo *</label><input type="number" id="estoqueMinimo" required min="1" value="5"></div></div>
+        <div class="form-actions"><button type="button" class="btn-cancel" onclick="fecharModal()">Cancelar</button><button type="submit" class="btn-submit">Salvar Peça</button></div>
       </form>
     </div>
   </div>
-
-  <div class="modal" id="modalMovimentacao">
-    <div class="modal-content" style="max-width: 500px;">
-      <div class="modal-header">
-        <h2>📊 Movimentação de Estoque</h2>
-        <button class="btn-close" onclick="fecharModalMovimentacao()">✕</button>
-      </div>
-
-      <form id="formMovimentacao" onsubmit="salvarMovimentacao(event)">
-        <input type="hidden" id="movPecaId">
-        <input type="hidden" id="movPecaNome">
-
-        <div class="form-group">
-          <label>Peça</label>
-          <input type="text" id="movNomePeca" readonly style="background: #f3f4f6;">
-        </div>
-
-        <div class="form-group">
-          <label>Estoque Atual</label>
-          <input type="text" id="movEstoqueAtual" readonly style="background: #f3f4f6; font-weight: 700; color: #6366f1;">
-        </div>
-
-        <div class="form-group">
-          <label for="tipoMovimentacao">Tipo de Movimentação *</label>
-          <select id="tipoMovimentacao" required>
-            <option value="entrada">➕ Entrada (Compra/Devolução)</option>
-            <option value="saida">➖ Saída (Venda/Uso)</option>
-          </select>
-        </div>
-
-        <div class="form-group">
-          <label for="quantidadeMovimentacao">Quantidade *</label>
-          <input type="number" id="quantidadeMovimentacao" required min="1" value="1">
-        </div>
-
-        <div class="form-group">
-          <label for="motivoMovimentacao">Motivo/Observação</label>
-          <textarea id="motivoMovimentacao" placeholder="Ex: Compra de fornecedor, usado em OS #0023..."></textarea>
-        </div>
-
-        <div class="form-actions">
-          <button type="button" class="btn-cancel" onclick="fecharModalMovimentacao()">Cancelar</button>
-          <button type="submit" class="btn-submit">Confirmar Movimentação</button>
-        </div>
-      </form>
-    </div>
-  </div>
+  
+  <div class="modal" id="modalMovimentacao"></div>
 
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
-<script src="firebase-config.js"></script>
-<script src="utils.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+  <script src="firebase-config.js"></script>
+  <script src="utils.js"></script>
 
   <script>
-    const auth = firebase.auth();
-    const database = firebase.database();
+    protegerPagina();
+
+    const sidebar = document.getElementById('sidebar');
+    const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+    const overlay = document.getElementById('overlay');
+    mobileMenuBtn.addEventListener('click', () => { sidebar.classList.toggle('is-open'); overlay.classList.toggle('is-open'); });
+    overlay.addEventListener('click', () => { sidebar.classList.remove('is-open'); overlay.classList.remove('is-open'); });
+
+    const configRef = database.ref('configuracoes');
     const estoqueRef = database.ref("estoque");
-
-    auth.onAuthStateChanged(user => { if (!user) window.location.href = 'index.html'; });
-
-    let estoqueData = {}, editandoId = null;
-
+    
+    let estoqueData = {}, editandoId = null, categoriasEstoque = [];
+    
+    auth.onAuthStateChanged(user => {
+      if(user) {
+        configRef.on('value', (snapshot) => {
+            const config = snapshot.val() || {};
+            if (config.darkMode) { document.body.classList.add('dark-mode'); }
+            else { document.body.classList.remove('dark-mode'); }
+            categoriasEstoque = config.categoriasEstoque || ['Geral'];
+            carregarCategorias();
+        });
+      }
+    });
+    
     estoqueRef.on("value", snapshot => {
       estoqueData = snapshot.val() || {};
       atualizarEstatisticas();
       renderizarEstoque();
     });
 
+    function formatarMoeda(valor) {
+      return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(valor || 0);
+    }
+    
     function atualizarEstatisticas() {
       const pecasArray = Object.values(estoqueData);
-      const total = pecasArray.length;
-      const valorTotal = pecasArray.reduce((sum, p) => sum + (p.quantidade * p.valorUnitario), 0);
-      const alertas = pecasArray.filter(p => p.quantidade <= p.estoqueMinimo).length;
-
-      document.getElementById('stat-total').textContent = total;
-      document.getElementById('stat-valor').textContent = `R$ ${valorTotal.toFixed(2).replace('.', ',')}`;
+      document.getElementById('stat-total').textContent = pecasArray.length;
+      const valorTotal = pecasArray.reduce((sum, p) => sum + ((p.quantidade || 0) * (p.valorUnitario || 0)), 0);
+      document.getElementById('stat-valor').textContent = formatarMoeda(valorTotal);
+      const alertas = pecasArray.filter(p => (p.quantidade || 0) <= (p.estoqueMinimo || 0)).length;
       document.getElementById('stat-alerta').textContent = alertas;
     }
 
     function renderizarEstoque() {
       const grid = document.getElementById('estoqueGrid');
       const emptyState = document.getElementById('emptyState');
-      const searchTerm = document.getElementById('searchInput').value.toLowerCase();
-
       grid.innerHTML = '';
+      
+      const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+      const catFiltro = document.getElementById('filtroCategoria').value;
+      const destinoFiltro = document.getElementById('filtroDestino').value;
 
-      const pecasArray = Object.entries(estoqueData).map(([id, data]) => ({ id, ...data }));
-      const pecasFiltradas = pecasArray.filter(peca => {
-        const nome = (peca.nomePeca || '').toLowerCase();
-        const codigo = (peca.codigoPeca || '').toLowerCase();
-        const categoria = (peca.categoriaPeca || '').toLowerCase();
-        return nome.includes(searchTerm) || codigo.includes(searchTerm) || categoria.includes(searchTerm);
+      let pecasArray = Object.entries(estoqueData).map(([id, data]) => ({ id, ...data }));
+      
+      const pecasFiltradas = pecasArray.filter(p => {
+        const searchMatch = (p.nomePeca || '').toLowerCase().includes(searchTerm) || (p.codigoPeca || '').toLowerCase().includes(searchTerm);
+        const catMatch = catFiltro === 'todas' || p.categoriaPeca === catFiltro;
+        const destinoMatch = destinoFiltro === 'todos' || p.destino === destinoFiltro;
+        return searchMatch && catMatch && destinoMatch;
       });
 
       if (pecasFiltradas.length === 0) {
-        emptyState.style.display = 'block';
-        grid.style.display = 'none';
-        return;
+        emptyState.style.display = 'block'; grid.style.display = 'none'; return;
       }
-
-      emptyState.style.display = 'none';
-      grid.style.display = 'grid';
+      emptyState.style.display = 'none'; grid.style.display = 'grid';
 
       pecasFiltradas.forEach(peca => {
         const card = document.createElement('div');
         card.className = 'estoque-card';
-        
-        const alertaBaixo = peca.quantidade <= peca.estoqueMinimo;
-        if (alertaBaixo) card.classList.add('alerta-baixo');
-
-        const qtdClass = peca.quantidade === 0 ? 'qtd-critica' : (alertaBaixo ? 'qtd-baixa' : 'qtd-normal');
-        const valorTotal = peca.quantidade * peca.valorUnitario;
+        const alertaBaixo = (peca.quantidade || 0) <= (peca.estoqueMinimo || 0);
+        const qtdClass = (peca.quantidade || 0) === 0 ? 'qtd-critica' : (alertaBaixo ? 'qtd-baixa' : 'qtd-normal');
+        const destinoTexto = peca.destino === 'oficina' ? 'Oficina' : 'Loja';
+        const destinoClass = peca.destino === 'oficina' ? 'destino-oficina' : 'destino-loja';
 
         card.innerHTML = `
-          <div class="estoque-header">
-            <div class="estoque-titulo">
-              <h3>${peca.nomePeca}</h3>
-              <div class="estoque-codigo">${peca.codigoPeca || 'Sem código'} | ${peca.categoriaPeca}</div>
+            <div class="estoque-header">
+                <div class="estoque-titulo">
+                    <h3>${peca.nomePeca} <span class="destino-badge ${destinoClass}">${destinoTexto}</span></h3>
+                    <div class="estoque-codigo">${peca.codigoPeca || 'Sem código'} | ${peca.categoriaPeca}</div>
+                </div>
+                <span class="quantidade-badge ${qtdClass}">${peca.quantidade} un.</span>
             </div>
-            <span class="quantidade-badge ${qtdClass}">${peca.quantidade} un.</span>
-          </div>
-
-          <div class="estoque-details">
-            ${peca.descricaoPeca ? `
-            <div class="detail-row">
-              <div class="detail-icon">📝</div>
-              <span>${peca.descricaoPeca.substring(0, 60)}${peca.descricaoPeca.length > 60 ? '...' : ''}</span>
-            </div>
-            ` : ''}
-            <div class="detail-row">
-              <div class="detail-icon">📊</div>
-              <span>Mínimo: ${peca.estoqueMinimo} un.</span>
-            </div>
-            ${peca.localizacaoPeca ? `
-            <div class="detail-row">
-              <div class="detail-icon">📍</div>
-              <span>${peca.localizacaoPeca}</span>
-            </div>
-            ` : ''}
-            ${peca.fabricantePeca ? `
-            <div class="detail-row">
-              <div class="detail-icon">🏭</div>
-              <span>${peca.fabricantePeca}</span>
-            </div>
-            ` : ''}
-          </div>
-
-          <div class="estoque-valor">
-            <div class="valor-row">
-              <span class="valor-label">Valor Unitário:</span>
-              <span class="valor-numero">R$ ${peca.valorUnitario.toFixed(2).replace('.', ',')}</span>
-            </div>
-            <div class="valor-row">
-              <span class="valor-label">Valor Total:</span>
-              <span class="valor-numero" style="font-size: 1.1rem;">R$ ${valorTotal.toFixed(2).replace('.', ',')}</span>
-            </div>
-          </div>
-
-          <div class="estoque-actions">
-            <button class="btn-action btn-move" onclick="abrirMovimentacao('${peca.id}')">
-              📊 Mover
-            </button>
-            <button class="btn-action btn-edit" onclick="editarPeca('${peca.id}')">
-              ✏️ Editar
-            </button>
-            <button class="btn-action btn-delete" onclick="excluirPeca('${peca.id}', '${peca.nomePeca}')">
-              🗑️ Excluir
-            </button>
-          </div>
-        `;
-
+            `;
+        card.onclick = () => editarPeca(peca.id);
         grid.appendChild(card);
       });
     }
 
     document.getElementById('searchInput').addEventListener('input', renderizarEstoque);
+    document.getElementById('filtroCategoria').addEventListener('change', renderizarEstoque);
+    document.getElementById('filtroDestino').addEventListener('change', renderizarEstoque);
 
-    document.getElementById('btnNovaPeca').addEventListener('click', () => {
-      editandoId = null;
-      document.getElementById('modalTitle').textContent = 'Nova Peça';
-      document.getElementById('modalIcon').textContent = '➕';
-      document.getElementById('formPeca').reset();
-      document.getElementById('pecaId').value = '';
-      document.getElementById('valorTotal').value = 'R$ 0,00';
-      document.getElementById('modalPeca').classList.add('active');
+    function carregarCategorias() {
+        const selects = [document.getElementById('categoriaPeca'), document.getElementById('filtroCategoria')];
+        selects.forEach(select => {
+            const currentValue = select.value;
+            select.innerHTML = select.id === 'filtroCategoria' ? '<option value="todas">Todas</option>' : '<option value="">Selecione...</option>';
+            categoriasEstoque.forEach(cat => select.add(new Option(cat, cat)));
+            select.value = currentValue;
+        });
+    }
+
+    document.getElementById('btnNovaCategoria').addEventListener('click', () => {
+        const novaCat = prompt("Digite o nome da nova categoria:");
+        if (novaCat && !categoriasEstoque.includes(novaCat)) {
+            categoriasEstoque.push(novaCat);
+            configRef.child('categoriasEstoque').set(categoriasEstoque).then(() => {
+                alert(`Categoria "${novaCat}" adicionada!`);
+                document.getElementById('categoriaPeca').value = novaCat;
+            });
+        } else if(novaCat) {
+            document.getElementById('categoriaPeca').value = novaCat;
+        }
     });
 
-    function fecharModal() {
-      document.getElementById('modalPeca').classList.remove('active');
-      editandoId = null;
-    }
+    function fecharModal() { document.getElementById('modalPeca').classList.remove('active'); }
+    
+    document.getElementById('btnNovaPeca').addEventListener('click', () => {
+        editandoId = null;
+        document.getElementById('modalTitle').textContent = 'Nova Peça';
+        document.getElementById('modalIcon').textContent = '➕';
+        document.getElementById('formPeca').reset();
+        document.getElementById('modalPeca').classList.add('active');
+    });
 
     function editarPeca(id) {
-      editandoId = id;
-      const peca = estoqueData[id];
-
-      document.getElementById('modalTitle').textContent = 'Editar Peça';
-      document.getElementById('modalIcon').textContent = '✏️';
-      document.getElementById('pecaId').value = id;
-      document.getElementById('nomePeca').value = peca.nomePeca;
-      document.getElementById('codigoPeca').value = peca.codigoPeca || '';
-      document.getElementById('descricaoPeca').value = peca.descricaoPeca || '';
-      document.getElementById('categoriaPeca').value = peca.categoriaPeca;
-      document.getElementById('fabricantePeca').value = peca.fabricantePeca || '';
-      document.getElementById('fornecedorPeca').value = peca.fornecedorPeca || '';
-      document.getElementById('quantidadePeca').value = peca.quantidade;
-      document.getElementById('estoqueMinimo').value = peca.estoqueMinimo;
-      document.getElementById('localizacaoPeca').value = peca.localizacaoPeca || '';
-      document.getElementById('valorUnitario').value = peca.valorUnitario;
-      document.getElementById('observacoesPeca').value = peca.observacoesPeca || '';
-      
-      calcularValorTotal();
-      document.getElementById('modalPeca').classList.add('active');
+        editandoId = id; const peca = estoqueData[id];
+        document.getElementById('modalTitle').textContent = 'Editar Peça';
+        document.getElementById('modalIcon').textContent = '✏️';
+        document.getElementById('pecaId').value = id;
+        document.getElementById('nomePeca').value = peca.nomePeca || '';
+        document.getElementById('codigoPeca').value = peca.codigoPeca || '';
+        document.getElementById('categoriaPeca').value = peca.categoriaPeca || '';
+        document.querySelector(`input[name="destino"][value="${peca.destino || 'oficina'}"]`).checked = true;
+        document.getElementById('custoPeca').value = peca.custo || '';
+        document.getElementById('margemLucro').value = peca.margem || '';
+        document.getElementById('valorUnitario').value = peca.valorUnitario || '';
+        document.getElementById('quantidadePeca').value = peca.quantidade || 0;
+        document.getElementById('estoqueMinimo').value = peca.estoqueMinimo || 5;
+        document.getElementById('modalPeca').classList.add('active');
     }
-
-    function calcularValorTotal() {
-      const quantidade = parseFloat(document.getElementById('quantidadePeca').value) || 0;
-      const valorUnitario = parseFloat(document.getElementById('valorUnitario').value) || 0;
-      const total = quantidade * valorUnitario;
-      document.getElementById('valorTotal').value = `R$ ${total.toFixed(2).replace('.', ',')}`;
-    }
-
-    document.getElementById('quantidadePeca').addEventListener('input', calcularValorTotal);
-    document.getElementById('valorUnitario').addEventListener('input', calcularValorTotal);
 
     function salvarPeca(event) {
-      event.preventDefault();
-
-      const pecaData = {
-        nomePeca: document.getElementById('nomePeca').value,
-        codigoPeca: document.getElementById('codigoPeca').value,
-        descricaoPeca: document.getElementById('descricaoPeca').value,
-        categoriaPeca: document.getElementById('categoriaPeca').value,
-        fabricantePeca: document.getElementById('fabricantePeca').value,
-        fornecedorPeca: document.getElementById('fornecedorPeca').value,
-        quantidade: parseInt(document.getElementById('quantidadePeca').value),
-        estoqueMinimo: parseInt(document.getElementById('estoqueMinimo').value),
-        localizacaoPeca: document.getElementById('localizacaoPeca').value,
-        valorUnitario: parseFloat(document.getElementById('valorUnitario').value),
-        observacoesPeca: document.getElementById('observacoesPeca').value,
-        movimentacoes: editandoId ? estoqueData[editandoId].movimentacoes || [] : [],
-        criadoPor: auth.currentUser.email,
-        criadoEm: editandoId ? estoqueData[editandoId].criadoEm : new Date().toISOString(),
-        atualizadoEm: new Date().toISOString()
-      };
-
-      if (editandoId) {
-        estoqueRef.child(editandoId).update(pecaData)
-          .then(() => {
-            alert('Peça atualizada com sucesso!');
+        event.preventDefault();
+        const pecaData = {
+            nomePeca: document.getElementById('nomePeca').value,
+            codigoPeca: document.getElementById('codigoPeca').value,
+            categoriaPeca: document.getElementById('categoriaPeca').value,
+            destino: document.querySelector('input[name="destino"]:checked').value,
+            custo: parseFloat(document.getElementById('custoPeca').value) || 0,
+            margem: parseFloat(document.getElementById('margemLucro').value) || 0,
+            valorUnitario: parseFloat(document.getElementById('valorUnitario').value) || 0,
+            quantidade: parseInt(document.getElementById('quantidadePeca').value),
+            estoqueMinimo: parseInt(document.getElementById('estoqueMinimo').value),
+            criadoEm: editandoId ? estoqueData[editandoId].criadoEm : new Date().toISOString(),
+            atualizadoEm: new Date().toISOString()
+        };
+        const promise = editandoId ? estoqueRef.child(editandoId).update(pecaData) : estoqueRef.push(pecaData);
+        promise.then(() => {
+            alert(`Peça ${editandoId ? 'atualizada' : 'cadastrada'} com sucesso!`);
             fecharModal();
-          })
-          .catch(error => {
-            alert('Erro ao atualizar peça: ' + error.message);
-          });
-      } else {
-        estoqueRef.push(pecaData)
-          .then(() => {
-            alert('Peça cadastrada com sucesso!');
-            fecharModal();
-          })
-          .catch(error => {
-            alert('Erro ao cadastrar peça: ' + error.message);
-          });
-      }
+        }).catch(e => alert('Erro: ' + e.message));
     }
 
-    function excluirPeca(id, nome) {
-      const confirmacao = confirm(
-        `⚠️ ATENÇÃO!\n\nDeseja realmente excluir a peça:\n"${nome}"?\n\nEsta ação não pode ser desfeita!`
-      );
-      
-      if (confirmacao) {
-        estoqueRef.child(id).remove()
-          .then(() => {
-            alert('Peça excluída com sucesso!');
-          })
-          .catch(error => {
-            alert('Erro ao excluir peça: ' + error.message);
-          });
-      }
-    }
+    // Lógica de cálculo financeiro
+    const custoInput = document.getElementById('custoPeca');
+    const margemInput = document.getElementById('margemLucro');
+    const vendaInput = document.getElementById('valorUnitario');
 
-    // Movimentação de Estoque
-    function abrirMovimentacao(id) {
-      const peca = estoqueData[id];
-      
-      document.getElementById('movPecaId').value = id;
-      document.getElementById('movPecaNome').value = peca.nomePeca;
-      document.getElementById('movNomePeca').value = peca.nomePeca;
-      document.getElementById('movEstoqueAtual').value = `${peca.quantidade} unidades`;
-      document.getElementById('tipoMovimentacao').value = 'entrada';
-      document.getElementById('quantidadeMovimentacao').value = '1';
-      document.getElementById('motivoMovimentacao').value = '';
-      
-      document.getElementById('modalMovimentacao').classList.add('active');
-    }
+    let ultimoEditado = null; // Para evitar loops
+    custoInput.addEventListener('focus', () => ultimoEditado = 'custo');
+    margemInput.addEventListener('focus', () => ultimoEditado = 'margem');
+    vendaInput.addEventListener('focus', () => ultimoEditado = 'venda');
 
-    function fecharModalMovimentacao() {
-      document.getElementById('modalMovimentacao').classList.remove('active');
-      document.getElementById('formMovimentacao').reset();
-    }
+    function calcularFinanceiro() {
+        const custo = parseFloat(custoInput.value) || 0;
+        const margem = parseFloat(margemInput.value) || 0;
+        const venda = parseFloat(vendaInput.value) || 0;
 
-    function salvarMovimentacao(event) {
-      event.preventDefault();
-
-      const pecaId = document.getElementById('movPecaId').value;
-      const peca = estoqueData[pecaId];
-      const tipo = document.getElementById('tipoMovimentacao').value;
-      const quantidade = parseInt(document.getElementById('quantidadeMovimentacao').value);
-      const motivo = document.getElementById('motivoMovimentacao').value;
-
-      let novaQuantidade = peca.quantidade;
-      
-      if (tipo === 'entrada') {
-        novaQuantidade += quantidade;
-      } else {
-        novaQuantidade -= quantidade;
-        if (novaQuantidade < 0) {
-          alert('❌ Erro: A quantidade em estoque não pode ficar negativa!');
-          return;
+        if (ultimoEditado === 'venda' && custo > 0 && venda > 0) {
+            const novaMargem = ((venda - custo) / venda) * 100;
+            if (isFinite(novaMargem)) margemInput.value = novaMargem.toFixed(2);
+        } else if (ultimoEditado === 'margem' && custo > 0 && margem >= 0 && margem < 100) {
+            const novoPreco = custo / (1 - (margem / 100));
+            if (isFinite(novoPreco)) vendaInput.value = novoPreco.toFixed(2);
+        } else if (ultimoEditado === 'custo' && margem > 0 && margem < 100) {
+             const novoPreco = custo / (1 - (margem / 100));
+            if (isFinite(novoPreco)) vendaInput.value = novoPreco.toFixed(2);
+        } else if (ultimoEditado === 'custo' && venda > 0) {
+            const novaMargem = ((venda - custo) / venda) * 100;
+            if (isFinite(novaMargem)) margemInput.value = novaMargem.toFixed(2);
         }
-      }
-
-      const movimentacao = {
-        tipo: tipo,
-        quantidade: quantidade,
-        quantidadeAnterior: peca.quantidade,
-        quantidadeNova: novaQuantidade,
-        motivo: motivo,
-        realizadoPor: auth.currentUser.email,
-        dataHora: new Date().toISOString()
-      };
-
-      const movimentacoes = peca.movimentacoes || [];
-      movimentacoes.push(movimentacao);
-
-      estoqueRef.child(pecaId).update({
-        quantidade: novaQuantidade,
-        movimentacoes: movimentacoes,
-        atualizadoEm: new Date().toISOString()
-      })
-      .then(() => {
-        const tipoTexto = tipo === 'entrada' ? 'Entrada' : 'Saída';
-        alert(`✅ ${tipoTexto} registrada com sucesso!\n\nEstoque anterior: ${peca.quantidade}\nEstoque atual: ${novaQuantidade}`);
-        fecharModalMovimentacao();
-      })
-      .catch(error => {
-        alert('Erro ao registrar movimentação: ' + error.message);
-      });
     }
+    custoInput.addEventListener('input', calcularFinanceiro);
+    margemInput.addEventListener('input', calcularFinanceiro);
+    vendaInput.addEventListener('input', calcularFinanceiro);
 
-    // Fechar modais ao clicar fora
-    document.getElementById('modalPeca').addEventListener('click', function(e) {
-      if (e.target === this) fecharModal();
-    });
-
-    document.getElementById('modalMovimentacao').addEventListener('click', function(e) {
-      if (e.target === this) fecharModalMovimentacao();
-    });
-
-    // Atalhos de teclado
-    document.addEventListener('keydown', function(e) {
-      if (e.key === 'Escape') {
-        fecharModal();
-        fecharModalMovimentacao();
-      }
-      if (e.ctrlKey && e.key === 'n') {
-        e.preventDefault();
-        document.getElementById('btnNovaPeca').click();
-      }
-    });
-
-    console.log('Sistema de Estoque - SIGO Casa dos Reparos - Carregado!');
   </script>
 </body>
 </html>
