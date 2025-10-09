@@ -61,40 +61,38 @@
         .print-document, .etiqueta-preview { border: 1px solid var(--border-color); }
         
         .print-document { padding: 1.5rem; }
-        .print-header { display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 2px solid var(--text-primary); padding-bottom: 0.8rem; margin-bottom: 1rem; }
+        .print-header { display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 2px solid #333; padding-bottom: 0.8rem; margin-bottom: 1rem; }
         .company-logo { max-width: 120px; max-height: 60px; margin-right: 15px; object-fit: contain; }
         .print-section { margin-bottom: 1rem; }
-        .print-section h3 { font-size: 0.8rem; text-transform: uppercase; color: var(--text-secondary); border-bottom: 1px solid var(--border-color); padding-bottom: 0.4rem; margin-bottom: 0.8rem; }
+        .print-section h3 { font-size: 0.8rem; text-transform: uppercase; color: #555; border-bottom: 1px solid #ccc; padding-bottom: 0.4rem; margin-bottom: 0.8rem; }
         .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem; }
         .info-grid p, .print-section p { margin-bottom: 0.4rem; line-height: 1.3; }
-        .info-grid strong, .print-section strong { color: var(--text-secondary); display: block; font-size: 0.75rem; }
+        .info-grid strong, .print-section strong { color: #555; display: block; font-size: 0.75rem; }
         .print-table { width: 100%; border-collapse: collapse; margin-top: 0.8rem; font-size: 0.9rem; }
-        .print-table th, .print-table td { padding: 0.5rem; text-align: left; border-bottom: 1px solid var(--border-color); }
-        .print-table thead { background: var(--main-bg); }
-        .print-footer { border-top: 2px solid var(--text-primary); margin-top: 1.5rem; padding-top: 1rem; }
-        .print-footer p { font-size: 0.75rem; color: var(--text-secondary); white-space: pre-wrap; }
+        .print-table th, .print-table td { padding: 0.5rem; text-align: left; border-bottom: 1px solid #ccc; }
+        .print-table thead { background: #f3f4f6; }
+        .print-footer { border-top: 2px solid #333; margin-top: 1.5rem; padding-top: 1rem; }
+        .print-footer p { font-size: 0.75rem; color: #555; white-space: pre-wrap; }
         .signature-container { margin-top: 2.5rem; display: flex; justify-content: space-around; gap: 2rem; page-break-inside: avoid; }
         .signature-box { text-align: center; } .signature-box p { font-size: 0.85rem; }
         
         .etiqueta-preview-wrapper { display: flex; justify-content: center; align-items: center; min-height: 200px; background-color: var(--main-bg); padding: 20px; border-radius: 10px; }
         .etiqueta-preview { background: #fff; color: #000; font-family: 'Arial', sans-serif; overflow: hidden; box-sizing: border-box; border: 1px solid #333; }
         .etiqueta-cliente-header { padding: 4mm; border-bottom: 2px solid #000; text-align: center; }
-        .etiqueta-cliente-header h3 { font-size: 11pt; margin: 0; }
-        .etiqueta-cliente-header p { font-size: 7pt; margin: 0; }
-        .etiqueta-cliente-header .phone { font-size: 9pt; font-weight: bold; background: #000; color: #fff; padding: 1mm 2mm; border-radius: 4px; display: inline-block; margin-top: 2mm; }
         .etiqueta-cliente-body { padding: 4mm; }
         .etiqueta-cliente-row { display: flex; align-items: center; border-bottom: 1px solid #ccc; padding: 2mm 0; }
-        .etiqueta-cliente-row:last-child { border-bottom: none; }
-        .etiqueta-cliente-icon { font-size: 14pt; width: 8mm; text-align: center; }
-        .etiqueta-cliente-text { font-size: 11pt; font-weight: bold; padding-left: 3mm; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .etiqueta-interna-table { width: 100%; height: 100%; border-collapse: collapse; }
         .etiqueta-interna-table td { border: 1px solid #000; padding: 2mm; vertical-align: middle; }
-        .etiqueta-interna-icon-cell { width: 12mm; text-align: center; font-size: 16pt; }
-        .etiqueta-interna-text-cell { font-size: 12pt; font-weight: bold; }
-        .etiqueta-interna-check-cell { font-size: 10pt; }
-
+        
         .mobile-menu-btn { display: none; } .overlay { display: none; }
-        @media (max-width: 768px) { /* ... estilos responsivos ... */ }
+        @media (max-width: 768px) {
+          .dashboard-container { grid-template-columns: 1fr; }
+          .sidebar { transform: translateX(-100%); }
+          .sidebar.is-open { transform: translateX(0); }
+          .main-content { grid-column: 1 / 2; padding: 16px; }
+          .mobile-menu-btn { display: block; }
+          .print-container { grid-template-columns: 1fr; }
+        }
         
         @media print {
             body * { visibility: hidden; }
@@ -147,7 +145,7 @@
             <div class="recent-os-list" id="recent-os-list"></div>
             <div id="print-actions-doc"><button class="btn btn-primary" id="btnImprimirDoc" disabled>🖨️ Imprimir Documento</button></div>
           </aside>
-          <section class="preview-panel print-area">
+          <section class="preview-panel print-area" id="print-area-a4">
             <div id="preview-placeholder-doc"><p>Selecione uma OS para pré-visualizar.</p></div>
             <div id="print-preview-container-doc"></div>
           </section>
@@ -162,19 +160,20 @@
             <div class="form-group"><label>Tipo de Etiqueta</label><select id="tipoEtiqueta"><option value="cliente">Etiqueta do Cliente</option><option value="interna">Controle Interno</option></select></div>
             <div class="form-group"><label>Tamanho da Etiqueta</label><select id="tamanhoEtiqueta">
                 <option value="50x80">50mm x 80mm</option>
-                <option value="50x30">50mm x 30mm</option><option value="50x40">50mm x 40mm</option><option value="50x50">50mm x 50mm</option><option value="50x60">50mm x 60mm</option>
-                <option value="80x40">80mm x 40mm</option><option value="80x50">80mm x 50mm</option><option value="80x60">80mm x 60mm</option><option value="80x80">80mm x 80mm</option>
+                <option value="50x30">50mm x 30mm</option><option value="50x40">50mm x 40mm</option>
+                <option value="80x40">80mm x 40mm</option><option value="80x50">80mm x 50mm</option>
             </select></div>
             <div id="print-actions-etiqueta"><button class="btn btn-primary" id="btnImprimirEtiqueta" disabled>🖨️ Imprimir Etiqueta</button></div>
           </aside>
-          <section class="preview-panel print-area">
+          <section class="preview-panel print-area" id="print-area-etiqueta">
             <div id="preview-placeholder-etiqueta"><p>Busque e selecione uma OS para gerar a etiqueta.</p></div>
             <div class="etiqueta-preview-wrapper" id="print-preview-container-etiqueta"></div>
           </section>
         </div>
       </div>
-
+      
       <div id="print-style-holder"></div>
+
     </main>
   </div>
 
@@ -218,6 +217,7 @@
             tab.classList.add('active');
             tabContents.forEach(content => content.classList.remove('active'));
             document.getElementById(`tab-${tab.dataset.tab}`).classList.add('active');
+            setPageSize('A4', 'auto');
         });
     });
 
@@ -253,7 +253,7 @@
         gerarPreviewDocumento(osId);
     }
     
-    btnImprimirDoc.addEventListener('click', () => { if(selectedOsIdDoc) { setPageSize('A4'); window.print(); } });
+    btnImprimirDoc.addEventListener('click', () => { if(selectedOsIdDoc) { setPageSize('A4', 'auto'); window.print(); } });
 
     const searchInputEtiqueta = document.getElementById('searchInputEtiqueta');
     const searchResultsEtiqueta = document.getElementById('searchResultsEtiqueta');
@@ -297,20 +297,30 @@
         const dataEntrada = new Date(os.dataEntrada + 'T00:00:00').toLocaleDateString('pt-BR');
 
         if(tipo === 'cliente') {
-            const logoHtml = configData.urlLogo ? `<img src="${configData.urlLogo}" class="logo-externa">` : `<h4>${(configData.nomeOficina || 'Oficina').substring(0, 25)}</h4>`;
-            html = `<div class="etiqueta-preview etiqueta-cliente" id="etiqueta-para-impressao" style="width:${width}mm; height:${height}mm;">
-                ${logoHtml}
-                <p class="os-number">OS #${String(os.numeroOS).padStart(4, '0')}</p>
-                <p><strong>CLIENTE:</strong> ${os.clienteNome}</p>
-                <p><strong>PRODUTO:</strong> ${os.aparelho} ${os.marca || ''}</p>
-                <p><strong>DATA:</strong> ${dataEntrada}</p>
+            const logoHtml = configData.urlLogo ? `<img src="${configData.urlLogo}" style="max-height: 10mm; margin-bottom: 2mm; display: block; margin-left: auto; margin-right: auto;">` : '';
+            html = `<div class="etiqueta-preview etiqueta-cliente" style="width:${width}mm; height:${height}mm;">
+                <div class="etiqueta-cliente-header">
+                  ${logoHtml}
+                  <h3 style="font-size: 10pt; margin: 0;">${configData.nomeOficina || 'CASA DOS REPAROS'}</h3>
+                  <p style="font-size: 6pt; margin: 0;">${configData.endereco || 'assistência técnica especializada'}</p>
+                  <span style="font-size: 8pt; font-weight: bold; background: #000; color: #fff; padding: 1mm 2mm; border-radius: 4px; display: inline-block; margin-top: 2mm;">${configData.telefone || '(27) 99779 2023'}</span>
+                </div>
+                <div class="etiqueta-cliente-body">
+                  <div class="etiqueta-cliente-row"><div class="etiqueta-cliente-icon">👤</div><div class="etiqueta-cliente-text">${os.clienteNome}</div></div>
+                  <div class="etiqueta-cliente-row"><div class="etiqueta-cliente-icon">📱</div><div class="etiqueta-cliente-text">${os.telefoneCliente}</div></div>
+                  <div class="etiqueta-cliente-row"><div class="etiqueta-cliente-icon">📅</div><div class="etiqueta-cliente-text">${dataEntrada}</div></div>
+                </div>
             </div>`;
         } else {
-            html = `<div class="etiqueta-preview etiqueta-interna" id="etiqueta-para-impressao" style="width:${width}mm; height:${height}mm;">
-                <p class="os-number">OS #${String(os.numeroOS).padStart(4, '0')}</p>
-                <p><strong>CLIENTE:</strong> ${os.clienteNome} (${os.telefoneCliente})</p>
-                <div class="defeito-box"><p><strong>DEFEITO:</strong> ${os.defeitoRelatado}</p></div>
-                <div class="checklist">□ Orçamento □ Aguardando Peça □ Em Teste □ Pronto</div>
+            html = `<div class="etiqueta-preview etiqueta-interna" style="width:${width}mm; height:${height}mm;">
+                <table class="etiqueta-interna-table">
+                  <tr><td class="etiqueta-interna-icon-cell">👤</td><td class="etiqueta-interna-text-cell" colspan="2">${os.clienteNome}</td></tr>
+                  <tr><td class="etiqueta-interna-icon-cell">📱</td><td class="etiqueta-interna-text-cell" colspan="2">${os.telefoneCliente}</td></tr>
+                  <tr><td class="etiqueta-interna-icon-cell">📅</td><td class="etiqueta-interna-text-cell" colspan="2">${dataEntrada}</td></tr>
+                  <tr><td class="etiqueta-interna-icon-cell">🔧</td><td class="etiqueta-interna-text-cell" colspan="2">${os.aparelho} ${os.marca || ''}</td></tr>
+                  <tr><td colspan="3" style="font-size: 8pt; padding: 4mm; vertical-align: top; height: 100%;"><strong>DEFEITO:</strong> ${os.defeitoRelatado}</td></tr>
+                  <tr><td class="etiqueta-interna-check-cell">○ TABELA GASTOS</td><td class="etiqueta-interna-check-cell" colspan="2">○ TABELA MENSAL</td></tr>
+                </table>
             </div>`;
         }
         previewContainerEtiqueta.innerHTML = html;
@@ -320,10 +330,13 @@
         if (selectedOsIdEtiqueta) {
             const [width, height] = tamanhoEtiqueta.value.split('x');
             setPageSize(`${width}mm`, `${height}mm`);
+            const printContent = document.querySelector('.etiqueta-preview').outerHTML;
+            const printArea = document.getElementById('print-area-etiqueta');
+            printArea.innerHTML = printContent;
             window.print();
         }
     });
-    
+
     function setPageSize(width, height) {
         const styleId = 'page-size-style';
         let style = document.getElementById(styleId);
@@ -332,7 +345,7 @@
             style.id = styleId;
             document.head.appendChild(style);
         }
-        style.innerHTML = `@page { size: ${width} ${height === 'auto' ? '' : height}; margin: 0; }`;
+        style.innerHTML = `@page { size: ${width} ${height}; margin: 0; }`;
     }
 
     function gerarPreviewDocumento(osId) {
@@ -346,12 +359,8 @@
                 ${os.pecas.map(p => `<tr><td>${p.nome}</td><td>${p.quantidade}</td><td>${printConfig.detalharPecas ? formatarMoeda(p.valorUnitario) : '***'}</td><td>${printConfig.detalharPecas ? formatarMoeda(p.valorUnitario * p.quantidade) : '***'}</td></tr>`).join('')}
             </tbody></table></div>`;
         }
-        previewContainerDoc.innerHTML = `
-            <div class="print-document" id="documento-para-impressao">
-                <header class="print-header">
-                    <div style="display: flex; align-items: center;">${logoHtml}<div class="company-info"><h2>${empresa.nomeOficina || 'Nome da Oficina'}</h2><p>${empresa.endereco || ''}</p><p>${empresa.telefone || ''} ${empresa.documento ? `| CNPJ/CPF: ${empresa.documento}` : ''}</p></div></div>
-                    <div class="os-info"><h3>ORDEM DE SERVIÇO</h3><h1>#${String(os.numeroOS).padStart(4, '0')}</h1><p>Data: ${new Date(os.dataEntrada + 'T00:00:00').toLocaleDateString('pt-BR')}</p></div>
-                </header>
+        previewContainerDoc.innerHTML = `<div class="print-document" id="documento-para-impressao">
+                <header class="print-header"><div style="display: flex; align-items: center;">${logoHtml}<div class="company-info"><h2>${empresa.nomeOficina || 'Nome da Oficina'}</h2><p>${empresa.endereco || ''}</p><p>${empresa.telefone || ''} ${empresa.documento ? `| CNPJ/CPF: ${empresa.documento}` : ''}</p></div></div><div class="os-info"><h3>ORDEM DE SERVIÇO</h3><h1>#${String(os.numeroOS).padStart(4, '0')}</h1><p>Data: ${new Date(os.dataEntrada + 'T00:00:00').toLocaleDateString('pt-BR')}</p></div></header>
                 <section class="print-section"><h3>Dados do Cliente</h3><div class="info-grid"><p><strong>Nome:</strong> ${os.clienteNome}</p><p><strong>Telefone:</strong> ${os.telefoneCliente}</p>${printConfig.cpf && os.cpfCliente ? `<p><strong>CPF:</strong> ${os.cpfCliente}</p>` : ''}</div></section>
                 <section class="print-section"><h3>Dados do Aparelho</h3><div class="info-grid"><p><strong>Tipo:</strong> ${os.aparelho}</p><p><strong>Marca/Modelo:</strong> ${os.marca || ''} ${os.modelo || ''}</p></div></section>
                 <section class="print-section"><h3>Descrição do Problema</h3><p>${os.defeitoRelatado}</p></section>
