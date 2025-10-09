@@ -29,7 +29,7 @@
     }
     
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { font-family: 'Inter', sans-serif; background: var(--main-bg); color: var(--text-primary); transition: background-color 0.3s; }
+    body { font-family: 'Inter', sans-serif; background: var(--main-bg); color: var(--text-primary); }
     .dashboard-container { display: grid; grid-template-columns: 240px 1fr; min-height: 100vh; }
 
     .sidebar { background: var(--sidebar-bg); color: #fff; display: flex; flex-direction: column; padding: 24px 16px; position: fixed; left: 0; top: 0; height: 100%; width: 240px; z-index: 100; transition: transform 0.3s ease-in-out; }
@@ -52,17 +52,14 @@
     .actions-bar { background: var(--card-bg); padding: 20px; border-radius: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); margin-bottom: 24px; display: flex; justify-content: space-between; align-items: flex-end; gap: 20px; flex-wrap: wrap; }
     .filters-container { display: flex; gap: 16px; flex-wrap: wrap; align-items: center; flex-grow: 1;}
     .search-box { flex-grow: 1; min-width: 250px; position: relative; }
-    .search-box input { width: 100%; padding: 12px 16px 12px 40px; border: 2px solid var(--border-color); border-radius: 10px; font-size: 0.9rem; background: var(--main-bg); color: var(--text-primary); }
+    .search-box input, .filter-group select { width: 100%; padding: 12px 16px; border: 2px solid var(--border-color); border-radius: 10px; font-size: 0.9rem; background: var(--main-bg); color: var(--text-primary); -webkit-appearance: none; appearance: none; }
+    .search-box input { padding-left: 40px; }
     .search-box::before { content: '🔍'; position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--text-secondary); }
     .filter-group { min-width: 150px; }
     .filter-group label { display: block; font-size: 0.75rem; font-weight: 600; color: var(--text-secondary); margin-bottom: 4px; }
-    .filter-group select { 
-        width: 100%; padding: 12px 16px; border: 2px solid var(--border-color); border-radius: 10px; font-size: 0.9rem; background: var(--main-bg); color: var(--text-primary);
-        appearance: none; -webkit-appearance: none;
+    .filter-group select {
         background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3E%3Cpath stroke='%236B7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3E%3C/svg%3E");
-        background-repeat: no-repeat;
-        background-position: right 1rem center;
-        background-size: 1.2em 1.2em;
+        background-repeat: no-repeat; background-position: right 1rem center; background-size: 1.2em 1.2em; cursor: pointer;
     }
     .btn-primary { background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%); color: white; border: none; padding: 14px 28px; border-radius: 10px; font-weight: 600; cursor: pointer; transition: all 0.3s; box-shadow: 0 4px 12px rgba(99,102,241,0.3); display: flex; align-items: center; gap: 8px; }
     .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(99,102,241,0.4); }
@@ -144,8 +141,6 @@
           <li><a href="estoque.html" class="active"><span class="nav-icon">📦</span> Estoque</a></li>
           <li><a href="contas_financeiro.html"><span class="nav-icon">💰</span> Financeiro</a></li>
           <li><a href="anotacoes.html"><span class="nav-icon">📝</span> Anotações</a></li>
-          <li><a href="pecas.html"><span class="nav-icon">🔩</span> Peças para Pedir</a></li>
-          <li><a href="impressao.html"><span class="nav-icon">🖨️</span> Impressão</a></li>
           <li><a href="configuracoes.html"><span class="nav-icon">⚙️</span> Configurações</a></li>
         </ul>
       </div>
@@ -213,7 +208,7 @@
             <div class="form-group"><label>Destino da Peça *</label><div class="destino-selector"><input type="radio" name="destino" value="oficina" id="destinoOficina" required><label for="destinoOficina">🔧 Oficina</label><input type="radio" name="destino" value="loja" id="destinoLoja"><label for="destinoLoja">🛒 Loja</label></div></div>
         </div>
         <div class="form-section">
-            <div class="form-section-title">Valores e Margem</div>
+            <div class="form-section-title">Valores</div>
             <div class="form-row-3">
                 <div class="form-group"><label for="custoPeca">Preço de Custo (R$)</label><input type="number" id="custoPeca" step="0.01" min="0"></div>
                 <div class="form-group"><label for="margemLucro">Markup (%)</label><input type="number" id="margemLucro" step="0.01" min="0"></div>
@@ -244,14 +239,18 @@
 
   <script>
     protegerPagina();
+
     const sidebar = document.getElementById('sidebar');
     const mobileMenuBtn = document.getElementById('mobileMenuBtn');
     const overlay = document.getElementById('overlay');
     mobileMenuBtn.addEventListener('click', () => { sidebar.classList.toggle('is-open'); overlay.classList.toggle('is-open'); });
     overlay.addEventListener('click', () => { sidebar.classList.remove('is-open'); overlay.classList.remove('is-open'); });
+
     const configRef = database.ref('configuracoes');
     const estoqueRef = database.ref("estoque");
+    
     let estoqueData = {}, editandoId = null, categoriasEstoque = ['Geral'];
+    
     auth.onAuthStateChanged(user => {
       if(user) {
         configRef.on('value', (snapshot) => {
@@ -263,12 +262,17 @@
         });
       }
     });
+    
     estoqueRef.on("value", snapshot => {
       estoqueData = snapshot.val() || {};
       atualizarEstatisticas();
       renderizarEstoque();
     });
-    function formatarMoeda(valor) { return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(valor || 0); }
+
+    function formatarMoeda(valor) {
+      return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(valor || 0);
+    }
+    
     function atualizarEstatisticas() {
       const pecasArray = Object.values(estoqueData);
       document.getElementById('stat-total').textContent = pecasArray.length;
@@ -277,39 +281,60 @@
       const alertas = pecasArray.filter(p => (p.quantidade || 0) <= (p.estoqueMinimo || 0)).length;
       document.getElementById('stat-alerta').textContent = alertas;
     }
+
     function renderizarEstoque() {
       const grid = document.getElementById('estoqueGrid');
       const emptyState = document.getElementById('emptyState');
       grid.innerHTML = '';
+      
       const searchTerm = document.getElementById('searchInput').value.toLowerCase();
       const catFiltro = document.getElementById('filtroCategoria').value;
       const destinoFiltro = document.getElementById('filtroDestino').value;
+
       let pecasArray = Object.entries(estoqueData).map(([id, data]) => ({ id, ...data }));
+      
       const pecasFiltradas = pecasArray.filter(p => {
         const searchMatch = (p.nomePeca || '').toLowerCase().includes(searchTerm) || (p.codigoPeca || '').toLowerCase().includes(searchTerm);
         const catMatch = catFiltro === 'todas' || p.categoriaPeca === catFiltro;
         const destinoMatch = destinoFiltro === 'todos' || p.destino === destinoFiltro;
         return searchMatch && catMatch && destinoMatch;
       });
-      if (pecasFiltradas.length === 0) { emptyState.style.display = 'block'; grid.style.display = 'none'; return; }
+
+      if (pecasFiltradas.length === 0) {
+        emptyState.style.display = 'block'; grid.style.display = 'none'; return;
+      }
       emptyState.style.display = 'none'; grid.style.display = 'grid';
+
       pecasFiltradas.sort((a, b) => a.nomePeca.localeCompare(b.nomePeca));
+
       pecasFiltradas.forEach(peca => {
         const card = document.createElement('div');
         card.className = 'estoque-card';
         const alertaBaixo = (peca.quantidade || 0) <= (peca.estoqueMinimo || 0);
-        if(alertaBaixo) card.classList.add('alerta-baixo');
         const qtdClass = (peca.quantidade || 0) === 0 ? 'qtd-critica' : (alertaBaixo ? 'qtd-baixa' : 'qtd-normal');
         const destinoTexto = peca.destino === 'oficina' ? 'Oficina' : 'Loja';
         const destinoClass = peca.destino === 'oficina' ? 'destino-oficina' : 'destino-loja';
-        card.innerHTML = `<div class="estoque-header"><div class="estoque-titulo"><h3>${peca.nomePeca} <span class="destino-badge ${destinoClass}">${destinoTexto}</span></h3><div class="estoque-codigo">${peca.codigoPeca || 'Sem código'} | ${peca.categoriaPeca}</div></div><span class="quantidade-badge ${qtdClass}">${peca.quantidade || 0} un.</span></div><p style="color: var(--text-secondary); margin-bottom: 12px;">Preço Venda: <strong>${formatarMoeda(peca.valorUnitario)}</strong></p><p style="color: var(--text-secondary);">Estoque Mínimo: ${peca.estoqueMinimo}</p>`;
+
+        card.innerHTML = `
+            <div class="estoque-header">
+                <div class="estoque-titulo">
+                    <h3>${peca.nomePeca} <span class="destino-badge ${destinoClass}">${destinoTexto}</span></h3>
+                    <div class="estoque-codigo">${peca.codigoPeca || 'Sem código'} | ${peca.categoriaPeca}</div>
+                </div>
+                <span class="quantidade-badge ${qtdClass}">${peca.quantidade || 0} un.</span>
+            </div>
+            <p style="color: var(--text-secondary); margin-bottom: 12px;">Preço Venda: <strong>${formatarMoeda(peca.valorUnitario)}</strong></p>
+            <p style="color: var(--text-secondary);">Estoque Mínimo: ${peca.estoqueMinimo}</p>
+        `;
         card.onclick = () => editarPeca(peca.id);
         grid.appendChild(card);
       });
     }
+
     document.getElementById('searchInput').addEventListener('input', renderizarEstoque);
     document.getElementById('filtroCategoria').addEventListener('change', renderizarEstoque);
     document.getElementById('filtroDestino').addEventListener('change', renderizarEstoque);
+
     function carregarCategorias() {
         const selects = [document.getElementById('categoriaPeca'), document.getElementById('filtroCategoria')];
         selects.forEach(select => {
@@ -319,6 +344,7 @@
             select.value = currentValue;
         });
     }
+
     document.getElementById('btnNovaCategoria').addEventListener('click', () => {
         const novaCat = prompt("Digite o nome da nova categoria:");
         if (novaCat && !categoriasEstoque.includes(novaCat)) {
@@ -331,14 +357,17 @@
             document.getElementById('categoriaPeca').value = novaCat;
         }
     });
+
     function abrirModal(modalId) { document.getElementById(modalId).classList.add('active'); }
     function fecharModal(modalId) { document.getElementById(modalId).classList.remove('active'); }
+    
     document.getElementById('btnNovaPeca').addEventListener('click', () => {
         editandoId = null;
         document.getElementById('modalTitle').textContent = 'Nova Peça';
         document.getElementById('formPeca').reset();
         abrirModal('modalPeca');
     });
+
     function editarPeca(id) {
         editandoId = id; const peca = estoqueData[id];
         document.getElementById('modalTitle').textContent = 'Editar Peça';
@@ -354,6 +383,7 @@
         document.getElementById('estoqueMinimo').value = peca.estoqueMinimo || 5;
         abrirModal('modalPeca');
     }
+
     function salvarPeca(event) {
         event.preventDefault();
         const pecaData = {
@@ -375,6 +405,7 @@
             fecharModal('modalPeca');
         }).catch(e => alert('Erro: ' + e.message));
     }
+
     const custoInput = document.getElementById('custoPeca');
     const margemInput = document.getElementById('margemLucro');
     const vendaInput = document.getElementById('valorUnitario');
@@ -382,10 +413,12 @@
     custoInput.addEventListener('focus', () => ultimoEditado = 'custo');
     margemInput.addEventListener('focus', () => ultimoEditado = 'margem');
     vendaInput.addEventListener('focus', () => ultimoEditado = 'venda');
+
     function calcularFinanceiro() {
         const custo = parseFloat(custoInput.value) || 0;
         const markup = parseFloat(margemInput.value) || 0;
         const venda = parseFloat(vendaInput.value) || 0;
+
         if (ultimoEditado === 'venda' && custo > 0 && venda > custo) {
             const novoMarkup = ((venda - custo) / custo) * 100;
             if (isFinite(novoMarkup)) margemInput.value = novoMarkup.toFixed(2);
@@ -405,10 +438,12 @@
     custoInput.addEventListener('input', calcularFinanceiro);
     margemInput.addEventListener('input', calcularFinanceiro);
     vendaInput.addEventListener('input', calcularFinanceiro);
+
     document.getElementById('stat-alerta-card').addEventListener('click', () => {
         const lista = document.getElementById('listaItensBaixos');
         lista.innerHTML = 'Verificando...';
         const pecasBaixas = Object.values(estoqueData).filter(p => (p.quantidade || 0) <= (p.estoqueMinimo || 0));
+
         if(pecasBaixas.length === 0) {
             lista.innerHTML = '<p style="color: var(--text-secondary); text-align: center;">Ótima notícia! Nenhum item com estoque baixo.</p>';
             abrirModal('modalItensBaixos'); return;
