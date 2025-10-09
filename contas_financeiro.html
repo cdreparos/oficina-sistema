@@ -5,787 +5,431 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Controle Financeiro - SIGO</title>
   <style>
+    :root {
+      --sidebar-bg: #1e293b;
+      --sidebar-bg-hover: #334155;
+      --main-bg: #e2e8f0;
+      --card-bg: #ffffff;
+      --text-primary: #1e293b;
+      --text-secondary: #64748b;
+      --accent-blue: #3b82f6;
+      --accent-green: #10b981;
+      --accent-red: #ef4444;
+      --accent-purple: #8b5cf6;
+      --border-color: #e2e8f0;
+    }
+    body.dark-mode {
+        --main-bg: #0f172a;
+        --card-bg: #1e293b;
+        --text-primary: #f1f5f9;
+        --text-secondary: #94a3b8;
+        --border-color: #334155;
+    }
+
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { font-family: 'Inter', sans-serif; background: #f0f2f5; min-height: 100vh; }
-    header { background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%); color: white; padding: 30px 40px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
-    .header-content { max-width: 1600px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
-    .header-left h1 { font-size: 1.8rem; font-weight: 700; margin-bottom: 5px; }
-    .header-left p { font-size: 0.9rem; opacity: 0.85; }
-    .btn-voltar { background: rgba(255,255,255,0.15); color: white; border: none; padding: 12px 24px; border-radius: 10px; font-weight: 600; cursor: pointer; transition: all 0.3s; display: flex; align-items: center; gap: 8px; }
-    .btn-voltar:hover { background: rgba(255,255,255,0.25); transform: translateY(-2px); }
-    .container { max-width: 1600px; margin: 30px auto; padding: 0 40px; }
+    body { font-family: 'Inter', sans-serif; background: var(--main-bg); color: var(--text-primary); transition: background-color 0.3s; }
+    .dashboard-container { display: grid; grid-template-columns: 240px 1fr; min-height: 100vh; }
+
+    .sidebar { background: var(--sidebar-bg); color: #fff; display: flex; flex-direction: column; padding: 24px 16px; position: fixed; left: 0; top: 0; height: 100%; width: 240px; z-index: 100; transition: transform 0.3s ease-in-out; }
+    .sidebar-header { display: flex; align-items: center; gap: 12px; padding-bottom: 24px; margin-bottom: 16px; border-bottom: 1px solid var(--sidebar-bg-hover); }
+    .sidebar-logo { width: 40px; height: 40px; background: var(--accent-blue); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; font-weight: bold; }
+    .sidebar-header h1 { font-size: 1.1rem; font-weight: 600; }
+    .nav-list { list-style: none; flex-grow: 1; }
+    .nav-list a { color: #cbd5e1; text-decoration: none; display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-radius: 8px; font-weight: 500; transition: all 0.2s ease-in-out; margin-bottom: 4px; }
+    .nav-list a:hover { background: var(--sidebar-bg-hover); color: #fff; }
+    .nav-list a.active { background: var(--accent-blue); color: #fff; }
+    .nav-icon { font-size: 1.2rem; }
+    .sidebar-footer { border-top: 1px solid var(--sidebar-bg-hover); padding-top: 16px; }
+    .logout-btn { width: 100%; background: none; border: none; color: #cbd5e1; display: flex; align-items: center; gap: 12px; padding: 12px 16px; font-size: 1rem; cursor: pointer; text-align: left; font-family: inherit; border-radius: 8px; transition: all 0.2s ease-in-out; }
+    .logout-btn:hover { background: var(--accent-red); color: #fff; }
+
+    .main-content { grid-column: 2 / 3; padding: 32px; }
+    .main-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 32px; }
+    .main-header h1 { font-size: 1.8rem; font-weight: 700; color: var(--text-primary); }
     
-    /* Resumo Financeiro - Cards Grandes */
     .resumo-financeiro { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; margin-bottom: 30px; }
-    .card-resumo { background: white; border-radius: 16px; padding: 24px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); position: relative; overflow: hidden; }
-    .card-resumo::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px; }
-    .card-resumo.saldo::before { background: linear-gradient(135deg, #10b981 0%, #059669 100%); }
-    .card-resumo.entradas::before { background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); }
-    .card-resumo.saidas::before { background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); }
-    .card-resumo.mes::before { background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%); }
-    .card-icon { width: 56px; height: 56px; border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; margin-bottom: 16px; }
-    .card-resumo.saldo .card-icon { background: #d1fae5; }
-    .card-resumo.entradas .card-icon { background: #dbeafe; }
-    .card-resumo.saidas .card-icon { background: #fee2e2; }
-    .card-resumo.mes .card-icon { background: #ede9fe; }
-    .card-label { font-size: 0.9rem; color: #6b7280; margin-bottom: 8px; font-weight: 500; }
-    .card-valor { font-size: 2.2rem; font-weight: 800; margin-bottom: 8px; }
-    .card-resumo.saldo .card-valor { color: #10b981; }
-    .card-resumo.entradas .card-valor { color: #3b82f6; }
-    .card-resumo.saidas .card-valor { color: #ef4444; }
-    .card-resumo.mes .card-valor { color: #8b5cf6; }
-    .card-info { font-size: 0.8rem; color: #9ca3af; display: flex; align-items: center; gap: 6px; }
+    .card-resumo { background: var(--card-bg); border-radius: 16px; padding: 24px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+    .card-label { font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 8px; font-weight: 500; }
+    .card-valor { font-size: 2.2rem; font-weight: 800; }
+    .saldo .card-valor { color: var(--accent-green); } .entradas .card-valor { color: var(--accent-blue); }
+    .saidas .card-valor { color: var(--accent-red); } .mes .card-valor { color: var(--accent-purple); }
+
+    .tabs-container { background: var(--card-bg); border-radius: 16px; padding: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); margin-bottom: 24px; display: flex; gap: 8px; flex-wrap: wrap; }
+    .tab { flex: 1; min-width: 150px; padding: 14px 20px; border: none; background: transparent; border-radius: 10px; cursor: pointer; font-weight: 600; transition: all 0.3s; color: var(--text-secondary); font-size: 0.9rem; display: flex; align-items: center; justify-content: center; gap: 8px; }
+    .tab.active { background: var(--accent-blue); color: white; box-shadow: 0 4px 12px rgba(59,130,246,0.3); }
+    .tab:hover:not(.active) { background: var(--main-bg); }
     
-    /* Abas de Navegação */
-    .tabs-container { background: white; border-radius: 16px; padding: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); margin-bottom: 24px; display: flex; gap: 8px; flex-wrap: wrap; }
-    .tab { flex: 1; min-width: 150px; padding: 14px 20px; border: none; background: transparent; border-radius: 10px; cursor: pointer; font-weight: 600; transition: all 0.3s; color: #6b7280; font-size: 0.9rem; display: flex; align-items: center; justify-content: center; gap: 8px; }
-    .tab.active { background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); color: white; box-shadow: 0 4px 12px rgba(59,130,246,0.3); }
-    .tab:hover:not(.active) { background: #f3f4f6; }
-    
-    /* Conteúdo das Abas */
-    .tab-content { display: none; }
-    .tab-content.active { display: block; }
-    
-    /* Barra de Ações */
-    .actions-bar { background: white; padding: 20px; border-radius: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); margin-bottom: 24px; display: flex; justify-content: space-between; align-items: center; gap: 20px; flex-wrap: wrap; }
+    .actions-bar { background: var(--card-bg); padding: 20px; border-radius: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); margin-bottom: 24px; display: flex; justify-content: space-between; align-items: flex-end; gap: 20px; flex-wrap: wrap; }
     .filters { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
-    .filter-group { display: flex; flex-direction: column; gap: 4px; }
-    .filter-group label { font-size: 0.75rem; color: #6b7280; font-weight: 600; }
-    .filter-group select, .filter-group input { padding: 10px 14px; border: 2px solid #e5e7eb; border-radius: 8px; font-size: 0.9rem; transition: all 0.3s; }
-    .filter-group select:focus, .filter-group input:focus { outline: none; border-color: #3b82f6; box-shadow: 0 0 0 3px rgba(59,130,246,0.1); }
-    .btn-primary { background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; border: none; padding: 12px 24px; border-radius: 10px; font-weight: 600; cursor: pointer; transition: all 0.3s; box-shadow: 0 4px 12px rgba(16,185,129,0.3); display: flex; align-items: center; gap: 8px; font-size: 0.9rem; }
-    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(16,185,129,0.4); }
-    .btn-danger { background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); }
-    .btn-danger:hover { box-shadow: 0 6px 16px rgba(239,68,68,0.4); }
+    .filter-group label { font-size: 0.75rem; color: var(--text-secondary); font-weight: 600; margin-bottom: 4px; display: block; }
+    .filter-group select, .filter-group input { padding: 10px 14px; border: 2px solid var(--border-color); border-radius: 8px; font-size: 0.9rem; background: var(--main-bg); color: var(--text-primary); }
+    .btn-group button { border-radius: 0; }
+    .btn-group button:first-child { border-top-left-radius: 10px; border-bottom-left-radius: 10px; }
+    .btn-group button:last-child { border-top-right-radius: 10px; border-bottom-right-radius: 10px; }
+    .btn-primary { background: var(--accent-green); color: white; border: none; padding: 12px 24px; border-radius: 10px; font-weight: 600; cursor: pointer; transition: all 0.3s; display: flex; align-items: center; gap: 8px; font-size: 0.9rem; }
+    .btn-danger { background: var(--accent-red); }
     
-    /* Tabela de Transações */
-    .transacoes-table { background: white; border-radius: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); overflow: hidden; }
-    .table-header { background: #f9fafb; padding: 16px 20px; border-bottom: 2px solid #e5e7eb; display: grid; grid-template-columns: 100px 1fr 150px 150px 120px 120px 80px; gap: 16px; font-weight: 700; font-size: 0.85rem; color: #374151; align-items: center; }
-    .table-row { padding: 16px 20px; border-bottom: 1px solid #f3f4f6; display: grid; grid-template-columns: 100px 1fr 150px 150px 120px 120px 80px; gap: 16px; align-items: center; transition: all 0.2s; }
-    .table-row:hover { background: #f9fafb; }
-    .table-row:last-child { border-bottom: none; }
+    .transacoes-table-container { background: var(--card-bg); border-radius: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); overflow: auto; }
+    .transacoes-table { min-width: 900px; width: 100%; border-collapse: collapse; }
+    .transacoes-table th, .transacoes-table td { padding: 16px 20px; text-align: left; }
+    .transacoes-table thead { background: var(--main-bg); font-size: 0.85rem; color: var(--text-primary); border-bottom: 2px solid var(--border-color); }
+    .transacoes-table tbody tr { border-bottom: 1px solid var(--border-color); }
+    .transacoes-table tbody tr:last-child { border-bottom: none; }
+    .transacoes-table tbody tr:hover { background: var(--main-bg); }
     .tipo-badge { padding: 6px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 700; text-align: center; text-transform: uppercase; }
-    .tipo-entrada { background: #dbeafe; color: #1e40af; }
-    .tipo-saida { background: #fee2e2; color: #991b1b; }
+    .tipo-entrada { background: #dbeafe; color: #1e40af; } .tipo-saida { background: #fee2e2; color: #991b1b; }
     .status-badge { padding: 6px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 700; text-align: center; }
-    .status-pago { background: #d1fae5; color: #065f46; }
-    .status-pendente { background: #fef3c7; color: #92400e; }
-    .status-vencido { background: #fee2e2; color: #991b1b; }
-    .valor-entrada { color: #10b981; font-weight: 700; font-size: 1.05rem; }
-    .valor-saida { color: #ef4444; font-weight: 700; font-size: 1.05rem; }
+    .status-pago { background: #d1fae5; color: #065f46; } .status-pendente { background: #fef3c7; color: #92400e; } .status-vencido { background: #fee2e2; color: #991b1b; }
+    .valor-entrada { color: var(--accent-green); font-weight: 700; } .valor-saida { color: var(--accent-red); font-weight: 700; }
     .action-buttons { display: flex; gap: 8px; }
     .btn-icon { width: 32px; height: 32px; border: none; border-radius: 8px; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center; font-size: 0.9rem; }
-    .btn-edit { background: #dbeafe; color: #1e40af; }
-    .btn-edit:hover { background: #3b82f6; color: white; }
-    .btn-delete { background: #fee2e2; color: #991b1b; }
-    .btn-delete:hover { background: #ef4444; color: white; }
-    .btn-pay { background: #d1fae5; color: #065f46; }
-    .btn-pay:hover { background: #10b981; color: white; }
+    .btn-edit { background: #dbeafe; color: #1e40af; } .btn-edit:hover { background: #3b82f6; color: white; }
+    .btn-delete { background: #fee2e2; color: #991b1b; } .btn-delete:hover { background: #ef4444; color: white; }
+    .btn-pay { background: #d1fae5; color: #065f46; } .btn-pay:hover { background: #10b981; color: white; }
     
-    /* Modal */
-    .modal { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.6); z-index: 1000; padding: 20px; overflow-y: auto; }
-    .modal.active { display: block; }
-    .modal-content { background: white; border-radius: 20px; padding: 32px; max-width: 800px; width: 100%; margin: 40px auto; box-shadow: 0 20px 60px rgba(0,0,0,0.3); }
-    .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; padding-bottom: 16px; border-bottom: 2px solid #f3f4f6; }
-    .modal-header h2 { font-size: 1.5rem; color: #1f2937; display: flex; align-items: center; gap: 12px; }
-    .btn-close { background: #f3f4f6; border: none; width: 36px; height: 36px; border-radius: 8px; cursor: pointer; font-size: 1.2rem; transition: all 0.3s; }
-    .btn-close:hover { background: #e5e7eb; transform: rotate(90deg); }
-    .form-group { margin-bottom: 20px; }
-    .form-group label { display: block; margin-bottom: 8px; font-weight: 600; color: #374151; font-size: 0.9rem; }
-    .form-group input, .form-group textarea, .form-group select { width: 100%; padding: 12px 16px; border: 2px solid #e5e7eb; border-radius: 10px; font-size: 0.95rem; transition: all 0.3s; font-family: inherit; }
-    .form-group input:focus, .form-group textarea:focus, .form-group select:focus { outline: none; border-color: #3b82f6; box-shadow: 0 0 0 3px rgba(59,130,246,0.1); }
-    .form-group textarea { resize: vertical; min-height: 80px; }
-    .form-row { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
-    .form-row-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+    .modal { display: none; position: fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.6); z-index:1000; align-items:center; justify-content:center; }
+    .modal.active { display: flex; }
+    .modal-content { background: var(--card-bg); border-radius: 20px; padding: 32px; max-width: 600px; width: 100%; box-shadow: 0 20px 60px rgba(0,0,0,0.3); }
+    .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; padding-bottom: 16px; border-bottom: 1px solid var(--border-color); }
+    .form-group { margin-bottom: 20px; } .form-group label { display: block; margin-bottom: 8px; font-weight: 600; font-size: 0.9rem; }
+    .form-group input, .form-group select { width: 100%; padding: 12px 16px; border: 2px solid var(--border-color); border-radius: 10px; font-size: 0.95rem; background: var(--main-bg); color: var(--text-primary); }
+    .form-group input:focus, .form-group select:focus { outline: none; border-color: var(--accent-blue); }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
     .form-actions { display: flex; gap: 12px; margin-top: 28px; }
-    .btn-submit { flex: 1; padding: 14px; background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; border: none; border-radius: 10px; font-weight: 600; cursor: pointer; transition: all 0.3s; font-size: 1rem; }
-    .btn-submit:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(16,185,129,0.4); }
-    .btn-cancel { flex: 1; padding: 14px; background: #f3f4f6; color: #374151; border: none; border-radius: 10px; font-weight: 600; cursor: pointer; transition: all 0.3s; font-size: 1rem; }
-    .btn-cancel:hover { background: #e5e7eb; }
+    .btn-submit { flex: 1; border-radius: 10px; font-weight: 600; cursor: pointer; transition: all 0.3s; font-size: 1rem; border: none; padding: 14px; }
+    .btn-cancel { flex: 1; border-radius: 10px; font-weight: 600; cursor: pointer; transition: all 0.3s; font-size: 1rem; background: var(--main-bg); color: var(--text-primary); border: none; padding: 14px; }
+    .empty-state { display: none; text-align: center; padding: 60px 20px; }
     
-    /* Radio buttons para tipo */
-    .tipo-options { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
-    .tipo-option { position: relative; }
-    .tipo-option input[type="radio"] { position: absolute; opacity: 0; }
-    .tipo-label { display: flex; align-items: center; justify-content: center; gap: 8px; padding: 16px; border: 2px solid #e5e7eb; border-radius: 12px; cursor: pointer; transition: all 0.3s; font-weight: 600; color: #6b7280; }
-    .tipo-option input[type="radio"]:checked + .tipo-label { border-color: #3b82f6; background: #dbeafe; color: #1e40af; }
-    .tipo-label:hover { border-color: #3b82f6; background: #f0f9ff; }
-    
-    /* Estado vazio */
-    .empty-state { text-align: center; padding: 80px 20px; background: white; border-radius: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
-    .empty-state-icon { font-size: 4rem; margin-bottom: 20px; opacity: 0.5; }
-    
-    /* Responsividade */
-    @media (max-width: 1200px) {
-      .table-header, .table-row { grid-template-columns: 90px 1fr 130px 130px 100px 100px 70px; font-size: 0.8rem; }
-    }
+    .mobile-menu-btn { display: none; background: none; border: none; font-size: 1.8rem; cursor: pointer; color: var(--text-primary); }
+    .overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 99; }
+    .overlay.is-open { display: block; }
     @media (max-width: 768px) {
-      .container { padding: 0 20px; }
-      header { padding: 20px; }
-      .header-content { flex-direction: column; gap: 15px; }
-      .resumo-financeiro { grid-template-columns: 1fr; }
-      .tabs-container { flex-direction: column; }
-      .actions-bar { flex-direction: column; align-items: stretch; }
-      .table-header { display: none; }
-      .table-row { grid-template-columns: 1fr; gap: 8px; padding: 16px; }
-      .form-row, .form-row-3 { grid-template-columns: 1fr; }
+      .dashboard-container { grid-template-columns: 1fr; }
+      .sidebar { transform: translateX(-100%); }
+      .sidebar.is-open { transform: translateX(0); }
+      .main-content { grid-column: 1 / 2; padding: 16px; }
+      .mobile-menu-btn { display: block; }
+      .resumo-financeiro, .form-row { grid-template-columns: 1fr; }
     }
   </style>
 </head>
 <body>
-  <header>
-    <div class="header-content">
-      <div class="header-left">
-        <h1>💰 Controle Financeiro</h1>
-        <p>Gestão completa de entradas, saídas e fluxo de caixa</p>
+  <div class="dashboard-container">
+    <nav class="sidebar" id="sidebar">
+      <div>
+        <div class="sidebar-header"><div class="sidebar-logo">S</div><h1>SIGO Casa dos Reparos</h1></div>
+        <ul class="nav-list">
+          <li><a href="painel.html"><span class="nav-icon">🏠</span> Painel</a></li>
+          <li><a href="ordens-servico.html"><span class="nav-icon">🛠️</span> Ordens de Serviço</a></li>
+          <li><a href="clientes.html"><span class="nav-icon">👥</span> Clientes</a></li>
+          <li><a href="agendamentos.html"><span class="nav-icon">📅</span> Agenda</a></li>
+          <li><a href="estoque.html"><span class="nav-icon">📦</span> Estoque</a></li>
+          <li><a href="contas_financeiro.html" class="active"><span class="nav-icon">💰</span> Financeiro</a></li>
+          <li><a href="anotacoes.html"><span class="nav-icon">📝</span> Anotações</a></li>
+          <li><a href="configuracoes.html"><span class="nav-icon">⚙️</span> Configurações</a></li>
+        </ul>
       </div>
-      <button class="btn-voltar" onclick="window.location.href='painel.html'">
-        <span>←</span>
-        <span>Voltar</span>
-      </button>
-    </div>
-  </header>
-
-  <div class="container">
-    
-    <!-- Resumo Financeiro -->
-    <div class="resumo-financeiro">
-      <div class="card-resumo saldo">
-        <div class="card-icon">💵</div>
-        <div class="card-label">Saldo Atual</div>
-        <div class="card-valor" id="saldoAtual">R$ 0,00</div>
-        <div class="card-info">💡 Entradas - Saídas</div>
+      <div class="sidebar-footer">
+        <button class="logout-btn" onclick="logout()">
+          <span class="nav-icon">🚪</span> Sair do Sistema
+        </button>
       </div>
+    </nav>
+    <div class="overlay" id="overlay"></div>
 
-      <div class="card-resumo entradas">
-        <div class="card-icon">⬆️</div>
-        <div class="card-label">Total de Entradas</div>
-        <div class="card-valor" id="totalEntradas">R$ 0,00</div>
-        <div class="card-info">📊 Todas as entradas</div>
-      </div>
+    <main class="main-content">
+      <header class="main-header">
+        <h1>Controle Financeiro</h1>
+        <button class="mobile-menu-btn" id="mobileMenuBtn">☰</button>
+      </header>
 
-      <div class="card-resumo saidas">
-        <div class="card-icon">⬇️</div>
-        <div class="card-label">Total de Saídas</div>
-        <div class="card-valor" id="totalSaidas">R$ 0,00</div>
-        <div class="card-info">📊 Todas as saídas</div>
+      <div class="resumo-financeiro">
+        <div class="card-resumo saldo"><div class="card-label">Saldo Atual (Contas Pagas)</div><div class="card-valor" id="saldoAtual">R$ 0,00</div></div>
+        <div class="card-resumo entradas"><div class="card-label">Total Entradas (Pagas)</div><div class="card-valor" id="totalEntradas">R$ 0,00</div></div>
+        <div class="card-resumo saidas"><div class="card-label">Total Saídas (Pagas)</div><div class="card-valor" id="totalSaidas">R$ 0,00</div></div>
+        <div class="card-resumo mes"><div class="card-label">Saldo do Mês (Pagas)</div><div class="card-valor" id="saldoMes">R$ 0,00</div></div>
       </div>
 
-      <div class="card-resumo mes">
-        <div class="card-icon">📅</div>
-        <div class="card-label">Saldo do Mês</div>
-        <div class="card-valor" id="saldoMes">R$ 0,00</div>
-        <div class="card-info" id="mesAtual">📆 Janeiro 2025</div>
+      <div class="tabs-container">
+        <button class="tab active" data-tab="todas">📋 Todas</button>
+        <button class="tab" data-tab="entradas">⬆️ Entradas</button>
+        <button class="tab" data-tab="saidas">⬇️ Saídas</button>
+        <button class="tab" data-tab="pendentes">⏳ Pendentes</button>
+        <button class="tab" data-tab="vencidas">⚠️ Vencidas</button>
       </div>
-    </div>
 
-    <!-- Abas -->
-    <div class="tabs-container">
-      <button class="tab active" data-tab="todas">📋 Todas</button>
-      <button class="tab" data-tab="entradas">⬆️ Entradas</button>
-      <button class="tab" data-tab="saidas">⬇️ Saídas</button>
-      <button class="tab" data-tab="pendentes">⏳ Pendentes</button>
-      <button class="tab" data-tab="vencidas">⚠️ Vencidas</button>
-    </div>
-
-    <!-- Aba: Todas as Transações -->
-    <div class="tab-content active" id="content-todas">
-      <div class="actions-bar">
-        <div class="filters">
-          <div class="filter-group">
-            <label>Período</label>
-            <select id="filtroPeriodo">
-              <option value="todos">Todos</option>
-              <option value="mes" selected>Mês Atual</option>
-              <option value="semana">Última Semana</option>
-              <option value="ano">Ano Atual</option>
-            </select>
+      <div class="tab-content active" id="content-todas">
+        <div class="actions-bar">
+          <div class="filters">
+            <div class="filter-group"><label>Período</label><select id="filtroPeriodo"><option value="todos">Todos</option><option value="mes" selected>Mês Atual</option><option value="semana">Últimos 7 dias</option><option value="ano">Ano Atual</option></select></div>
+            <div class="filter-group"><label>Categoria</label><select id="filtroCategoria"><option value="todas">Todas</option></select></div>
           </div>
-          <div class="filter-group">
-            <label>Categoria</label>
-            <select id="filtroCategoria">
-              <option value="todas">Todas</option>
-              <option value="servicos">Serviços (OS)</option>
-              <option value="fornecedores">Fornecedores</option>
-              <option value="salarios">Salários</option>
-              <option value="aluguel">Aluguel</option>
-              <option value="energia">Energia</option>
-              <option value="outros">Outros</option>
-            </select>
-          </div>
-          <div class="filter-group">
-            <label>Data Início</label>
-            <input type="date" id="dataInicio">
-          </div>
-          <div class="filter-group">
-            <label>Data Fim</label>
-            <input type="date" id="dataFim">
+          <div style="display: flex; gap: 12px;">
+            <button class="btn-primary" id="btnNovaEntrada"><span>⬆️</span> Nova Entrada</button>
+            <button class="btn-primary btn-danger" id="btnNovaSaida"><span>⬇️</span> Nova Saída</button>
           </div>
         </div>
-        <div style="display: flex; gap: 12px;">
-          <button class="btn-primary" id="btnNovaEntrada">
-            <span>⬆️</span>
-            <span>Nova Entrada</span>
-          </button>
-          <button class="btn-primary btn-danger" id="btnNovaSaida">
-            <span>⬇️</span>
-            <span>Nova Saída</span>
-          </button>
+        <div class="transacoes-table-container">
+          <table class="transacoes-table">
+            <thead><tr class="table-header"><th>Data</th><th>Descrição</th><th>Categoria</th><th>Vencimento</th><th>Status</th><th>Valor</th><th>Ações</th></tr></thead>
+            <tbody id="transacoesList"></tbody>
+          </table>
+        </div>
+        <div class="empty-state" id="emptyState" style="display: none;">
+          <h3>Nenhuma transação encontrada</h3>
+          <p>Tente ajustar os filtros ou adicione uma nova transação.</p>
         </div>
       </div>
-
-      <div class="transacoes-table">
-        <div class="table-header">
-          <div>Data</div>
-          <div>Descrição</div>
-          <div>Categoria</div>
-          <div>Vencimento</div>
-          <div>Tipo</div>
-          <div>Status</div>
-          <div>Valor</div>
-          <div>Ações</div>
-        </div>
-        <div id="transacoesList"></div>
-      </div>
-
-      <div class="empty-state" id="emptyState" style="display: none;">
-        <div class="empty-state-icon">💰</div>
-        <h3>Nenhuma transação cadastrada</h3>
-        <p>Comece adicionando suas primeiras entradas e saídas</p>
-      </div>
-    </div>
-
+    </main>
   </div>
 
-  <!-- Modal de Transação -->
   <div class="modal" id="modalTransacao">
     <div class="modal-content">
-      <div class="modal-header">
-        <h2><span id="modalIcon">💰</span> <span id="modalTitle">Nova Transação</span></h2>
-        <button class="btn-close" onclick="fecharModal()">✕</button>
-      </div>
-
+      <div class="modal-header"><h2 id="modalTitle">Nova Transação</h2><button class="btn-close" onclick="fecharModal()">✕</button></div>
       <form id="formTransacao" onsubmit="salvarTransacao(event)">
         <input type="hidden" id="transacaoId">
-
-        <div class="form-group">
-          <label>Tipo de Transação *</label>
-          <div class="tipo-options">
-            <div class="tipo-option">
-              <input type="radio" id="tipoEntrada" name="tipo" value="entrada" required>
-              <label for="tipoEntrada" class="tipo-label">⬆️ Entrada</label>
-            </div>
-            <div class="tipo-option">
-              <input type="radio" id="tipoSaida" name="tipo" value="saida">
-              <label for="tipoSaida" class="tipo-label">⬇️ Saída</label>
-            </div>
-          </div>
-        </div>
-
-        <div class="form-group">
-          <label for="descricaoTransacao">Descrição *</label>
-          <input type="text" id="descricaoTransacao" required placeholder="Ex: Pagamento OS #0023, Fornecedor XYZ">
-        </div>
-
-        <div class="form-row">
-          <div class="form-group">
-            <label for="categoriaTransacao">Categoria *</label>
-            <select id="categoriaTransacao" required>
-              <option value="">Selecione...</option>
-              <option value="servicos">Serviços (OS)</option>
-              <option value="fornecedores">Fornecedores</option>
-              <option value="salarios">Salários</option>
-              <option value="aluguel">Aluguel</option>
-              <option value="energia">Energia/Água</option>
-              <option value="impostos">Impostos</option>
-              <option value="outros">Outros</option>
-            </select>
-          </div>
-
-          <div class="form-group">
-            <label for="valorTransacao">Valor (R$) *</label>
-            <input type="number" id="valorTransacao" required step="0.01" min="0" placeholder="0.00">
-          </div>
-        </div>
-
-        <div class="form-row-3">
-          <div class="form-group">
-            <label for="dataTransacao">Data *</label>
-            <input type="date" id="dataTransacao" required>
-          </div>
-
-          <div class="form-group">
-            <label for="dataVencimento">Vencimento</label>
-            <input type="date" id="dataVencimento">
-          </div>
-
-          <div class="form-group">
-            <label for="statusTransacao">Status *</label>
-            <select id="statusTransacao" required>
-              <option value="pago">Pago</option>
-              <option value="pendente">Pendente</option>
-            </select>
-          </div>
-        </div>
-
-        <div class="form-group">
-          <label for="formaPagamento">Forma de Pagamento</label>
-          <select id="formaPagamento">
-            <option value="">Selecione...</option>
-            <option value="dinheiro">Dinheiro</option>
-            <option value="pix">PIX</option>
-            <option value="debito">Cartão de Débito</option>
-            <option value="credito">Cartão de Crédito</option>
-            <option value="boleto">Boleto</option>
-            <option value="transferencia">Transferência</option>
-          </select>
-        </div>
-
-        <div class="form-group">
-          <label for="observacoesTransacao">Observações</label>
-          <textarea id="observacoesTransacao" placeholder="Informações adicionais..."></textarea>
-        </div>
-
-        <div class="form-actions">
-          <button type="button" class="btn-cancel" onclick="fecharModal()">Cancelar</button>
-          <button type="submit" class="btn-submit">Salvar Transação</button>
-        </div>
+        <input type="hidden" id="tipoTransacao">
+        <div class="form-group"><label for="descricao">Descrição *</label><input type="text" id="descricao" required></div>
+        <div class="form-row"><div class="form-group"><label for="valor">Valor (R$) *</label><input type="number" id="valor" step="0.01" required></div><div class="form-group"><label for="categoria">Categoria *</label><select id="categoria" required><option value="servicos">Serviços</option><option value="venda_pecas">Venda de Peças</option><option value="compra_pecas">Compra de Peças</option><option value="salario">Salário</option><option value="contas">Contas (Água, Luz, etc.)</option><option value="outro">Outro</option></select></div></div>
+        <div class="form-row"><div class="form-group"><label for="dataTransacao">Data da Transação *</label><input type="date" id="dataTransacao" required></div><div class="form-group"><label for="dataVencimento">Data de Vencimento</label><input type="date" id="dataVencimento"></div></div>
+        <div class="form-group"><label for="statusTransacao">Status *</label><select id="statusTransacao" required><option value="pago">Pago</option><option value="pendente">Pendente</option></select></div>
+        <div class="form-actions"><button type="button" class="btn-cancel" onclick="fecharModal()">Cancelar</button><button type="submit" class="btn-submit" id="btnSubmit">Salvar</button></div>
       </form>
     </div>
   </div>
 
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
-<script src="firebase-config.js"></script>
-<script src="utils.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+  <script src="firebase-config.js"></script>
+  <script src="utils.js"></script>
  
   <script>
-    const auth = firebase.auth();
-    const database = firebase.database();
+    protegerPagina();
+
+    const sidebar = document.getElementById('sidebar');
+    const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+    const overlay = document.getElementById('overlay');
+    mobileMenuBtn.addEventListener('click', () => { sidebar.classList.toggle('is-open'); overlay.classList.toggle('is-open'); });
+    overlay.addEventListener('click', () => { sidebar.classList.remove('is-open'); overlay.classList.remove('is-open'); });
+    
+    const configRef = database.ref('configuracoes');
     const transacoesRef = database.ref("transacoes");
     const osRef = database.ref("ordens_servico");
 
-    auth.onAuthStateChanged(user => { if (!user) window.location.href = 'index.html'; });
-
     let transacoesData = {}, osData = {}, editandoId = null;
+    let filtroTabAtual = 'todas';
 
-    // Carregar dados
-    transacoesRef.on("value", snapshot => {
-      transacoesData = snapshot.val() || {};
-      calcularResumo();
-      renderizarTransacoes();
+    auth.onAuthStateChanged(user => {
+      if(user) {
+        configRef.on('value', (snapshot) => {
+            const config = snapshot.val() || {};
+            if (config.darkMode) { document.body.classList.add('dark-mode'); }
+            else { document.body.classList.remove('dark-mode'); }
+        });
+        osRef.on("value", snapshot => { osData = snapshot.val() || {}; sincronizarOSPagas(); });
+        transacoesRef.on("value", snapshot => {
+          transacoesData = snapshot.val() || {};
+          calcularResumo();
+          renderizarTransacoes();
+          carregarCategorias();
+        });
+      }
     });
 
-    // Integração: Monitorar OS pagas e criar entradas automaticamente
-    osRef.on("value", snapshot => {
-      osData = snapshot.val() || {};
-      sincronizarOSPagas();
-    });
+    function formatarMoeda(valor) {
+      return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(valor || 0);
+    }
 
-    function sincronizarOSPagas() {
-      Object.entries(osData).forEach(([osId, os]) => {
-        if (os.statusOS === 'entregue' && os.valorTotalFinal > 0) {
-          // Verificar se já existe entrada para esta OS
-          const jaExiste = Object.values(transacoesData).some(t => 
-            t.referenciaOS === osId
-          );
-
-          if (!jaExiste) {
-            // Criar entrada automática
-            const entradaOS = {
-              tipo: 'entrada',
-              descricao: `OS #${String(os.numeroOS).padStart(4, '0')} - ${os.clienteNome}`,
-              categoria: 'servicos',
-              valor: parseFloat(os.valorTotalFinal),
-              dataTransacao: os.atualizadoEm ? os.atualizadoEm.split('T')[0] : new Date().toISOString().split('T')[0],
-              statusTransacao: 'pago',
-              formaPagamento: os.formaPagamento || 'nao_informado',
-              observacoes: `Entrada automática da OS - Aparelho: ${os.aparelho}`,
-              referenciaOS: osId,
-              numeroOS: os.numeroOS,
-              criadoPor: 'sistema',
-              criadoEm: new Date().toISOString()
+    async function sincronizarOSPagas() {
+        const osPagas = Object.entries(osData).filter(([id, os]) => os.statusOS === 'entregue' && !os.transacaoGerada);
+        for (const [id, os] of osPagas) {
+            const transacao = {
+                tipo: 'entrada',
+                descricao: `Recebimento OS #${String(os.numeroOS).padStart(4, '0')}`,
+                categoria: 'servicos',
+                valor: parseFloat(os.valorTotalFinal),
+                dataTransacao: os.dataPagamento ? os.dataPagamento.split('T')[0] : new Date().toISOString().split('T')[0],
+                statusTransacao: 'pago',
+                referenciaOS: id,
+                criadoEm: new Date().toISOString()
             };
-
-            transacoesRef.push(entradaOS);
-          }
+            await transacoesRef.push(transacao);
+            await osRef.child(id).update({ transacaoGerada: true });
         }
-      });
     }
 
     function calcularResumo() {
       const transacoesArray = Object.values(transacoesData);
-      
-      // Total Entradas
-      const totalEntradas = transacoesArray
-        .filter(t => t.tipo === 'entrada' && t.statusTransacao === 'pago')
-        .reduce((sum, t) => sum + parseFloat(t.valor), 0);
-      
-      // Total Saídas
-      const totalSaidas = transacoesArray
-        .filter(t => t.tipo === 'saida' && t.statusTransacao === 'pago')
-        .reduce((sum, t) => sum + parseFloat(t.valor), 0);
-      
-      // Saldo Atual
+      const totalEntradas = transacoesArray.filter(t => t.tipo === 'entrada' && t.statusTransacao === 'pago').reduce((sum, t) => sum + parseFloat(t.valor || 0), 0);
+      const totalSaidas = transacoesArray.filter(t => t.tipo === 'saida' && t.statusTransacao === 'pago').reduce((sum, t) => sum + parseFloat(t.valor || 0), 0);
       const saldoAtual = totalEntradas - totalSaidas;
       
-      // Saldo do Mês
-      const hoje = new Date();
-      const mesAtual = hoje.getMonth();
-      const anoAtual = hoje.getFullYear();
+      const hoje = new Date(); const mesAtual = hoje.getMonth(); const anoAtual = hoje.getFullYear();
       
-      const entradasMes = transacoesArray
-        .filter(t => {
-          const data = new Date(t.dataTransacao);
-          return t.tipo === 'entrada' && 
-                 t.statusTransacao === 'pago' && 
-                 data.getMonth() === mesAtual && 
-                 data.getFullYear() === anoAtual;
-        })
-        .reduce((sum, t) => sum + parseFloat(t.valor), 0);
-      
-      const saidasMes = transacoesArray
-        .filter(t => {
-          const data = new Date(t.dataTransacao);
-          return t.tipo === 'saida' && 
-                 t.statusTransacao === 'pago' && 
-                 data.getMonth() === mesAtual && 
-                 data.getFullYear() === anoAtual;
-        })
-        .reduce((sum, t) => sum + parseFloat(t.valor), 0);
-      
+      const entradasMes = transacoesArray.filter(t => { const data = new Date(t.dataTransacao + 'T00:00:00'); return t.tipo === 'entrada' && t.statusTransacao === 'pago' && data.getMonth() === mesAtual && data.getFullYear() === anoAtual; }).reduce((sum, t) => sum + parseFloat(t.valor || 0), 0);
+      const saidasMes = transacoesArray.filter(t => { const data = new Date(t.dataTransacao + 'T00:00:00'); return t.tipo === 'saida' && t.statusTransacao === 'pago' && data.getMonth() === mesAtual && data.getFullYear() === anoAtual; }).reduce((sum, t) => sum + parseFloat(t.valor || 0), 0);
       const saldoMes = entradasMes - saidasMes;
       
-      // Atualizar interface
       document.getElementById('saldoAtual').textContent = formatarMoeda(saldoAtual);
       document.getElementById('totalEntradas').textContent = formatarMoeda(totalEntradas);
       document.getElementById('totalSaidas').textContent = formatarMoeda(totalSaidas);
       document.getElementById('saldoMes').textContent = formatarMoeda(saldoMes);
-      
-      const meses = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 
-                     'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
-      document.getElementById('mesAtual').textContent = `📆 ${meses[mesAtual]} ${anoAtual}`;
-    }
-
-    function formatarMoeda(valor) {
-      return new Intl.NumberFormat('pt-BR', {
-        style: 'currency',
-        currency: 'BRL'
-      }).format(valor);
     }
 
     function renderizarTransacoes() {
       const lista = document.getElementById('transacoesList');
       const emptyState = document.getElementById('emptyState');
-      
       lista.innerHTML = '';
       
       let transacoesArray = Object.entries(transacoesData).map(([id, data]) => ({ id, ...data }));
       
-      // Aplicar filtros
-      const periodo = document.getElementById('filtroPeriodo').value;
-      const categoria = document.getElementById('filtroCategoria').value;
-      const dataInicio = document.getElementById('dataInicio').value;
-      const dataFim = document.getElementById('dataFim').value;
-      
-      transacoesArray = aplicarFiltros(transacoesArray, periodo, categoria, dataInicio, dataFim);
-      
-      if (transacoesArray.length === 0) {
-        emptyState.style.display = 'block';
-        document.querySelector('.transacoes-table').style.display = 'none';
-        return;
+      if (filtroTabAtual === 'entradas') transacoesArray = transacoesArray.filter(t => t.tipo === 'entrada');
+      else if (filtroTabAtual === 'saidas') transacoesArray = transacoesArray.filter(t => t.tipo === 'saida');
+      else if (filtroTabAtual === 'pendentes') transacoesArray = transacoesArray.filter(t => t.statusTransacao === 'pendente');
+      else if (filtroTabAtual === 'vencidas') {
+        const hoje = new Date(); hoje.setHours(0,0,0,0);
+        transacoesArray = transacoesArray.filter(t => t.statusTransacao === 'pendente' && t.dataVencimento && new Date(t.dataVencimento + 'T00:00:00') < hoje);
       }
       
-      emptyState.style.display = 'none';
-      document.querySelector('.transacoes-table').style.display = 'block';
+      const periodo = document.getElementById('filtroPeriodo').value;
+      const categoria = document.getElementById('filtroCategoria').value;
+      transacoesArray = aplicarFiltros(transacoesArray, periodo, categoria);
       
-      // Ordenar por data (mais recente primeiro)
+      if (transacoesArray.length === 0) {
+        emptyState.style.display = 'block'; document.querySelector('.transacoes-table-container').style.display = 'none'; return;
+      }
+      
+      emptyState.style.display = 'none'; document.querySelector('.transacoes-table-container').style.display = 'block';
       transacoesArray.sort((a, b) => new Date(b.dataTransacao) - new Date(a.dataTransacao));
       
       transacoesArray.forEach(transacao => {
-        const row = document.createElement('div');
-        row.className = 'table-row';
-        
-        const data = new Date(transacao.dataTransacao);
-        const dataFormatada = data.toLocaleDateString('pt-BR');
-        
-        const vencimento = transacao.dataVencimento 
-          ? new Date(transacao.dataVencimento).toLocaleDateString('pt-BR')
-          : '-';
-        
-        // Verificar se está vencido
-        let statusClass = `status-${transacao.statusTransacao}`;
-        let statusTexto = transacao.statusTransacao === 'pago' ? 'Pago' : 'Pendente';
-        
-        if (transacao.statusTransacao === 'pendente' && transacao.dataVencimento) {
-          const hoje = new Date();
-          const dataVenc = new Date(transacao.dataVencimento);
-          if (dataVenc < hoje) {
-            statusClass = 'status-vencido';
-            statusTexto = 'Vencido';
-          }
+        const row = document.createElement('tr'); row.className = 'table-row';
+        const data = new Date(transacao.dataTransacao + 'T00:00:00');
+        const vencimento = transacao.dataVencimento ? new Date(transacao.dataVencimento + 'T00:00:00').toLocaleDateString('pt-BR') : '-';
+        let statusClass = `status-${transacao.statusTransacao}`; let statusTexto = transacao.statusTransacao;
+        const hoje = new Date(); hoje.setHours(0,0,0,0);
+        if (transacao.statusTransacao === 'pendente' && transacao.dataVencimento && new Date(transacao.dataVencimento + 'T00:00:00') < hoje) {
+          statusClass = 'status-vencido'; statusTexto = 'Vencido';
         }
-        
-        const categoriaTexto = {
-          'servicos': 'Serviços (OS)',
-          'fornecedores': 'Fornecedores',
-          'salarios': 'Salários',
-          'aluguel': 'Aluguel',
-          'energia': 'Energia/Água',
-          'impostos': 'Impostos',
-          'outros': 'Outros'
-        }[transacao.categoria] || transacao.categoria;
-        
         const valorClass = transacao.tipo === 'entrada' ? 'valor-entrada' : 'valor-saida';
         const valorSinal = transacao.tipo === 'entrada' ? '+' : '-';
         
         row.innerHTML = `
-          <div>${dataFormatada}</div>
-          <div style="font-weight: 600; color: #1f2937;">
-            ${transacao.descricao}
-            ${transacao.numeroOS ? `<br><small style="color: #6b7280;">OS #${String(transacao.numeroOS).padStart(4, '0')}</small>` : ''}
-          </div>
-          <div>${categoriaTexto}</div>
-          <div>${vencimento}</div>
-          <div><span class="tipo-badge tipo-${transacao.tipo}">${transacao.tipo}</span></div>
-          <div><span class="status-badge ${statusClass}">${statusTexto}</span></div>
-          <div class="${valorClass}">${valorSinal} ${formatarMoeda(transacao.valor)}</div>
-          <div class="action-buttons">
-            ${transacao.statusTransacao === 'pendente' ? `
-              <button class="btn-icon btn-pay" onclick="marcarComoPago('${transacao.id}')" title="Marcar como pago">
-                ✓
-              </button>
-            ` : ''}
-            ${!transacao.referenciaOS ? `
-              <button class="btn-icon btn-edit" onclick="editarTransacao('${transacao.id}')" title="Editar">
-                ✎
-              </button>
-              <button class="btn-icon btn-delete" onclick="excluirTransacao('${transacao.id}', '${transacao.descricao}')" title="Excluir">
-                🗑
-              </button>
-            ` : '<small style="color: #9ca3af;">Auto</small>'}
-          </div>
+          <td>${data.toLocaleDateString('pt-BR')}</td>
+          <td style="font-weight: 600;">${transacao.descricao}</td>
+          <td>${transacao.categoria}</td>
+          <td>${vencimento}</td>
+          <td><span class="status-badge ${statusClass}">${statusTexto}</span></td>
+          <td class="${valorClass}">${valorSinal} ${formatarMoeda(transacao.valor)}</td>
+          <td><div class="action-buttons">
+            ${transacao.statusTransacao === 'pendente' ? `<button class="btn-icon btn-pay" onclick="marcarComoPago('${transacao.id}')" title="Marcar como pago">✓</button>` : ''}
+            ${!transacao.referenciaOS ? `<button class="btn-icon btn-edit" onclick="editarTransacao('${transacao.id}')" title="Editar">✎</button><button class="btn-icon btn-delete" onclick="excluirTransacao('${transacao.id}', '${transacao.descricao}')" title="Excluir">🗑</button>` : '<small style="color: var(--text-secondary); padding-left: 8px;">OS</small>'}
+          </div></td>
         `;
-        
         lista.appendChild(row);
       });
     }
 
-    function aplicarFiltros(transacoes, periodo, categoria, dataInicio, dataFim) {
+    function aplicarFiltros(transacoes, periodo, categoria) {
       let filtradas = [...transacoes];
-      
-      // Filtro de período
       if (periodo !== 'todos') {
         const hoje = new Date();
-        hoje.setHours(0, 0, 0, 0);
-        
+        const ano = hoje.getFullYear();
+        const mes = hoje.getMonth();
         filtradas = filtradas.filter(t => {
-          const data = new Date(t.dataTransacao);
-          data.setHours(0, 0, 0, 0);
-          
-          if (periodo === 'mes') {
-            return data.getMonth() === hoje.getMonth() && 
-                   data.getFullYear() === hoje.getFullYear();
-          } else if (periodo === 'semana') {
-            const umaSemanaAtras = new Date(hoje);
-            umaSemanaAtras.setDate(hoje.getDate() - 7);
-            return data >= umaSemanaAtras;
-          } else if (periodo === 'ano') {
-            return data.getFullYear() === hoje.getFullYear();
-          }
+          const data = new Date(t.dataTransacao + 'T00:00:00');
+          if (periodo === 'mes') { return data.getMonth() === mes && data.getFullYear() === ano; }
+          if (periodo === 'semana') { const semanaAtras = new Date(); semanaAtras.setDate(hoje.getDate() - 7); return data >= semanaAtras; }
+          if (periodo === 'ano') { return data.getFullYear() === ano; }
           return true;
         });
       }
-      
-      // Filtro de categoria
-      if (categoria !== 'todas') {
-        filtradas = filtradas.filter(t => t.categoria === categoria);
-      }
-      
-      // Filtro de data personalizada
-      if (dataInicio) {
-        const inicio = new Date(dataInicio);
-        filtradas = filtradas.filter(t => new Date(t.dataTransacao) >= inicio);
-      }
-      
-      if (dataFim) {
-        const fim = new Date(dataFim);
-        filtradas = filtradas.filter(t => new Date(t.dataTransacao) <= fim);
-      }
-      
+      if (categoria !== 'todas') { filtradas = filtradas.filter(t => t.categoria === categoria); }
       return filtradas;
     }
 
-    // Abas
     document.querySelectorAll('.tab').forEach(tab => {
       tab.addEventListener('click', function() {
         document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
         this.classList.add('active');
-        
-        const filter = this.dataset.tab;
-        filtrarPorAba(filter);
+        filtroTabAtual = this.dataset.tab;
+        renderizarTransacoes();
       });
     });
+    
+    ['filtroPeriodo', 'filtroCategoria'].forEach(id => document.getElementById(id).addEventListener('change', renderizarTransacoes));
 
-    function filtrarPorAba(filter) {
-      const lista = document.getElementById('transacoesList');
-      lista.innerHTML = '';
-      
-      let transacoesArray = Object.entries(transacoesData).map(([id, data]) => ({ id, ...data }));
-      
-      if (filter === 'entradas') {
-        transacoesArray = transacoesArray.filter(t => t.tipo === 'entrada');
-      } else if (filter === 'saidas') {
-        transacoesArray = transacoesArray.filter(t => t.tipo === 'saida');
-      } else if (filter === 'pendentes') {
-        transacoesArray = transacoesArray.filter(t => t.statusTransacao === 'pendente');
-      } else if (filter === 'vencidas') {
-        const hoje = new Date();
-        transacoesArray = transacoesArray.filter(t => {
-          if (t.statusTransacao !== 'pendente' || !t.dataVencimento) return false;
-          return new Date(t.dataVencimento) < hoje;
-        });
-      }
-      
-      // Re-renderizar com filtro aplicado
-      transacoesData = {};
-      transacoesArray.forEach(t => {
-        transacoesData[t.id] = t;
-      });
-      renderizarTransacoes();
-      
-      // Restaurar dados originais
-      transacoesRef.once('value', snapshot => {
-        transacoesData = snapshot.val() || {};
-      });
+    function carregarCategorias() {
+        const categorias = [...new Set(Object.values(transacoesData).map(t => t.categoria))];
+        const select = document.getElementById('filtroCategoria');
+        select.innerHTML = '<option value="todas">Todas</option>';
+        categorias.sort().forEach(cat => select.add(new Option(cat,cat)));
     }
-
-    // Modais
+    
+    function fecharModal() { document.getElementById('modalTransacao').classList.remove('active'); }
+    
+    function abrirModal(tipo) {
+        editandoId = null;
+        document.getElementById('formTransacao').reset();
+        document.getElementById('tipoTransacao').value = tipo;
+        document.getElementById('modalTitle').textContent = `Nova ${tipo === 'entrada' ? 'Entrada' : 'Saída'}`;
+        document.querySelector('.btn-submit').style.background = tipo === 'entrada' ? 'var(--accent-green)' : 'var(--accent-red)';
+        document.getElementById('dataTransacao').value = new Date().toISOString().slice(0,10);
+        document.getElementById('modalTransacao').classList.add('active');
+    }
     document.getElementById('btnNovaEntrada').addEventListener('click', () => abrirModal('entrada'));
     document.getElementById('btnNovaSaida').addEventListener('click', () => abrirModal('saida'));
-
-    function abrirModal(tipo = 'entrada') {
-      editandoId = null;
-      document.getElementById('modalTitle').textContent = tipo === 'entrada' ? 'Nova Entrada' : 'Nova Saída';
-      document.getElementById('modalIcon').textContent = tipo === 'entrada' ? '⬆️' : '⬇️';
-      document.getElementById('formTransacao').reset();
-      document.getElementById('transacaoId').value = '';
-      
-      if (tipo === 'entrada') {
-        document.getElementById('tipoEntrada').checked = true;
-      } else {
-        document.getElementById('tipoSaida').checked = true;
-      }
-      
-      document.getElementById('dataTransacao').value = new Date().toISOString().split('T')[0];
-      document.getElementById('modalTransacao').classList.add('active');
-    }
-
-    function fecharModal() {
-      document.getElementById('modalTransacao').classList.remove('active');
-      editandoId = null;
-    }
-
+    
     function editarTransacao(id) {
-      editandoId = id;
-      const transacao = transacoesData[id];
-      
-      document.getElementById('modalTitle').textContent = 'Editar Transação';
-      document.getElementById('modalIcon').textContent = '✏️';
-      document.getElementById('transacaoId').value = id;
-      document.getElementById('descricaoTransacao').value = transacao.descricao;
-      document.getElementById('categoriaTransacao').value = transacao.categoria;
-      document.getElementById('valorTransacao').value = transacao.valor;
-      document.getElementById('dataTransacao').value = transacao.dataTransacao;
-      document.getElementById('dataVencimento').value = transacao.dataVencimento || '';
-      document.getElementById('statusTransacao').value = transacao.statusTransacao;
-      document.getElementById('formaPagamento').value = transacao.formaPagamento || '';
-      document.getElementById('observacoesTransacao').value = transacao.observacoes || '';
-      
-      if (transacao.tipo === 'entrada') {
-        document.getElementById('tipoEntrada').checked = true;
-      } else {
-        document.getElementById('tipoSaida').checked = true;
-      }
-      
-      document.getElementById('modalTransacao').classList.add('active');
+        editandoId = id; const t = transacoesData[id];
+        document.getElementById('transacaoId').value = id;
+        document.getElementById('tipoTransacao').value = t.tipo;
+        document.getElementById('descricao').value = t.descricao;
+        document.getElementById('valor').value = t.valor;
+        document.getElementById('categoria').value = t.categoria;
+        document.getElementById('dataTransacao').value = t.dataTransacao;
+        document.getElementById('dataVencimento').value = t.dataVencimento || '';
+        document.getElementById('statusTransacao').value = t.statusTransacao;
+        document.getElementById('modalTitle').textContent = `Editar ${t.tipo === 'entrada' ? 'Entrada' : 'Saída'}`;
+        document.querySelector('.btn-submit').style.background = t.tipo === 'entrada' ? 'var(--accent-green)' : 'var(--accent-red)';
+        document.getElementById('modalTransacao').classList.add('active');
     }
 
     function salvarTransacao(event) {
-      event.preventDefault();
-      
-      const tipo = document.querySelector('input[name="tipo"]:checked').value;
-      
-      const transacaoData = {
-        tipo: tipo,
-        descricao: document.getElementById('descricaoTransacao').value,
-        categoria: document.getElementById('categoriaTransacao').value,
-        valor: parseFloat(document.getElementById('valorTransacao').value),
-        dataTransacao: document.getElementById('dataTransacao').value,
-        dataVencimento: document.getElementById('dataVencimento').value,
-        statusTransacao: document.getElementById('statusTransacao').value,
-        formaPagamento: document.getElementById('formaPagamento').value,
-        observacoes: document.getElementById('observacoesTransacao').value,
-        criadoPor: auth.currentUser.email,
-        criadoEm: editandoId ? transacoesData[editandoId].criadoEm : new Date().toISOString(),
-        atualizadoEm: new Date().toISOString()
-      };
-      
-      if (editandoId) {
-        transacoesRef.child(editandoId).update(transacaoData)
-          .then(() => {
-            alert('Transação atualizada com sucesso!');
+        event.preventDefault();
+        const data = {
+            tipo: document.getElementById('tipoTransacao').value,
+            descricao: document.getElementById('descricao').value,
+            valor: parseFloat(document.getElementById('valor').value),
+            categoria: document.getElementById('categoria').value,
+            dataTransacao: document.getElementById('dataTransacao').value,
+            dataVencimento: document.getElementById('dataVencimento').value,
+            statusTransacao: document.getElementById('statusTransacao').value,
+            criadoEm: editandoId ? transacoesData[editandoId].criadoEm : new Date().toISOString(),
+            atualizadoEm: new Date().toISOString()
+        };
+        const promise = editandoId ? transacoesRef.child(editandoId).update(data) : transacoesRef.push(data);
+        promise.then(() => {
+            alert(`Transação ${editandoId ? 'atualizada' : 'salva'} com sucesso!`);
             fecharModal();
-          })
-          .catch(error => alert('Erro ao atualizar: ' + error.message));
-      } else {
-        transacoesRef.push(transacaoData)
-          .then(() => {
-            alert('Transação cadastrada com sucesso!');
-            fecharModal();
-          })
-          .catch(error => alert('Erro ao cadastrar: ' + error.message));
-      }
+        });
     }
 
     function marcarComoPago(id) {
-      const transacao = transacoesData[id];
-      if (confirm(`Marcar como pago: ${transacao.descricao}?`)) {
-        transacoesRef.child(id).update({
-          statusTransacao: 'pago',
-          dataPagamento: new Date().toISOString()
-        })
-        .then(() => alert('Marcado como pago!'))
-        .catch(error => alert('Erro: ' + error.message));
-      }
+        if (confirm("Deseja marcar esta transação como paga na data de hoje?")) {
+            transacoesRef.child(id).update({
+                statusTransacao: 'pago',
+                dataTransacao: new Date().toISOString().slice(0,10)
+            });
+        }
     }
-
-    function excluirTransacao(id, descricao) {
-      if (confirm(`Deseja realmente excluir:\n"${descricao}"?\n\nEsta ação não pode ser desfeita!`)) {
-        transacoesRef.child(id).remove()
-          .then(() => alert('Transação excluída com sucesso!'))
-          .catch(error => alert('Erro ao excluir: ' + error.message));
-      }
+    
+    function excluirTransacao(id, desc) {
+        if (confirm(`Tem certeza que deseja excluir a transação "${desc}"?`)) {
+            transacoesRef.child(id).remove();
+        }
     }
-
-    // Event listeners para filtros
-    document.getElementById('filtroPeriodo').addEventListener('change', renderizarTransacoes);
-    document.getElementById('filtroCategoria').addEventListener('change', renderizarTransacoes);
-    document.getElementById('dataInicio').addEventListener('change', renderizarTransacoes);
-    document.getElementById('dataFim').addEventListener('change', renderizarTransacoes);
-
-    // Fechar modal ao clicar fora
-    document.getElementById('modalTransacao').addEventListener('click', function(e) {
-      if (e.target === this) fecharModal();
-    });
-
-    // Atalhos de teclado
-    document.addEventListener('keydown', function(e) {
-      if (e.key === 'Escape') fecharModal();
-    });
-
-    console.log('Sistema Financeiro - SIGO Casa dos Reparos - Carregado!');
   </script>
 </body>
 </html>
