@@ -69,7 +69,6 @@
     .form-group { margin-bottom: 16px; }
     .form-group label { display: block; font-weight: 500; margin-bottom: 8px; font-size: 0.9rem; }
     .form-group input, .form-group textarea, .form-group select { width: 100%; padding: 10px 14px; border-radius: 8px; border: 1px solid #9ca3af; font-size: 1rem; background-color: var(--main-bg); color: var(--text-primary); }
-    
     .checkbox-group label { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
 
     .toggle-switch { position: relative; display: inline-block; width: 50px; height: 28px; }
@@ -108,20 +107,31 @@
           <li><a href="estoque.html"><span class="nav-icon">📦</span> Estoque</a></li>
           <li><a href="contas_financeiro.html"><span class="nav-icon">💰</span> Financeiro</a></li>
           <li><a href="anotacoes.html"><span class="nav-icon">📝</span> Anotações</a></li>
+          <li><a href="pecas.html"><span class="nav-icon">🔩</span> Peças para Pedir</a></li>
+          <li><a href="impressao.html"><span class="nav-icon">🖨️</span> Impressão</a></li>
           <li><a href="configuracoes.html" class="active"><span class="nav-icon">⚙️</span> Configurações</a></li>
         </ul>
       </div>
       <div class="sidebar-footer">
-        <button class="logout-btn" onclick="logout()"><span class="nav-icon">🚪</span> Sair do Sistema</button>
+        <button class="logout-btn" onclick="logout()">
+          <span class="nav-icon">🚪</span> Sair do Sistema
+        </button>
       </div>
     </nav>
     <div class="overlay" id="overlay"></div>
 
     <main class="main-content">
-      <header class="main-header"><h1>Configurações</h1><button class="mobile-menu-btn" id="mobileMenuBtn">☰</button></header>
+      <header class="main-header">
+        <h1>Configurações</h1>
+        <button class="mobile-menu-btn" id="mobileMenuBtn">☰</button>
+      </header>
 
       <section class="settings-card">
         <h2 class="settings-card-title">Oficina e Perfil</h2>
+        <div class="form-group">
+            <label for="inputUrlLogo">URL da Logo (para impressões)</label>
+            <input type="url" id="inputUrlLogo" placeholder="https://exemplo.com/sua-logo.png">
+        </div>
         <div class="form-group"><label for="inputNomeOficina">Nome da Oficina</label><input type="text" id="inputNomeOficina" placeholder="O nome que aparecerá em relatórios"></div>
         <div class="form-group"><label for="inputEndereco">Endereço</label><input type="text" id="inputEndereco" placeholder="Rua, Número, Bairro, Cidade"></div>
         <div class="form-group"><label for="inputTelefone">Telefone / WhatsApp</label><input type="tel" id="inputTelefone" placeholder="(00) 00000-0000"></div>
@@ -153,7 +163,7 @@
       <section class="settings-card">
         <h2 class="settings-card-title">Impressão e Documentos</h2>
         <div class="form-group">
-            <label for="inputRodape">Texto de Rodapé (Termos de Garantia)</label>
+            <label for="inputRodape">Texto de Rodapé / Termos de Garantia</label>
             <textarea id="inputRodape" rows="4" placeholder="Ex: A garantia deste serviço é de 90 dias para peças e mão de obra..."></textarea>
         </div>
         <div class="setting-item">
@@ -185,6 +195,7 @@
       <div style="text-align: center; margin-top: 32px;">
         <button class="btn btn-primary" id="btnSalvarTudo" style="padding: 14px 40px; font-size: 1.1rem;">Salvar Todas as Configurações</button>
       </div>
+
     </main>
   </div>
 
@@ -197,7 +208,6 @@
   <script>
     protegerPagina();
 
-    // LÓGICA DE RESPONSIVIDADE
     const sidebar = document.getElementById('sidebar');
     const mobileMenuBtn = document.getElementById('mobileMenuBtn');
     const overlay = document.getElementById('overlay');
@@ -206,11 +216,8 @@
 
     const configRef = database.ref('configuracoes');
 
-    // LÓGICA DE GERENCIAMENTO DE DADOS (Backup, Restore, Limpar)
-    // O código para estas funções é longo e já foi validado, omitido aqui para clareza, mas presente no bloco final.
-    
-    // MAPEAMENTO DE TODOS OS INPUTS DE CONFIGURAÇÃO
     const allInputs = {
+        urlLogo: document.getElementById('inputUrlLogo'),
         nomeOficina: document.getElementById('inputNomeOficina'),
         endereco: document.getElementById('inputEndereco'),
         telefone: document.getElementById('inputTelefone'),
@@ -225,32 +232,33 @@
         printAssinatura: document.getElementById('printAssinatura'),
     };
 
-    // Carregar configurações salvas do Firebase
-    configRef.on('value', (snapshot) => {
-        const config = snapshot.val() || {};
-        allInputs.nomeOficina.value = config.nomeOficina || '';
-        allInputs.endereco.value = config.endereco || '';
-        allInputs.telefone.value = config.telefone || '';
-        allInputs.documento.value = config.documento || '';
-        allInputs.nomeExibicao.value = config.nomeExibicao || auth.currentUser?.displayName || '';
-        allInputs.diasAlertaContas.value = config.diasAlertaContas || 7;
-        allInputs.percentualEstoque.value = config.percentualEstoque || 20;
-        allInputs.rodapeDocumentos.value = config.rodapeDocumentos || '';
-        allInputs.printCpfCliente.checked = config.printCpfCliente || false;
-        allInputs.printDetalharPecas.checked = config.printDetalharPecas || false;
-        allInputs.printAssinatura.checked = config.printAssinatura || false;
-        
-        // Aplica o tema escuro se estiver salvo
-        if (config.darkMode) {
-            allInputs.darkMode.checked = true;
-            document.body.classList.add('dark-mode');
-        } else {
-            allInputs.darkMode.checked = false;
-            document.body.classList.remove('dark-mode');
-        }
+    auth.onAuthStateChanged(user => {
+        if (!user) return;
+        configRef.on('value', (snapshot) => {
+            const config = snapshot.val() || {};
+            allInputs.urlLogo.value = config.urlLogo || '';
+            allInputs.nomeOficina.value = config.nomeOficina || '';
+            allInputs.endereco.value = config.endereco || '';
+            allInputs.telefone.value = config.telefone || '';
+            allInputs.documento.value = config.documento || '';
+            allInputs.nomeExibicao.value = config.nomeExibicao || user.displayName || '';
+            allInputs.diasAlertaContas.value = config.diasAlertaContas || 7;
+            allInputs.percentualEstoque.value = config.percentualEstoque || 20;
+            allInputs.rodapeDocumentos.value = config.rodapeDocumentos || '';
+            allInputs.printCpfCliente.checked = config.printCpfCliente || false;
+            allInputs.printDetalharPecas.checked = config.printDetalharPecas || false;
+            allInputs.printAssinatura.checked = config.printAssinatura || false;
+            
+            if (config.darkMode) {
+                allInputs.darkMode.checked = true;
+                document.body.classList.add('dark-mode');
+            } else {
+                allInputs.darkMode.checked = false;
+                document.body.classList.remove('dark-mode');
+            }
+        });
     });
 
-    // Salvar todas as configurações
     document.getElementById('btnSalvarTudo').addEventListener('click', async () => {
         const user = auth.currentUser;
         if (!user) return;
@@ -261,6 +269,7 @@
             }
             
             await configRef.update({
+                urlLogo: allInputs.urlLogo.value,
                 nomeOficina: allInputs.nomeOficina.value,
                 endereco: allInputs.endereco.value,
                 telefone: allInputs.telefone.value,
@@ -281,15 +290,20 @@
         }
     });
     
-    // Alterar Senha
-    document.getElementById('btnAlterarSenha').addEventListener('click', () => { /* ... (código mantido) ... */ });
+    document.getElementById('btnAlterarSenha').addEventListener('click', () => {
+        const user = auth.currentUser;
+        if (!user) return;
+        if (confirm("Você receberá um e-mail com instruções para redefinir sua senha. Deseja continuar?")) {
+            auth.sendPasswordResetEmail(user.email)
+                .then(() => alert("E-mail de redefinição de senha enviado para " + user.email))
+                .catch((error) => alert("Erro ao enviar e-mail: " + error.message));
+        }
+    });
     
-    // Lógica do Modo Escuro
     allInputs.darkMode.addEventListener('change', () => {
         document.body.classList.toggle('dark-mode', allInputs.darkMode.checked);
     });
 
-    // --- CÓDIGO COMPLETO DAS FUNÇÕES DE DADOS (PARA GARANTIR) ---
     document.getElementById('btnBackup').addEventListener('click', async () => {
         alert("Iniciando o backup...");
         try {
@@ -301,6 +315,7 @@
             URL.revokeObjectURL(url); alert("Backup concluído com sucesso!");
         } catch (error) { console.error("Erro no backup:", error); alert("Erro ao gerar o backup: " + error.message); }
     });
+
     document.getElementById('inputRestore').addEventListener('change', (event) => {
         const file = event.target.files[0]; if (!file) { event.target.value = ''; return; }
         if (!confirm("⚠️ ATENÇÃO! ⚠️\n\nTODOS OS DADOS ATUAIS SERÃO APAGADOS E SUBSTITUÍDOS. Esta ação é irreversível. Deseja continuar?")) { event.target.value = ''; return; }
@@ -313,20 +328,13 @@
         };
         reader.readAsText(file); event.target.value = '';
     });
+
     document.getElementById('btnCleanData').addEventListener('click', async () => {
         if (prompt("Esta ação apagará TUDO. Para confirmar, digite 'CONFIRMAR EXCLUSAO':") !== "CONFIRMAR EXCLUSAO") { alert("Ação cancelada."); return; }
         if (!confirm("ÚLTIMO AVISO: Deseja realmente continuar?")) { alert("Ação cancelada."); return; }
         try {
             await database.ref().remove(); alert("Todos os dados foram excluídos. A página será recarregada."); window.location.reload();
         } catch (error) { alert("Ocorreu um erro: " + error.message); }
-    });
-    document.getElementById('btnAlterarSenha').addEventListener('click', () => {
-        const user = auth.currentUser; if (!user) return;
-        if (confirm("Você receberá um e-mail com instruções para redefinir sua senha. Deseja continuar?")) {
-            auth.sendPasswordResetEmail(user.email)
-                .then(() => { alert("E-mail de redefinição de senha enviado para " + user.email); })
-                .catch((error) => { alert("Erro ao enviar e-mail: " + error.message); });
-        }
     });
   </script>
 </body>
