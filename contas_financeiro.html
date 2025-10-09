@@ -126,6 +126,8 @@
           <li><a href="estoque.html"><span class="nav-icon">📦</span> Estoque</a></li>
           <li><a href="contas_financeiro.html" class="active"><span class="nav-icon">💰</span> Financeiro</a></li>
           <li><a href="anotacoes.html"><span class="nav-icon">📝</span> Anotações</a></li>
+          <li><a href="pecas.html"><span class="nav-icon">🔩</span> Peças para Pedir</a></li>
+          <li><a href="impressao.html"><span class="nav-icon">🖨️</span> Impressão</a></li>
           <li><a href="configuracoes.html"><span class="nav-icon">⚙️</span> Configurações</a></li>
         </ul>
       </div>
@@ -338,7 +340,8 @@
     document.querySelectorAll('.tab').forEach(tab => {
       tab.addEventListener('click', function() {
         document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-        this.classList.add('active'); filtroTabAtual = this.dataset.tab; renderizarTransacoes();
+        this.classList.add('active'); filtroTabAtual = this.dataset.tab;
+        renderizarTransacoes();
       });
     });
     
