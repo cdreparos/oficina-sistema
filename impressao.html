@@ -60,49 +60,38 @@
         #preview-placeholder-doc, #preview-placeholder-etiqueta { text-align: center; padding: 80px 20px; color: var(--text-secondary); }
         .print-document, .etiqueta-preview { border: 1px solid var(--border-color); }
         
-        .print-document { padding: 2rem; }
-        .print-header { display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 2px solid var(--text-primary); padding-bottom: 1rem; margin-bottom: 1.5rem; }
-        .company-logo { max-width: 150px; max-height: 70px; margin-right: 20px; object-fit: contain; }
-        .print-section { margin-bottom: 1.5rem; }
-        .print-section h3 { font-size: 0.9rem; text-transform: uppercase; color: var(--text-secondary); border-bottom: 1px solid var(--border-color); padding-bottom: 0.5rem; margin-bottom: 1rem; }
-        .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
-        .info-grid p, .print-section p { margin-bottom: 0.5rem; line-height: 1.4; }
-        .info-grid strong, .print-section strong { color: var(--text-secondary); display: block; font-size: 0.8rem; }
-        .print-table { width: 100%; border-collapse: collapse; margin-top: 1rem; }
-        .print-table th, .print-table td { padding: 0.75rem; text-align: left; border-bottom: 1px solid var(--border-color); }
+        .print-document { padding: 1.5rem; }
+        .print-header { display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 2px solid var(--text-primary); padding-bottom: 0.8rem; margin-bottom: 1rem; }
+        .company-logo { max-width: 120px; max-height: 60px; margin-right: 15px; object-fit: contain; }
+        .print-section { margin-bottom: 1rem; }
+        .print-section h3 { font-size: 0.8rem; text-transform: uppercase; color: var(--text-secondary); border-bottom: 1px solid var(--border-color); padding-bottom: 0.4rem; margin-bottom: 0.8rem; }
+        .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem; }
+        .info-grid p, .print-section p { margin-bottom: 0.4rem; line-height: 1.3; }
+        .info-grid strong, .print-section strong { color: var(--text-secondary); display: block; font-size: 0.75rem; }
+        .print-table { width: 100%; border-collapse: collapse; margin-top: 0.8rem; font-size: 0.9rem; }
+        .print-table th, .print-table td { padding: 0.5rem; text-align: left; border-bottom: 1px solid var(--border-color); }
         .print-table thead { background: var(--main-bg); }
-        .print-footer { border-top: 2px solid var(--text-primary); margin-top: 2rem; padding-top: 1.5rem; }
-        .print-footer p { font-size: 0.8rem; color: var(--text-secondary); white-space: pre-wrap; }
-        .signature-container { margin-top: 3rem; display: flex; justify-content: space-around; gap: 2rem; }
-        .signature-box { text-align: center; } .signature-box p { font-size: 0.9rem; }
-        
+        .print-footer { border-top: 2px solid var(--text-primary); margin-top: 1.5rem; padding-top: 1rem; }
+        .print-footer p { font-size: 0.75rem; color: var(--text-secondary); white-space: pre-wrap; }
+        .signature-container { margin-top: 2.5rem; display: flex; justify-content: space-around; gap: 2rem; page-break-inside: avoid; }
+        .signature-box { text-align: center; } .signature-box p { font-size: 0.85rem; }
+
         .etiqueta-preview-wrapper { display: flex; justify-content: center; align-items: center; min-height: 200px; }
-        .etiqueta-preview { background: #fff; color: #000; font-family: 'Arial', sans-serif; overflow: hidden; padding: 5px; }
-        .etiqueta-preview h4 { font-size: 8pt; margin: 0 0 5px 0; border-bottom: 1px solid #000; padding-bottom: 3px; }
-        .etiqueta-preview p { margin: 0; font-size: 7pt; line-height: 1.3; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .etiqueta-preview strong { display: block; font-size: 6pt; }
-        .etiqueta-preview .os-number { font-size: 12pt; font-weight: bold; text-align: center; margin-bottom: 5px; }
-        .etiqueta-preview .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; }
-        .etiqueta-preview .checklist { font-size: 6pt; margin-top: 5px; }
+        .etiqueta-preview { background: #fff; color: #000; font-family: 'Arial', sans-serif; overflow: hidden; padding: 2mm; box-sizing: border-box; display: flex; flex-direction: column; }
+        .etiqueta-preview h4 { font-size: 7pt; margin: 0 0 4px 0; border-bottom: 1px solid #333; padding-bottom: 2px; text-align: center; }
+        .etiqueta-preview p { margin: 0; font-size: 7pt; line-height: 1.2; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .etiqueta-preview strong { display: block; font-size: 5pt; color: #555; }
+        .etiqueta-preview .os-number { font-size: 11pt; font-weight: bold; text-align: center; margin-bottom: 4px; }
+        .etiqueta-preview .defeito-box { background: #eee; padding: 4px; border-radius: 3px; margin: 4px 0; }
+        .etiqueta-preview .checklist { font-size: 6pt; margin-top: auto; padding-top: 4px; }
+        .etiqueta-preview .logo-externa { max-height: 12mm; width: auto; object-fit: contain; margin: 0 auto 4px auto; display: block; }
         
         .mobile-menu-btn { display: none; } .overlay { display: none; }
-        @media (max-width: 768px) {
-          .dashboard-container { grid-template-columns: 1fr; }
-          .sidebar { transform: translateX(-100%); }
-          .sidebar.is-open { transform: translateX(0); }
-          .main-content { grid-column: 1 / 2; padding: 16px; }
-          .mobile-menu-btn { display: block; }
-          .print-container { grid-template-columns: 1fr; }
-        }
+        @media (max-width: 768px) { /* ... */ }
         
         @media print {
             body * { visibility: hidden; }
             .print-area, .print-area * { visibility: visible; }
-            .print-document, #etiqueta-para-impressao {
-                position: absolute; left: 0; top: 0; margin: 0; padding: 0; border: none; color: #000;
-            }
-            .print-document { width: 100%; font-size: 10pt; }
-            #etiqueta-para-impressao { font-size: 7pt; }
             .no-print { display: none; }
         }
     </style>
@@ -187,18 +176,14 @@
 
   <script>
     protegerPagina();
-
     const sidebar = document.getElementById('sidebar');
     const mobileMenuBtn = document.getElementById('mobileMenuBtn');
     const overlay = document.getElementById('overlay');
     mobileMenuBtn.addEventListener('click', () => { sidebar.classList.toggle('is-open'); overlay.classList.toggle('is-open'); });
     overlay.addEventListener('click', () => { sidebar.classList.remove('is-open'); overlay.classList.remove('is-open'); });
-    
     const configRef = database.ref('configuracoes');
     const osRef = database.ref('ordens_servico');
-    
-    let configData = {}, osData = {}, selectedOsId = null, selectedOsIdEtiqueta = null;
-
+    let configData = {}, osData = {}, selectedOsIdDoc = null, selectedOsIdEtiqueta = null;
     auth.onAuthStateChanged(user => {
       if(user) {
         configRef.on('value', (snapshot) => {
@@ -212,7 +197,6 @@
         });
       }
     });
-    
     const tabs = document.querySelectorAll('.tab');
     const tabContents = document.querySelectorAll('.tab-content');
     tabs.forEach(tab => {
@@ -223,25 +207,19 @@
             document.getElementById(`tab-${tab.dataset.tab}`).classList.add('active');
         });
     });
-
-    // --- LÓGICA DA ABA DE DOCUMENTOS ---
     const recentOsList = document.getElementById('recent-os-list');
     const previewContainerDoc = document.getElementById('print-preview-container-doc');
     const placeholderDoc = document.getElementById('preview-placeholder-doc');
     const btnImprimirDoc = document.getElementById('btnImprimirDoc');
-
     function renderizarListaOSRecentes() {
         const osFinalizadas = Object.entries(osData)
             .filter(([id, os]) => ['concluido', 'entregue'].includes(os.statusOS))
             .sort((a,b) => new Date(b[1].atualizadoEm || 0) - new Date(a[1].atualizadoEm || 0))
             .slice(0, 5);
-        
         recentOsList.innerHTML = '';
         if(osFinalizadas.length === 0) {
-            recentOsList.innerHTML = '<p style="text-align: center; color: var(--text-secondary); padding: 16px;">Nenhuma OS finalizada recentemente.</p>';
-            return;
+            recentOsList.innerHTML = '<p style="text-align: center; color: var(--text-secondary); padding: 16px;">Nenhuma OS finalizada recentemente.</p>'; return;
         }
-
         osFinalizadas.forEach(([id, os]) => {
             const item = document.createElement('div');
             item.className = 'os-item';
@@ -250,19 +228,15 @@
             recentOsList.appendChild(item);
         });
     }
-
     function selecionarOSParaDocumento(osId, element) {
-        selectedOsId = osId;
-        document.querySelectorAll('.os-item').forEach(el => el.classList.remove('selected'));
+        selectedOsIdDoc = osId;
+        document.querySelectorAll('#recent-os-list .os-item').forEach(el => el.classList.remove('selected'));
         element.classList.add('selected');
         btnImprimirDoc.disabled = false;
         placeholderDoc.style.display = 'none';
         gerarPreviewDocumento(osId);
     }
-    
-    btnImprimirDoc.addEventListener('click', () => { if(selectedOsId) { window.print(); } });
-
-    // --- LÓGICA DA ABA DE ETIQUETAS ---
+    btnImprimirDoc.addEventListener('click', () => { if(selectedOsIdDoc) window.print(); });
     const searchInputEtiqueta = document.getElementById('searchInputEtiqueta');
     const searchResultsEtiqueta = document.getElementById('searchResultsEtiqueta');
     const tipoEtiqueta = document.getElementById('tipoEtiqueta');
@@ -270,29 +244,21 @@
     const previewContainerEtiqueta = document.getElementById('print-preview-container-etiqueta');
     const placeholderEtiqueta = document.getElementById('preview-placeholder-etiqueta');
     const btnImprimirEtiqueta = document.getElementById('btnImprimirEtiqueta');
-
     searchInputEtiqueta.addEventListener('input', () => {
         const termo = searchInputEtiqueta.value.toLowerCase();
-        searchResultsEtiqueta.innerHTML = '';
-        if (termo.length < 2) return;
-
-        const resultados = Object.entries(osData).filter(([id, os]) => 
-            os.numeroOS.includes(termo) || os.clienteNome.toLowerCase().includes(termo)
-        ).sort((a,b) => b[1].numeroOS - a[1].numeroOS).slice(0, 5);
-
+        searchResultsEtiqueta.innerHTML = ''; if (termo.length < 2) return;
+        const resultados = Object.entries(osData).filter(([id, os]) => os.numeroOS.includes(termo) || os.clienteNome.toLowerCase().includes(termo)).sort((a,b) => b[1].numeroOS - a[1].numeroOS).slice(0, 5);
         resultados.forEach(([id, os]) => {
             const item = document.createElement('div');
             item.className = 'os-item';
             item.innerHTML = `<strong>OS #${String(os.numeroOS).padStart(4, '0')}</strong><small>${os.clienteNome}</small>`;
-            item.onclick = () => selecionarOSParaEtiqueta(id, item);
+            item.onclick = () => selecionarOSParaEtiqueta(id);
             searchResultsEtiqueta.appendChild(item);
         });
     });
-
-    tipoEtiqueta.addEventListener('change', () => gerarPreviewEtiqueta());
-    tamanhoEtiqueta.addEventListener('change', () => gerarPreviewEtiqueta());
-
-    function selecionarOSParaEtiqueta(osId, element) {
+    tipoEtiqueta.addEventListener('change', gerarPreviewEtiqueta);
+    tamanhoEtiqueta.addEventListener('change', gerarPreviewEtiqueta);
+    function selecionarOSParaEtiqueta(osId) {
         selectedOsIdEtiqueta = osId;
         searchResultsEtiqueta.innerHTML = '';
         searchInputEtiqueta.value = `OS #${String(osData[osId].numeroOS).padStart(4, '0')} - ${osData[osId].clienteNome}`;
@@ -300,55 +266,40 @@
         placeholderEtiqueta.style.display = 'none';
         gerarPreviewEtiqueta();
     }
-    
     function gerarPreviewEtiqueta() {
         if (!selectedOsIdEtiqueta) return;
         const os = osData[selectedOsIdEtiqueta];
-        const [width, height] = document.getElementById('tamanhoEtiqueta').value.split('x');
-        const tipo = document.getElementById('tipoEtiqueta').value;
+        const [width, height] = tamanhoEtiqueta.value.split('x');
+        const tipo = tipoEtiqueta.value;
         let html = '';
-
-        if(tipo === 'externa') {
-            html = `<h4>${(configData.nomeOficina || 'Oficina').substring(0, 25)}</h4>
-                    <p class="os-number">OS #${String(os.numeroOS).padStart(4, '0')}</p>
-                    <p><strong>CLIENTE:</strong> ${os.clienteNome}</p>
-                    <p><strong>PRODUTO:</strong> ${os.aparelho} ${os.marca || ''}</p>
-                    <p><strong>DATA:</strong> ${new Date(os.dataEntrada + 'T00:00:00').toLocaleDateString('pt-BR')}</p>`;
-        } else {
-            html = `<p class="os-number">OS #${String(os.numeroOS).padStart(4, '0')}</p>
-                    <p><strong>CLIENTE:</strong> ${os.clienteNome} (${os.telefoneCliente})</p>
-                    <p><strong>DEFEITO:</strong> ${os.defeitoRelatado}</p>
-                    <div class="checklist">□ Orçamento □ Aguardando Peça □ Em Teste □ Pronto</div>`;
+        if(tipo === 'externa') { // Opção B (Clássica com Logo)
+            const logoHtml = configData.urlLogo ? `<img src="${configData.urlLogo}" class="logo-externa">` : `<h4>${(configData.nomeOficina || 'Oficina').substring(0, 25)}</h4>`;
+            html = `${logoHtml}<p class="os-number">OS #${String(os.numeroOS).padStart(4, '0')}</p><p><strong>CLIENTE:</strong> ${os.clienteNome}</p><p><strong>PRODUTO:</strong> ${os.aparelho} ${os.marca || ''}</p><p><strong>DATA:</strong> ${new Date(os.dataEntrada + 'T00:00:00').toLocaleDateString('pt-BR')}</p>`;
+        } else { // Opção A (Foco no Defeito)
+            html = `<p class="os-number">OS #${String(os.numeroOS).padStart(4, '0')}</p><p><strong>CLIENTE:</strong> ${os.clienteNome} (${os.telefoneCliente})</p><div class="defeito-box"><p><strong>DEFEITO:</strong> ${os.defeitoRelatado}</p></div><div class="checklist">□ Orçamento □ Aguardando Peça □ Em Teste □ Pronto</div>`;
         }
-
         previewContainerEtiqueta.innerHTML = `<div class="etiqueta-preview" id="etiqueta-para-impressao" style="width:${width}mm; height:${height}mm;">${html}</div>`;
     }
-
     btnImprimirEtiqueta.addEventListener('click', () => {
         if (selectedOsIdEtiqueta) {
-            const [width, height] = document.getElementById('tamanhoEtiqueta').value.split('x');
-            const etiquetaHtml = document.getElementById('etiqueta-para-impressao').innerHTML;
-            const printWindow = window.open('', 'PRINT', `height=${height}mm,width=${width}mm`);
+            const [width, height] = tamanhoEtiqueta.value.split('x');
+            const etiquetaHtml = document.getElementById('etiqueta-para-impressao').outerHTML;
+            const printWindow = window.open('', 'PRINT', `height=${parseInt(height)+10}mm,width=${parseInt(width)+10}mm`);
             printWindow.document.write('<html><head><title>Etiqueta</title>');
-            printWindow.document.write('<style>body{margin:0; padding: 2mm;} .etiqueta-preview{width:100%; height:100%; font-family:Arial,sans-serif; color:#000; overflow:hidden;} h4{font-size:8pt; margin:0 0 5px 0; border-bottom:1px solid #000; padding-bottom:3px;} p{margin:0; font-size:7pt; line-height:1.3; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;} strong{display:block; font-size:6pt;} .os-number{font-size:12pt; font-weight:bold; text-align:center; margin-bottom:5px;} .checklist{font-size:6pt; margin-top:5px;}</style>');
-            printWindow.document.write('</head><body><div class="etiqueta-preview">');
+            printWindow.document.write('<style>@page { size: ' + width + 'mm ' + height + 'mm; margin: 0; } body{margin:0; padding: 0;} .etiqueta-preview{width:100%; height:100%; font-family:Arial,sans-serif; color:#000; overflow:hidden; padding: 2mm; box-sizing: border-box; display: flex; flex-direction: column;} h4{font-size:7pt; margin:0 0 4px 0; border-bottom:1px solid #333; padding-bottom:2px; text-align:center;} p{margin:0; font-size:7pt; line-height:1.2; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;} strong{display:block; font-size:5pt; color:#555;} .os-number{font-size:11pt; font-weight:bold; text-align:center; margin-bottom:4px;} .defeito-box{background:#eee; padding:4px; border-radius:3px; margin:4px 0;} .checklist{font-size:6pt; margin-top:auto; padding-top:4px;} .logo-externa{max-height:10mm; width:auto; object-fit:contain; margin:0 auto 4px auto; display:block;}</style>');
+            printWindow.document.write('</head><body>');
             printWindow.document.write(etiquetaHtml);
-            printWindow.document.write('</div></body></html>');
+            printWindow.document.write('</body></html>');
             printWindow.document.close();
             printWindow.focus();
-            printWindow.print();
-            printWindow.close();
+            setTimeout(() => { printWindow.print(); printWindow.close(); }, 250);
         }
     });
     
     function gerarPreviewDocumento(osId) {
         const os = osData[osId];
         const empresa = configData || {};
-        const printConfig = {
-            cpf: empresa.printCpfCliente || false,
-            detalharPecas: empresa.printDetalharPecas !== false,
-            assinatura: empresa.printAssinatura !== false,
-        };
+        const printConfig = { cpf: empresa.printCpfCliente || false, detalharPecas: empresa.printDetalharPecas !== false, assinatura: empresa.printAssinatura !== false };
         let logoHtml = empresa.urlLogo ? `<img src="${empresa.urlLogo}" alt="Logo" class="company-logo">` : '';
         let pecasHtml = '';
         if (os.pecas && os.pecas.length > 0) {
