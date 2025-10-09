@@ -32,7 +32,6 @@
     body { font-family: 'Inter', sans-serif; background: var(--main-bg); color: var(--text-primary); transition: background-color 0.3s; }
     .dashboard-container { display: grid; grid-template-columns: 240px 1fr; min-height: 100vh; }
 
-    /* --- Sidebar (Estilos Padrão) --- */
     .sidebar { background: var(--sidebar-bg); color: #fff; display: flex; flex-direction: column; padding: 24px 16px; position: fixed; left: 0; top: 0; height: 100%; width: 240px; z-index: 100; transition: transform 0.3s ease-in-out; }
     .sidebar-header { display: flex; align-items: center; gap: 12px; padding-bottom: 24px; margin-bottom: 16px; border-bottom: 1px solid var(--sidebar-bg-hover); }
     .sidebar-logo { width: 40px; height: 40px; background: var(--accent-blue); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; font-weight: bold; }
@@ -46,7 +45,6 @@
     .logout-btn { width: 100%; background: none; border: none; color: #cbd5e1; display: flex; align-items: center; gap: 12px; padding: 12px 16px; font-size: 1rem; cursor: pointer; text-align: left; font-family: inherit; border-radius: 8px; transition: all 0.2s ease-in-out; }
     .logout-btn:hover { background: var(--accent-red); color: #fff; }
 
-    /* --- Main Content --- */
     .main-content { grid-column: 2 / 3; padding: 32px; }
     .main-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 32px; }
     .main-header h1 { font-size: 1.8rem; font-weight: 700; color: var(--text-primary); }
@@ -54,17 +52,14 @@
     .actions-bar { background: var(--card-bg); padding: 20px; border-radius: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); margin-bottom: 24px; display: flex; justify-content: space-between; align-items: flex-end; gap: 20px; flex-wrap: wrap; }
     .filters-container { display: flex; gap: 16px; flex-wrap: wrap; align-items: center; flex-grow: 1;}
     .search-box { flex-grow: 1; min-width: 250px; position: relative; }
-    .search-box input { width: 100%; padding: 12px 16px 12px 40px; border: 2px solid var(--border-color); border-radius: 10px; font-size: 0.9rem; background: var(--main-bg); color: var(--text-primary); }
+    .search-box input, .filter-group select { width: 100%; padding: 12px 16px; border: 2px solid var(--border-color); border-radius: 10px; font-size: 0.9rem; background: var(--main-bg); color: var(--text-primary); -webkit-appearance: none; appearance: none; }
+    .search-box input { padding-left: 40px; }
     .search-box::before { content: '🔍'; position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--text-secondary); }
     .filter-group { min-width: 150px; }
     .filter-group label { display: block; font-size: 0.75rem; font-weight: 600; color: var(--text-secondary); margin-bottom: 4px; }
-    .filter-group select { 
-        width: 100%; padding: 12px 16px; border: 2px solid var(--border-color); border-radius: 10px; font-size: 0.9rem; background: var(--main-bg); color: var(--text-primary);
-        appearance: none; -webkit-appearance: none;
+    .filter-group select {
         background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3E%3Cpath stroke='%236B7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3E%3C/svg%3E");
-        background-repeat: no-repeat;
-        background-position: right 1rem center;
-        background-size: 1.2em 1.2em;
+        background-repeat: no-repeat; background-position: right 1rem center; background-size: 1.2em 1.2em;
     }
     .btn-primary { background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%); color: white; border: none; padding: 14px 28px; border-radius: 10px; font-weight: 600; cursor: pointer; transition: all 0.3s; box-shadow: 0 4px 12px rgba(99,102,241,0.3); display: flex; align-items: center; gap: 8px; }
     .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(99,102,241,0.4); }
@@ -78,19 +73,28 @@
     .stat-card.alert .stat-value { color: var(--accent-red); }
 
     .estoque-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 20px; }
-    .estoque-card { /* ... */ cursor: pointer; }
+    .estoque-card { background: var(--card-bg); border-radius: 16px; padding: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); border: 1px solid var(--border-color); transition: all 0.3s; cursor: pointer; }
+    .estoque-card:hover { box-shadow: 0 8px 24px rgba(0,0,0,0.12); transform: translateY(-4px); border-color: var(--accent-indigo); }
+    .estoque-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px solid var(--border-color); }
+    .estoque-titulo h3 { font-size: 1.1rem; color: var(--text-primary); margin-bottom: 4px; }
+    .estoque-codigo { font-size: 0.8rem; color: var(--text-secondary); }
+    .quantidade-badge { padding: 6px 12px; border-radius: 20px; font-size: 0.85rem; font-weight: 700; }
+    .qtd-normal { background: #d1fae5; color: #065f46; } .qtd-baixa { background: #fef3c7; color: #92400e; } .qtd-critica { background: #fee2e2; color: #991b1b; }
+    .destino-badge { display: inline-block; padding: 4px 10px; border-radius: 12px; font-size: 0.75rem; font-weight: 600; margin-left: 8px; }
+    .destino-oficina { background: #fef3c7; color: #92400e; } .destino-loja { background: #d1fae5; color: #065f46; }
+    
     .empty-state { text-align: center; padding: 80px 20px; background: var(--card-bg); border-radius: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
     .empty-state-icon { font-size: 4rem; margin-bottom: 20px; opacity: 0.5; }
     
-    /* MODAL DE ADICIONAR PEÇA REESTILIZADO */
-    .modal { /* ... estilos padrão ... */ }
-    .modal.active { /* ... */ }
-    .modal-content { /* ... */ }
-    .modal-header { /* ... */ }
-    .btn-close { /* ... */ }
-
+    .modal { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.6); z-index: 1000; padding: 20px; overflow-y: auto; }
+    .modal.active { display: flex; align-items: center; justify-content: center; }
+    .modal-content { background: var(--card-bg); border-radius: 20px; padding: 32px; max-width: 700px; width: 100%; box-shadow: 0 20px 60px rgba(0,0,0,0.3); max-height: 90vh; overflow-y: auto; }
+    .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; padding-bottom: 16px; border-bottom: 1px solid var(--border-color); }
+    .modal-header h2 { font-size: 1.5rem; color: var(--text-primary); }
+    .btn-close { background: var(--main-bg); border: none; width: 36px; height: 36px; border-radius: 8px; cursor: pointer; font-size: 1.2rem; transition: all 0.3s; color: var(--text-secondary); }
+    
     .form-section { margin-bottom: 24px; padding-bottom: 16px; border-bottom: 1px solid var(--border-color); }
-    .form-section:last-of-type { border-bottom: none; }
+    .form-section:last-of-type { border-bottom: none; margin-bottom: 0; }
     .form-section-title { font-size: 0.8rem; font-weight: 600; color: var(--text-secondary); text-transform: uppercase; margin-bottom: 16px; }
 
     .form-group label { display: block; margin-bottom: 8px; font-weight: 600; color: var(--text-primary); font-size: 0.9rem; }
@@ -105,19 +109,50 @@
     .destino-selector label { padding: 12px; border: 2px solid var(--border-color); border-radius: 10px; text-align: center; font-weight: 600; cursor: pointer; transition: all 0.2s; }
     .destino-selector input:checked + label { background-color: var(--accent-indigo); color: white; border-color: var(--accent-indigo); }
     
-    .btn-link { /* ... */ } .input-group { /* ... */ } .form-actions { /* ... */ } .btn-submit { /* ... */ } .btn-cancel { /* ... */ }
-
-    /* RESPONSIVIDADE */
+    .btn-link { background: none; border: none; color: var(--accent-blue); font-weight: 600; cursor: pointer; padding: 0 8px; font-size: 0.85rem; }
+    .input-group { display: flex; align-items: center; gap: 8px; }
+    .form-actions { display: flex; gap: 12px; margin-top: 28px; }
+    .btn-submit { flex: 1; padding: 14px; border-radius: 10px; font-weight: 600; font-size: 1rem; cursor: pointer; background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%); color: white; border: none; }
+    .btn-cancel { flex: 1; padding: 14px; border-radius: 10px; font-weight: 600; font-size: 1rem; cursor: pointer; background: var(--main-bg); color: var(--text-primary); border: none; }
+    
     .mobile-menu-btn { display: none; background: none; border: none; font-size: 1.8rem; cursor: pointer; color: var(--text-primary); }
-    .overlay { /* ... */ }
+    .overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 99; }
+    .overlay.is-open { display: block; }
     @media (max-width: 1024px) { .actions-bar { flex-direction: column; align-items: stretch; } .filters-container { width: 100%; } }
-    @media (max-width: 768px) { /* ... */ }
+    @media (max-width: 768px) {
+      .dashboard-container { grid-template-columns: 1fr; }
+      .sidebar { transform: translateX(-100%); }
+      .sidebar.is-open { transform: translateX(0); }
+      .main-content { grid-column: 1 / 2; padding: 16px; }
+      .mobile-menu-btn { display: block; }
+      .form-row, .form-row-3 { grid-template-columns: 1fr; }
+      .stats-grid { grid-template-columns: 1fr; }
+      .estoque-grid { grid-template-columns: 1fr; }
+    }
   </style>
 </head>
 <body>
   <div class="dashboard-container">
     <nav class="sidebar" id="sidebar">
-      </nav>
+      <div>
+        <div class="sidebar-header"><div class="sidebar-logo">S</div><h1>SIGO Casa dos Reparos</h1></div>
+        <ul class="nav-list">
+          <li><a href="painel.html"><span class="nav-icon">🏠</span> Painel</a></li>
+          <li><a href="ordens-servico.html"><span class="nav-icon">🛠️</span> Ordens de Serviço</a></li>
+          <li><a href="clientes.html"><span class="nav-icon">👥</span> Clientes</a></li>
+          <li><a href="agendamentos.html"><span class="nav-icon">📅</span> Agenda</a></li>
+          <li><a href="estoque.html" class="active"><span class="nav-icon">📦</span> Estoque</a></li>
+          <li><a href="contas_financeiro.html"><span class="nav-icon">💰</span> Financeiro</a></li>
+          <li><a href="anotacoes.html"><span class="nav-icon">📝</span> Anotações</a></li>
+          <li><a href="configuracoes.html"><span class="nav-icon">⚙️</span> Configurações</a></li>
+        </ul>
+      </div>
+      <div class="sidebar-footer">
+        <button class="logout-btn" onclick="logout()">
+          <span class="nav-icon">🚪</span> Sair do Sistema
+        </button>
+      </div>
+    </nav>
     <div class="overlay" id="overlay"></div>
 
     <main class="main-content">
@@ -128,9 +163,21 @@
 
       <div class="actions-bar">
         <div class="filters-container">
-            <div class="search-box"><input type="text" id="searchInput" placeholder="Buscar peça..."></div>
-            <div class="filter-group"><label for="filtroCategoria">Categoria</label><select id="filtroCategoria"><option value="todas">Todas</option></select></div>
-            <div class="filter-group"><label for="filtroDestino">Destino</label><select id="filtroDestino"><option value="todos">Todos</option><option value="oficina">Oficina</option><option value="loja">Loja</option></select></div>
+            <div class="search-box">
+                <input type="text" id="searchInput" placeholder="Buscar peça...">
+            </div>
+            <div class="filter-group">
+                <label for="filtroCategoria">Categoria</label>
+                <select id="filtroCategoria"><option value="todas">Todas</option></select>
+            </div>
+            <div class="filter-group">
+                <label for="filtroDestino">Destino</label>
+                <select id="filtroDestino">
+                    <option value="todos">Todos</option>
+                    <option value="oficina">Oficina</option>
+                    <option value="loja">Loja</option>
+                </select>
+            </div>
         </div>
         <button class="btn-primary" id="btnNovaPeca"><span>➕</span> Nova Peça</button>
       </div>
@@ -142,7 +189,13 @@
       </div>
 
       <div id="estoqueContainer">
+        <div class="estoque-grid" id="estoqueGrid"></div>
+        <div class="empty-state" id="emptyState" style="display: none;">
+          <div class="empty-state-icon">📦</div>
+          <h3>Nenhuma peça encontrada</h3>
+          <p>Tente ajustar os filtros ou adicione uma nova peça ao seu estoque.</p>
         </div>
+      </div>
     </main>
   </div>
 
@@ -151,14 +204,12 @@
       <div class="modal-header"><h2><span id="modalIcon">➕</span> <span id="modalTitle">Nova Peça</span></h2><button class="btn-close" onclick="fecharModal('modalPeca')">✕</button></div>
       <form id="formPeca" onsubmit="salvarPeca(event)">
         <input type="hidden" id="pecaId">
-        
         <div class="form-section">
             <div class="form-section-title">Identificação da Peça</div>
             <div class="form-row"><div class="form-group"><label for="nomePeca">Nome da Peça *</label><input type="text" id="nomePeca" required></div><div class="form-group"><label for="codigoPeca">Código/SKU</label><input type="text" id="codigoPeca"></div></div>
             <div class="form-group"><label for="categoriaPeca">Categoria *</label><div class="input-group"><select id="categoriaPeca" required></select><button type="button" class="btn-link" id="btnNovaCategoria">[+]</button></div></div>
             <div class="form-group"><label>Destino da Peça *</label><div class="destino-selector"><input type="radio" name="destino" value="oficina" id="destinoOficina" required><label for="destinoOficina">🔧 Oficina</label><input type="radio" name="destino" value="loja" id="destinoLoja"><label for="destinoLoja">🏪 Loja</label></div></div>
         </div>
-        
         <div class="form-section">
             <div class="form-section-title">Valores e Margem</div>
             <div class="form-row-3">
@@ -167,12 +218,10 @@
                 <div class="form-group"><label for="valorUnitario">Preço de Venda (R$) *</label><input type="number" id="valorUnitario" required step="0.01" min="0"></div>
             </div>
         </div>
-
         <div class="form-section">
             <div class="form-section-title">Controle de Estoque</div>
             <div class="form-row"><div class="form-group"><label for="quantidadePeca">Quantidade Atual *</label><input type="number" id="quantidadePeca" required min="0" value="0"></div><div class="form-group"><label for="estoqueMinimo">Estoque Mínimo *</label><input type="number" id="estoqueMinimo" required min="1" value="5"></div></div>
         </div>
-
         <div class="form-actions"><button type="button" class="btn-cancel" onclick="fecharModal('modalPeca')">Cancelar</button><button type="submit" class="btn-submit">Salvar Peça</button></div>
       </form>
     </div>
@@ -185,11 +234,32 @@
       </div>
   </div>
 
+  <div class="modal" id="modalMovimentacao">
+      <div class="modal-content" style="max-width: 500px;">
+        <div class="modal-header"><h2>📊 Movimentação de Estoque</h2><button class="btn-close" onclick="fecharModal('modalMovimentacao')">✕</button></div>
+        <form id="formMovimentacao" onsubmit="salvarMovimentacao(event)">
+            <input type="hidden" id="movPecaId">
+            <div class="form-group"><label>Peça</label><input type="text" id="movNomePeca" readonly style="font-weight: bold;"></div>
+            <div class="form-group"><label>Estoque Atual</label><input type="text" id="movEstoqueAtual" readonly></div>
+            <div class="form-row">
+                <div class="form-group"><label for="tipoMovimentacao">Tipo *</label><select id="tipoMovimentacao" required><option value="entrada">➕ Entrada</option><option value="saida">➖ Saída</option></select></div>
+                <div class="form-group"><label for="quantidadeMovimentacao">Quantidade *</label><input type="number" id="quantidadeMovimentacao" required min="1" value="1"></div>
+            </div>
+            <div class="form-group"><label for="motivoMovimentacao">Motivo/Observação</label><textarea id="motivoMovimentacao" placeholder="Ex: Compra, usado em OS #0023..."></textarea></div>
+            <div class="form-actions"><button type="button" class="btn-cancel" onclick="fecharModal('modalMovimentacao')">Cancelar</button><button type="submit" class="btn-submit">Confirmar</button></div>
+        </form>
+      </div>
+  </div>
+
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+  <script src="firebase-config.js"></script>
+  <script src="utils.js"></script>
+
   <script>
-    // Todo o código JavaScript 100% completo, sem omissões.
     protegerPagina();
 
-    // LÓGICA DE RESPONSIVIDADE (MENU MOBILE) E TEMA
     const sidebar = document.getElementById('sidebar');
     const mobileMenuBtn = document.getElementById('mobileMenuBtn');
     const overlay = document.getElementById('overlay');
@@ -271,7 +341,7 @@
                     <h3>${peca.nomePeca} <span class="destino-badge ${destinoClass}">${destinoTexto}</span></h3>
                     <div class="estoque-codigo">${peca.codigoPeca || 'Sem código'} | ${peca.categoriaPeca}</div>
                 </div>
-                <span class="quantidade-badge ${qtdClass}">${peca.quantidade} un.</span>
+                <span class="quantidade-badge ${qtdClass}">${peca.quantidade || 0} un.</span>
             </div>
             <p style="color: var(--text-secondary); margin-bottom: 12px;">Preço Venda: <strong>${formatarMoeda(peca.valorUnitario)}</strong></p>
             <p style="color: var(--text-secondary);">Estoque Mínimo: ${peca.estoqueMinimo}</p>
@@ -403,12 +473,12 @@
             return;
         }
 
-        let html = '<ul style="list-style: none;">';
+        let html = '<ul style="list-style: none; padding: 0">';
         pecasBaixas.sort((a,b) => a.nomePeca.localeCompare(b.nomePeca));
         pecasBaixas.forEach(p => {
             html += `<li style="padding: 12px 0; border-bottom: 1px solid var(--border-color);">
                 <strong>${p.nomePeca}</strong>
-                <p style="color: var(--accent-red); font-weight: 500;">Estoque: ${p.quantidade} | Mínimo: ${p.estoqueMinimo}</p>
+                <p style="color: var(--accent-red); font-weight: 500; margin-top: 4px;">Estoque: ${p.quantidade || 0} | Mínimo: ${p.estoqueMinimo}</p>
             </li>`;
         });
         html += '</ul>';
