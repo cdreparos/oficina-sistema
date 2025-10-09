@@ -27,7 +27,7 @@
     }
 
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { font-family: 'Inter', sans-serif; background: var(--main-bg); color: var(--text-primary); transition: background-color 0.3s; }
+    body { font-family: 'Inter', sans-serif; background: var(--main-bg); color: var(--text-primary); }
     .dashboard-container { display: grid; grid-template-columns: 240px 1fr; min-height: 100vh; }
 
     .sidebar { background: var(--sidebar-bg); color: #fff; display: flex; flex-direction: column; padding: 24px 16px; position: fixed; left: 0; top: 0; height: 100%; width: 240px; z-index: 100; transition: transform 0.3s ease-in-out; }
@@ -63,16 +63,14 @@
     .filters { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
     .filter-group label { font-size: 0.75rem; color: var(--text-secondary); font-weight: 600; margin-bottom: 4px; display: block; }
     .filter-group select, .filter-group input { padding: 10px 14px; border: 2px solid var(--border-color); border-radius: 8px; font-size: 0.9rem; background: var(--main-bg); color: var(--text-primary); }
-    .btn-group button { border-radius: 0; }
-    .btn-group button:first-child { border-top-left-radius: 10px; border-bottom-left-radius: 10px; }
-    .btn-group button:last-child { border-top-right-radius: 10px; border-bottom-right-radius: 10px; }
     .btn-primary { background: var(--accent-green); color: white; border: none; padding: 12px 24px; border-radius: 10px; font-weight: 600; cursor: pointer; transition: all 0.3s; display: flex; align-items: center; gap: 8px; font-size: 0.9rem; }
     .btn-danger { background: var(--accent-red); }
     
     .transacoes-table-container { background: var(--card-bg); border-radius: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); overflow: auto; }
     .transacoes-table { min-width: 900px; width: 100%; border-collapse: collapse; }
     .transacoes-table th, .transacoes-table td { padding: 16px 20px; text-align: left; }
-    .transacoes-table thead { background: var(--main-bg); font-size: 0.85rem; color: var(--text-primary); border-bottom: 2px solid var(--border-color); }
+    .transacoes-table thead { background: var(--main-bg); }
+    .transacoes-table th { font-size: 0.85rem; color: var(--text-primary); border-bottom: 2px solid var(--border-color); }
     .transacoes-table tbody tr { border-bottom: 1px solid var(--border-color); }
     .transacoes-table tbody tr:last-child { border-bottom: none; }
     .transacoes-table tbody tr:hover { background: var(--main-bg); }
@@ -87,18 +85,20 @@
     .btn-delete { background: #fee2e2; color: #991b1b; } .btn-delete:hover { background: #ef4444; color: white; }
     .btn-pay { background: #d1fae5; color: #065f46; } .btn-pay:hover { background: #10b981; color: white; }
     
-    .modal { display: none; position: fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.6); z-index:1000; align-items:center; justify-content:center; }
+    .modal { display: none; position: fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.6); z-index:1000; align-items:center; justify-content:center; padding: 20px; }
     .modal.active { display: flex; }
     .modal-content { background: var(--card-bg); border-radius: 20px; padding: 32px; max-width: 600px; width: 100%; box-shadow: 0 20px 60px rgba(0,0,0,0.3); }
     .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; padding-bottom: 16px; border-bottom: 1px solid var(--border-color); }
     .form-group { margin-bottom: 20px; } .form-group label { display: block; margin-bottom: 8px; font-weight: 600; font-size: 0.9rem; }
-    .form-group input, .form-group select { width: 100%; padding: 12px 16px; border: 2px solid var(--border-color); border-radius: 10px; font-size: 0.95rem; background: var(--main-bg); color: var(--text-primary); }
-    .form-group input:focus, .form-group select:focus { outline: none; border-color: var(--accent-blue); }
+    .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 12px 16px; border: 2px solid var(--border-color); border-radius: 10px; font-size: 0.95rem; background: var(--main-bg); color: var(--text-primary); }
+    .form-group input:focus, .form-group select:focus, .form-group textarea:focus { outline: none; border-color: var(--accent-blue); }
     .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
     .form-actions { display: flex; gap: 12px; margin-top: 28px; }
     .btn-submit { flex: 1; border-radius: 10px; font-weight: 600; cursor: pointer; transition: all 0.3s; font-size: 1rem; border: none; padding: 14px; }
     .btn-cancel { flex: 1; border-radius: 10px; font-weight: 600; cursor: pointer; transition: all 0.3s; font-size: 1rem; background: var(--main-bg); color: var(--text-primary); border: none; padding: 14px; }
     .empty-state { display: none; text-align: center; padding: 60px 20px; }
+    .input-group { display: flex; align-items: center; gap: 8px; }
+    .btn-link { background: none; border: none; color: var(--accent-blue); font-weight: 600; cursor: pointer; padding: 0 8px; font-size: 0.85rem; }
     
     .mobile-menu-btn { display: none; background: none; border: none; font-size: 1.8rem; cursor: pointer; color: var(--text-primary); }
     .overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 99; }
@@ -158,27 +158,25 @@
         <button class="tab" data-tab="vencidas">⚠️ Vencidas</button>
       </div>
 
-      <div class="tab-content active" id="content-todas">
-        <div class="actions-bar">
-          <div class="filters">
-            <div class="filter-group"><label>Período</label><select id="filtroPeriodo"><option value="todos">Todos</option><option value="mes" selected>Mês Atual</option><option value="semana">Últimos 7 dias</option><option value="ano">Ano Atual</option></select></div>
-            <div class="filter-group"><label>Categoria</label><select id="filtroCategoria"><option value="todas">Todas</option></select></div>
-          </div>
-          <div style="display: flex; gap: 12px;">
-            <button class="btn-primary" id="btnNovaEntrada"><span>⬆️</span> Nova Entrada</button>
-            <button class="btn-primary btn-danger" id="btnNovaSaida"><span>⬇️</span> Nova Saída</button>
-          </div>
+      <div class="actions-bar">
+        <div class="filters">
+          <div class="filter-group"><label>Período</label><select id="filtroPeriodo"><option value="todos">Todos</option><option value="mes" selected>Mês Atual</option><option value="semana">Últimos 7 dias</option><option value="ano">Ano Atual</option></select></div>
+          <div class="filter-group"><label>Categoria</label><select id="filtroCategoria"><option value="todas">Todas</option></select></div>
         </div>
-        <div class="transacoes-table-container">
-          <table class="transacoes-table">
-            <thead><tr class="table-header"><th>Data</th><th>Descrição</th><th>Categoria</th><th>Vencimento</th><th>Status</th><th>Valor</th><th>Ações</th></tr></thead>
-            <tbody id="transacoesList"></tbody>
-          </table>
+        <div style="display: flex; gap: 12px;">
+          <button class="btn-primary" id="btnNovaEntrada"><span>⬆️</span> Nova Entrada</button>
+          <button class="btn-primary btn-danger" id="btnNovaSaida"><span>⬇️</span> Nova Saída</button>
         </div>
-        <div class="empty-state" id="emptyState" style="display: none;">
-          <h3>Nenhuma transação encontrada</h3>
-          <p>Tente ajustar os filtros ou adicione uma nova transação.</p>
-        </div>
+      </div>
+      <div class="transacoes-table-container">
+        <table class="transacoes-table">
+          <thead><tr><th>Data</th><th>Descrição</th><th>Categoria</th><th>Vencimento</th><th>Status</th><th>Valor</th><th>Ações</th></tr></thead>
+          <tbody id="transacoesList"></tbody>
+        </table>
+      </div>
+      <div class="empty-state" id="emptyState">
+        <h3>Nenhuma transação encontrada</h3>
+        <p>Tente ajustar os filtros ou adicione uma nova transação.</p>
       </div>
     </main>
   </div>
@@ -190,7 +188,16 @@
         <input type="hidden" id="transacaoId">
         <input type="hidden" id="tipoTransacao">
         <div class="form-group"><label for="descricao">Descrição *</label><input type="text" id="descricao" required></div>
-        <div class="form-row"><div class="form-group"><label for="valor">Valor (R$) *</label><input type="number" id="valor" step="0.01" required></div><div class="form-group"><label for="categoria">Categoria *</label><select id="categoria" required><option value="servicos">Serviços</option><option value="venda_pecas">Venda de Peças</option><option value="compra_pecas">Compra de Peças</option><option value="salario">Salário</option><option value="contas">Contas (Água, Luz, etc.)</option><option value="outro">Outro</option></select></div></div>
+        <div class="form-row">
+            <div class="form-group"><label for="valor">Valor (R$) *</label><input type="number" id="valor" step="0.01" required></div>
+            <div class="form-group">
+                <label for="categoria">Categoria *</label>
+                <div class="input-group">
+                    <select id="categoria" required></select>
+                    <button type="button" class="btn-link" id="btnNovaCategoria">[+]</button>
+                </div>
+            </div>
+        </div>
         <div class="form-row"><div class="form-group"><label for="dataTransacao">Data da Transação *</label><input type="date" id="dataTransacao" required></div><div class="form-group"><label for="dataVencimento">Data de Vencimento</label><input type="date" id="dataVencimento"></div></div>
         <div class="form-group"><label for="statusTransacao">Status *</label><select id="statusTransacao" required><option value="pago">Pago</option><option value="pendente">Pendente</option></select></div>
         <div class="form-actions"><button type="button" class="btn-cancel" onclick="fecharModal()">Cancelar</button><button type="submit" class="btn-submit" id="btnSubmit">Salvar</button></div>
@@ -217,7 +224,7 @@
     const transacoesRef = database.ref("transacoes");
     const osRef = database.ref("ordens_servico");
 
-    let transacoesData = {}, osData = {}, editandoId = null;
+    let transacoesData = {}, osData = {}, editandoId = null, categoriasFinanceiro = [];
     let filtroTabAtual = 'todas';
 
     auth.onAuthStateChanged(user => {
@@ -226,13 +233,14 @@
             const config = snapshot.val() || {};
             if (config.darkMode) { document.body.classList.add('dark-mode'); }
             else { document.body.classList.remove('dark-mode'); }
+            categoriasFinanceiro = config.categoriasFinanceiro || ['Serviços', 'Venda de Peças', 'Compra de Peças', 'Salário', 'Contas (Água, Luz, etc.)', 'Outro'];
+            carregarCategoriasFinanceiro();
         });
         osRef.on("value", snapshot => { osData = snapshot.val() || {}; sincronizarOSPagas(); });
         transacoesRef.on("value", snapshot => {
           transacoesData = snapshot.val() || {};
           calcularResumo();
           renderizarTransacoes();
-          carregarCategorias();
         });
       }
     });
@@ -245,14 +253,10 @@
         const osPagas = Object.entries(osData).filter(([id, os]) => os.statusOS === 'entregue' && !os.transacaoGerada);
         for (const [id, os] of osPagas) {
             const transacao = {
-                tipo: 'entrada',
-                descricao: `Recebimento OS #${String(os.numeroOS).padStart(4, '0')}`,
-                categoria: 'servicos',
-                valor: parseFloat(os.valorTotalFinal),
+                tipo: 'entrada', descricao: `Recebimento OS #${String(os.numeroOS).padStart(4, '0')}`,
+                categoria: 'Serviços', valor: parseFloat(os.valorTotalFinal),
                 dataTransacao: os.dataPagamento ? os.dataPagamento.split('T')[0] : new Date().toISOString().split('T')[0],
-                statusTransacao: 'pago',
-                referenciaOS: id,
-                criadoEm: new Date().toISOString()
+                statusTransacao: 'pago', referenciaOS: id, criadoEm: new Date().toISOString()
             };
             await transacoesRef.push(transacao);
             await osRef.child(id).update({ transacaoGerada: true });
@@ -281,9 +285,7 @@
       const lista = document.getElementById('transacoesList');
       const emptyState = document.getElementById('emptyState');
       lista.innerHTML = '';
-      
       let transacoesArray = Object.entries(transacoesData).map(([id, data]) => ({ id, ...data }));
-      
       if (filtroTabAtual === 'entradas') transacoesArray = transacoesArray.filter(t => t.tipo === 'entrada');
       else if (filtroTabAtual === 'saidas') transacoesArray = transacoesArray.filter(t => t.tipo === 'saida');
       else if (filtroTabAtual === 'pendentes') transacoesArray = transacoesArray.filter(t => t.statusTransacao === 'pendente');
@@ -296,15 +298,12 @@
       const categoria = document.getElementById('filtroCategoria').value;
       transacoesArray = aplicarFiltros(transacoesArray, periodo, categoria);
       
-      if (transacoesArray.length === 0) {
-        emptyState.style.display = 'block'; document.querySelector('.transacoes-table-container').style.display = 'none'; return;
-      }
-      
+      if (transacoesArray.length === 0) { emptyState.style.display = 'block'; document.querySelector('.transacoes-table-container').style.display = 'none'; return; }
       emptyState.style.display = 'none'; document.querySelector('.transacoes-table-container').style.display = 'block';
       transacoesArray.sort((a, b) => new Date(b.dataTransacao) - new Date(a.dataTransacao));
       
       transacoesArray.forEach(transacao => {
-        const row = document.createElement('tr'); row.className = 'table-row';
+        const row = document.createElement('tr');
         const data = new Date(transacao.dataTransacao + 'T00:00:00');
         const vencimento = transacao.dataVencimento ? new Date(transacao.dataVencimento + 'T00:00:00').toLocaleDateString('pt-BR') : '-';
         let statusClass = `status-${transacao.statusTransacao}`; let statusTexto = transacao.statusTransacao;
@@ -315,18 +314,7 @@
         const valorClass = transacao.tipo === 'entrada' ? 'valor-entrada' : 'valor-saida';
         const valorSinal = transacao.tipo === 'entrada' ? '+' : '-';
         
-        row.innerHTML = `
-          <td>${data.toLocaleDateString('pt-BR')}</td>
-          <td style="font-weight: 600;">${transacao.descricao}</td>
-          <td>${transacao.categoria}</td>
-          <td>${vencimento}</td>
-          <td><span class="status-badge ${statusClass}">${statusTexto}</span></td>
-          <td class="${valorClass}">${valorSinal} ${formatarMoeda(transacao.valor)}</td>
-          <td><div class="action-buttons">
-            ${transacao.statusTransacao === 'pendente' ? `<button class="btn-icon btn-pay" onclick="marcarComoPago('${transacao.id}')" title="Marcar como pago">✓</button>` : ''}
-            ${!transacao.referenciaOS ? `<button class="btn-icon btn-edit" onclick="editarTransacao('${transacao.id}')" title="Editar">✎</button><button class="btn-icon btn-delete" onclick="excluirTransacao('${transacao.id}', '${transacao.descricao}')" title="Excluir">🗑</button>` : '<small style="color: var(--text-secondary); padding-left: 8px;">OS</small>'}
-          </div></td>
-        `;
+        row.innerHTML = `<td>${data.toLocaleDateString('pt-BR')}</td><td style="font-weight: 600;">${transacao.descricao}</td><td>${transacao.categoria}</td><td>${vencimento}</td><td><span class="status-badge ${statusClass}">${statusTexto}</span></td><td class="${valorClass}">${valorSinal} ${formatarMoeda(transacao.valor)}</td><td><div class="action-buttons">${transacao.statusTransacao === 'pendente' ? `<button class="btn-icon btn-pay" onclick="marcarComoPago('${transacao.id}')" title="Marcar como pago">✓</button>` : ''}${!transacao.referenciaOS ? `<button class="btn-icon btn-edit" onclick="editarTransacao('${transacao.id}')" title="Editar">✎</button><button class="btn-icon btn-delete" onclick="excluirTransacao('${transacao.id}', '${transacao.descricao}')" title="Excluir">🗑</button>` : '<small style="color: var(--text-secondary); padding-left: 8px;">OS</small>'}</div></td>`;
         lista.appendChild(row);
       });
     }
@@ -334,9 +322,7 @@
     function aplicarFiltros(transacoes, periodo, categoria) {
       let filtradas = [...transacoes];
       if (periodo !== 'todos') {
-        const hoje = new Date();
-        const ano = hoje.getFullYear();
-        const mes = hoje.getMonth();
+        const hoje = new Date(); const ano = hoje.getFullYear(); const mes = hoje.getMonth();
         filtradas = filtradas.filter(t => {
           const data = new Date(t.dataTransacao + 'T00:00:00');
           if (periodo === 'mes') { return data.getMonth() === mes && data.getFullYear() === ano; }
@@ -352,26 +338,39 @@
     document.querySelectorAll('.tab').forEach(tab => {
       tab.addEventListener('click', function() {
         document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-        this.classList.add('active');
-        filtroTabAtual = this.dataset.tab;
-        renderizarTransacoes();
+        this.classList.add('active'); filtroTabAtual = this.dataset.tab; renderizarTransacoes();
       });
     });
     
     ['filtroPeriodo', 'filtroCategoria'].forEach(id => document.getElementById(id).addEventListener('change', renderizarTransacoes));
 
-    function carregarCategorias() {
-        const categorias = [...new Set(Object.values(transacoesData).map(t => t.categoria))];
-        const select = document.getElementById('filtroCategoria');
-        select.innerHTML = '<option value="todas">Todas</option>';
-        categorias.sort().forEach(cat => select.add(new Option(cat,cat)));
+    function carregarCategoriasFinanceiro() {
+        const selects = [document.getElementById('categoria'), document.getElementById('filtroCategoria')];
+        selects.forEach(select => {
+            const currentValue = select.value;
+            select.innerHTML = select.id === 'filtroCategoria' ? '<option value="todas">Todas as Categorias</option>' : '<option value="">Selecione...</option>';
+            categoriasFinanceiro.sort().forEach(cat => select.add(new Option(cat, cat)));
+            select.value = currentValue;
+        });
     }
+
+    document.getElementById('btnNovaCategoria').addEventListener('click', () => {
+        const novaCat = prompt("Digite o nome da nova categoria financeira:");
+        if (novaCat && !categoriasFinanceiro.includes(novaCat)) {
+            categoriasFinanceiro.push(novaCat);
+            configRef.child('categoriasFinanceiro').set(categoriasFinanceiro).then(() => {
+                alert(`Categoria "${novaCat}" adicionada!`);
+                document.getElementById('categoria').value = novaCat;
+            });
+        } else if (novaCat) {
+            document.getElementById('categoria').value = novaCat;
+        }
+    });
     
     function fecharModal() { document.getElementById('modalTransacao').classList.remove('active'); }
     
     function abrirModal(tipo) {
-        editandoId = null;
-        document.getElementById('formTransacao').reset();
+        editandoId = null; document.getElementById('formTransacao').reset();
         document.getElementById('tipoTransacao').value = tipo;
         document.getElementById('modalTitle').textContent = `Nova ${tipo === 'entrada' ? 'Entrada' : 'Saída'}`;
         document.querySelector('.btn-submit').style.background = tipo === 'entrada' ? 'var(--accent-green)' : 'var(--accent-red)';
@@ -383,14 +382,10 @@
     
     function editarTransacao(id) {
         editandoId = id; const t = transacoesData[id];
-        document.getElementById('transacaoId').value = id;
-        document.getElementById('tipoTransacao').value = t.tipo;
-        document.getElementById('descricao').value = t.descricao;
-        document.getElementById('valor').value = t.valor;
-        document.getElementById('categoria').value = t.categoria;
-        document.getElementById('dataTransacao').value = t.dataTransacao;
-        document.getElementById('dataVencimento').value = t.dataVencimento || '';
-        document.getElementById('statusTransacao').value = t.statusTransacao;
+        document.getElementById('transacaoId').value = id; document.getElementById('tipoTransacao').value = t.tipo;
+        document.getElementById('descricao').value = t.descricao; document.getElementById('valor').value = t.valor;
+        document.getElementById('categoria').value = t.categoria; document.getElementById('dataTransacao').value = t.dataTransacao;
+        document.getElementById('dataVencimento').value = t.dataVencimento || ''; document.getElementById('statusTransacao').value = t.statusTransacao;
         document.getElementById('modalTitle').textContent = `Editar ${t.tipo === 'entrada' ? 'Entrada' : 'Saída'}`;
         document.querySelector('.btn-submit').style.background = t.tipo === 'entrada' ? 'var(--accent-green)' : 'var(--accent-red)';
         document.getElementById('modalTransacao').classList.add('active');
@@ -399,29 +394,20 @@
     function salvarTransacao(event) {
         event.preventDefault();
         const data = {
-            tipo: document.getElementById('tipoTransacao').value,
-            descricao: document.getElementById('descricao').value,
-            valor: parseFloat(document.getElementById('valor').value),
-            categoria: document.getElementById('categoria').value,
-            dataTransacao: document.getElementById('dataTransacao').value,
-            dataVencimento: document.getElementById('dataVencimento').value,
+            tipo: document.getElementById('tipoTransacao').value, descricao: document.getElementById('descricao').value,
+            valor: parseFloat(document.getElementById('valor').value), categoria: document.getElementById('categoria').value,
+            dataTransacao: document.getElementById('dataTransacao').value, dataVencimento: document.getElementById('dataVencimento').value,
             statusTransacao: document.getElementById('statusTransacao').value,
             criadoEm: editandoId ? transacoesData[editandoId].criadoEm : new Date().toISOString(),
             atualizadoEm: new Date().toISOString()
         };
         const promise = editandoId ? transacoesRef.child(editandoId).update(data) : transacoesRef.push(data);
-        promise.then(() => {
-            alert(`Transação ${editandoId ? 'atualizada' : 'salva'} com sucesso!`);
-            fecharModal();
-        });
+        promise.then(() => { alert(`Transação ${editandoId ? 'atualizada' : 'salva'}!`); fecharModal(); });
     }
 
     function marcarComoPago(id) {
         if (confirm("Deseja marcar esta transação como paga na data de hoje?")) {
-            transacoesRef.child(id).update({
-                statusTransacao: 'pago',
-                dataTransacao: new Date().toISOString().slice(0,10)
-            });
+            transacoesRef.child(id).update({ statusTransacao: 'pago', dataTransacao: new Date().toISOString().slice(0,10) });
         }
     }
     
