@@ -75,19 +75,26 @@
         .print-footer p { font-size: 0.75rem; color: var(--text-secondary); white-space: pre-wrap; }
         .signature-container { margin-top: 2.5rem; display: flex; justify-content: space-around; gap: 2rem; page-break-inside: avoid; }
         .signature-box { text-align: center; } .signature-box p { font-size: 0.85rem; }
-
-        .etiqueta-preview-wrapper { display: flex; justify-content: center; align-items: center; min-height: 200px; }
-        .etiqueta-preview { background: #fff; color: #000; font-family: 'Arial', sans-serif; overflow: hidden; padding: 2mm; box-sizing: border-box; display: flex; flex-direction: column; }
-        .etiqueta-preview h4 { font-size: 7pt; margin: 0 0 4px 0; border-bottom: 1px solid #333; padding-bottom: 2px; text-align: center; }
-        .etiqueta-preview p { margin: 0; font-size: 7pt; line-height: 1.2; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .etiqueta-preview strong { display: block; font-size: 5pt; color: #555; }
-        .etiqueta-preview .os-number { font-size: 11pt; font-weight: bold; text-align: center; margin-bottom: 4px; }
-        .etiqueta-preview .defeito-box { background: #eee; padding: 4px; border-radius: 3px; margin: 4px 0; }
-        .etiqueta-preview .checklist { font-size: 6pt; margin-top: auto; padding-top: 4px; }
-        .etiqueta-preview .logo-externa { max-height: 12mm; width: auto; object-fit: contain; margin: 0 auto 4px auto; display: block; }
         
+        .etiqueta-preview-wrapper { display: flex; justify-content: center; align-items: center; min-height: 200px; background-color: var(--main-bg); padding: 20px; border-radius: 10px; }
+        .etiqueta-preview { background: #fff; color: #000; font-family: 'Arial', sans-serif; overflow: hidden; box-sizing: border-box; border: 1px solid #333; }
+        .etiqueta-cliente-header { padding: 4mm; border-bottom: 2px solid #000; text-align: center; }
+        .etiqueta-cliente-header h3 { font-size: 11pt; margin: 0; }
+        .etiqueta-cliente-header p { font-size: 7pt; margin: 0; }
+        .etiqueta-cliente-header .phone { font-size: 9pt; font-weight: bold; background: #000; color: #fff; padding: 1mm 2mm; border-radius: 4px; display: inline-block; margin-top: 2mm; }
+        .etiqueta-cliente-body { padding: 4mm; }
+        .etiqueta-cliente-row { display: flex; align-items: center; border-bottom: 1px solid #ccc; padding: 2mm 0; }
+        .etiqueta-cliente-row:last-child { border-bottom: none; }
+        .etiqueta-cliente-icon { font-size: 14pt; width: 8mm; text-align: center; }
+        .etiqueta-cliente-text { font-size: 11pt; font-weight: bold; padding-left: 3mm; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .etiqueta-interna-table { width: 100%; height: 100%; border-collapse: collapse; }
+        .etiqueta-interna-table td { border: 1px solid #000; padding: 2mm; vertical-align: middle; }
+        .etiqueta-interna-icon-cell { width: 12mm; text-align: center; font-size: 16pt; }
+        .etiqueta-interna-text-cell { font-size: 12pt; font-weight: bold; }
+        .etiqueta-interna-check-cell { font-size: 10pt; }
+
         .mobile-menu-btn { display: none; } .overlay { display: none; }
-        @media (max-width: 768px) { /* ... */ }
+        @media (max-width: 768px) { /* ... estilos responsivos ... */ }
         
         @media print {
             body * { visibility: hidden; }
@@ -152,8 +159,9 @@
           <aside class="selection-panel no-print">
             <h3>Gerar Etiqueta</h3>
             <div class="form-group"><label>Buscar OS</label><div class="search-box"><input type="text" id="searchInputEtiqueta" placeholder="Nº da OS ou cliente..."></div><div class="search-results" id="searchResultsEtiqueta"></div></div>
-            <div class="form-group"><label>Tipo de Etiqueta</label><select id="tipoEtiqueta"><option value="externa">Externa (Produto)</option><option value="interna">Interna (Controle)</option></select></div>
+            <div class="form-group"><label>Tipo de Etiqueta</label><select id="tipoEtiqueta"><option value="cliente">Etiqueta do Cliente</option><option value="interna">Controle Interno</option></select></div>
             <div class="form-group"><label>Tamanho da Etiqueta</label><select id="tamanhoEtiqueta">
+                <option value="50x80">50mm x 80mm</option>
                 <option value="50x30">50mm x 30mm</option><option value="50x40">50mm x 40mm</option><option value="50x50">50mm x 50mm</option><option value="50x60">50mm x 60mm</option>
                 <option value="80x40">80mm x 40mm</option><option value="80x50">80mm x 50mm</option><option value="80x60">80mm x 60mm</option><option value="80x80">80mm x 80mm</option>
             </select></div>
@@ -165,6 +173,8 @@
           </section>
         </div>
       </div>
+
+      <div id="print-style-holder"></div>
     </main>
   </div>
 
@@ -181,9 +191,11 @@
     const overlay = document.getElementById('overlay');
     mobileMenuBtn.addEventListener('click', () => { sidebar.classList.toggle('is-open'); overlay.classList.toggle('is-open'); });
     overlay.addEventListener('click', () => { sidebar.classList.remove('is-open'); overlay.classList.remove('is-open'); });
+    
     const configRef = database.ref('configuracoes');
     const osRef = database.ref('ordens_servico');
     let configData = {}, osData = {}, selectedOsIdDoc = null, selectedOsIdEtiqueta = null;
+
     auth.onAuthStateChanged(user => {
       if(user) {
         configRef.on('value', (snapshot) => {
@@ -197,6 +209,7 @@
         });
       }
     });
+    
     const tabs = document.querySelectorAll('.tab');
     const tabContents = document.querySelectorAll('.tab-content');
     tabs.forEach(tab => {
@@ -207,10 +220,12 @@
             document.getElementById(`tab-${tab.dataset.tab}`).classList.add('active');
         });
     });
+
     const recentOsList = document.getElementById('recent-os-list');
     const previewContainerDoc = document.getElementById('print-preview-container-doc');
     const placeholderDoc = document.getElementById('preview-placeholder-doc');
     const btnImprimirDoc = document.getElementById('btnImprimirDoc');
+
     function renderizarListaOSRecentes() {
         const osFinalizadas = Object.entries(osData)
             .filter(([id, os]) => ['concluido', 'entregue'].includes(os.statusOS))
@@ -228,6 +243,7 @@
             recentOsList.appendChild(item);
         });
     }
+
     function selecionarOSParaDocumento(osId, element) {
         selectedOsIdDoc = osId;
         document.querySelectorAll('#recent-os-list .os-item').forEach(el => el.classList.remove('selected'));
@@ -236,7 +252,9 @@
         placeholderDoc.style.display = 'none';
         gerarPreviewDocumento(osId);
     }
-    btnImprimirDoc.addEventListener('click', () => { if(selectedOsIdDoc) window.print(); });
+    
+    btnImprimirDoc.addEventListener('click', () => { if(selectedOsIdDoc) { setPageSize('A4'); window.print(); } });
+
     const searchInputEtiqueta = document.getElementById('searchInputEtiqueta');
     const searchResultsEtiqueta = document.getElementById('searchResultsEtiqueta');
     const tipoEtiqueta = document.getElementById('tipoEtiqueta');
@@ -244,6 +262,7 @@
     const previewContainerEtiqueta = document.getElementById('print-preview-container-etiqueta');
     const placeholderEtiqueta = document.getElementById('preview-placeholder-etiqueta');
     const btnImprimirEtiqueta = document.getElementById('btnImprimirEtiqueta');
+
     searchInputEtiqueta.addEventListener('input', () => {
         const termo = searchInputEtiqueta.value.toLowerCase();
         searchResultsEtiqueta.innerHTML = ''; if (termo.length < 2) return;
@@ -256,8 +275,10 @@
             searchResultsEtiqueta.appendChild(item);
         });
     });
+
     tipoEtiqueta.addEventListener('change', gerarPreviewEtiqueta);
     tamanhoEtiqueta.addEventListener('change', gerarPreviewEtiqueta);
+
     function selecionarOSParaEtiqueta(osId) {
         selectedOsIdEtiqueta = osId;
         searchResultsEtiqueta.innerHTML = '';
@@ -266,36 +287,54 @@
         placeholderEtiqueta.style.display = 'none';
         gerarPreviewEtiqueta();
     }
+    
     function gerarPreviewEtiqueta() {
         if (!selectedOsIdEtiqueta) return;
         const os = osData[selectedOsIdEtiqueta];
         const [width, height] = tamanhoEtiqueta.value.split('x');
         const tipo = tipoEtiqueta.value;
         let html = '';
-        if(tipo === 'externa') { // Opção B (Clássica com Logo)
+        const dataEntrada = new Date(os.dataEntrada + 'T00:00:00').toLocaleDateString('pt-BR');
+
+        if(tipo === 'cliente') {
             const logoHtml = configData.urlLogo ? `<img src="${configData.urlLogo}" class="logo-externa">` : `<h4>${(configData.nomeOficina || 'Oficina').substring(0, 25)}</h4>`;
-            html = `${logoHtml}<p class="os-number">OS #${String(os.numeroOS).padStart(4, '0')}</p><p><strong>CLIENTE:</strong> ${os.clienteNome}</p><p><strong>PRODUTO:</strong> ${os.aparelho} ${os.marca || ''}</p><p><strong>DATA:</strong> ${new Date(os.dataEntrada + 'T00:00:00').toLocaleDateString('pt-BR')}</p>`;
-        } else { // Opção A (Foco no Defeito)
-            html = `<p class="os-number">OS #${String(os.numeroOS).padStart(4, '0')}</p><p><strong>CLIENTE:</strong> ${os.clienteNome} (${os.telefoneCliente})</p><div class="defeito-box"><p><strong>DEFEITO:</strong> ${os.defeitoRelatado}</p></div><div class="checklist">□ Orçamento □ Aguardando Peça □ Em Teste □ Pronto</div>`;
+            html = `<div class="etiqueta-preview etiqueta-cliente" id="etiqueta-para-impressao" style="width:${width}mm; height:${height}mm;">
+                ${logoHtml}
+                <p class="os-number">OS #${String(os.numeroOS).padStart(4, '0')}</p>
+                <p><strong>CLIENTE:</strong> ${os.clienteNome}</p>
+                <p><strong>PRODUTO:</strong> ${os.aparelho} ${os.marca || ''}</p>
+                <p><strong>DATA:</strong> ${dataEntrada}</p>
+            </div>`;
+        } else {
+            html = `<div class="etiqueta-preview etiqueta-interna" id="etiqueta-para-impressao" style="width:${width}mm; height:${height}mm;">
+                <p class="os-number">OS #${String(os.numeroOS).padStart(4, '0')}</p>
+                <p><strong>CLIENTE:</strong> ${os.clienteNome} (${os.telefoneCliente})</p>
+                <div class="defeito-box"><p><strong>DEFEITO:</strong> ${os.defeitoRelatado}</p></div>
+                <div class="checklist">□ Orçamento □ Aguardando Peça □ Em Teste □ Pronto</div>
+            </div>`;
         }
-        previewContainerEtiqueta.innerHTML = `<div class="etiqueta-preview" id="etiqueta-para-impressao" style="width:${width}mm; height:${height}mm;">${html}</div>`;
+        previewContainerEtiqueta.innerHTML = html;
     }
+    
     btnImprimirEtiqueta.addEventListener('click', () => {
         if (selectedOsIdEtiqueta) {
             const [width, height] = tamanhoEtiqueta.value.split('x');
-            const etiquetaHtml = document.getElementById('etiqueta-para-impressao').outerHTML;
-            const printWindow = window.open('', 'PRINT', `height=${parseInt(height)+10}mm,width=${parseInt(width)+10}mm`);
-            printWindow.document.write('<html><head><title>Etiqueta</title>');
-            printWindow.document.write('<style>@page { size: ' + width + 'mm ' + height + 'mm; margin: 0; } body{margin:0; padding: 0;} .etiqueta-preview{width:100%; height:100%; font-family:Arial,sans-serif; color:#000; overflow:hidden; padding: 2mm; box-sizing: border-box; display: flex; flex-direction: column;} h4{font-size:7pt; margin:0 0 4px 0; border-bottom:1px solid #333; padding-bottom:2px; text-align:center;} p{margin:0; font-size:7pt; line-height:1.2; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;} strong{display:block; font-size:5pt; color:#555;} .os-number{font-size:11pt; font-weight:bold; text-align:center; margin-bottom:4px;} .defeito-box{background:#eee; padding:4px; border-radius:3px; margin:4px 0;} .checklist{font-size:6pt; margin-top:auto; padding-top:4px;} .logo-externa{max-height:10mm; width:auto; object-fit:contain; margin:0 auto 4px auto; display:block;}</style>');
-            printWindow.document.write('</head><body>');
-            printWindow.document.write(etiquetaHtml);
-            printWindow.document.write('</body></html>');
-            printWindow.document.close();
-            printWindow.focus();
-            setTimeout(() => { printWindow.print(); printWindow.close(); }, 250);
+            setPageSize(`${width}mm`, `${height}mm`);
+            window.print();
         }
     });
     
+    function setPageSize(width, height) {
+        const styleId = 'page-size-style';
+        let style = document.getElementById(styleId);
+        if (!style) {
+            style = document.createElement('style');
+            style.id = styleId;
+            document.head.appendChild(style);
+        }
+        style.innerHTML = `@page { size: ${width} ${height === 'auto' ? '' : height}; margin: 0; }`;
+    }
+
     function gerarPreviewDocumento(osId) {
         const os = osData[osId];
         const empresa = configData || {};
