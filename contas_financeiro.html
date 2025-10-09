@@ -103,6 +103,7 @@
     .mobile-menu-btn { display: none; background: none; border: none; font-size: 1.8rem; cursor: pointer; color: var(--text-primary); }
     .overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 99; }
     .overlay.is-open { display: block; }
+
     @media (max-width: 768px) {
       .dashboard-container { grid-template-columns: 1fr; }
       .sidebar { transform: translateX(-100%); }
@@ -110,6 +111,10 @@
       .main-content { grid-column: 1 / 2; padding: 16px; }
       .mobile-menu-btn { display: block; }
       .resumo-financeiro, .form-row { grid-template-columns: 1fr; }
+      .actions-bar { flex-direction: column; align-items: stretch; gap: 16px; }
+      .filters { flex-direction: column; align-items: stretch; }
+      .actions-bar .btn-group { display: flex; width: 100%; }
+      .actions-bar .btn-group button { flex: 1; }
     }
   </style>
 </head>
@@ -165,7 +170,7 @@
           <div class="filter-group"><label>Período</label><select id="filtroPeriodo"><option value="todos">Todos</option><option value="mes" selected>Mês Atual</option><option value="semana">Últimos 7 dias</option><option value="ano">Ano Atual</option></select></div>
           <div class="filter-group"><label>Categoria</label><select id="filtroCategoria"><option value="todas">Todas</option></select></div>
         </div>
-        <div style="display: flex; gap: 12px;">
+        <div class="btn-group">
           <button class="btn-primary" id="btnNovaEntrada"><span>⬆️</span> Nova Entrada</button>
           <button class="btn-primary btn-danger" id="btnNovaSaida"><span>⬇️</span> Nova Saída</button>
         </div>
