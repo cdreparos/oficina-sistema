@@ -32,6 +32,7 @@
     body { font-family: 'Inter', sans-serif; background: var(--main-bg); color: var(--text-primary); }
     .dashboard-container { display: grid; grid-template-columns: 240px 1fr; min-height: 100vh; }
 
+    /* --- Sidebar (Estilos Padrão) --- */
     .sidebar { background: var(--sidebar-bg); color: #fff; display: flex; flex-direction: column; padding: 24px 16px; position: fixed; left: 0; top: 0; height: 100%; width: 240px; z-index: 100; transition: transform 0.3s ease-in-out; }
     .sidebar-header { display: flex; align-items: center; gap: 12px; padding-bottom: 24px; margin-bottom: 16px; border-bottom: 1px solid var(--sidebar-bg-hover); }
     .sidebar-logo { width: 40px; height: 40px; background: var(--accent-blue); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; font-weight: bold; }
@@ -45,6 +46,7 @@
     .logout-btn { width: 100%; background: none; border: none; color: #cbd5e1; display: flex; align-items: center; gap: 12px; padding: 12px 16px; font-size: 1rem; cursor: pointer; text-align: left; font-family: inherit; border-radius: 8px; transition: all 0.2s ease-in-out; }
     .logout-btn:hover { background: var(--accent-red); color: #fff; }
 
+    /* --- Main Content --- */
     .main-content { grid-column: 2 / 3; padding: 32px; }
     .main-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 32px; }
     .main-header h1 { font-size: 1.8rem; font-weight: 700; color: var(--text-primary); }
@@ -52,13 +54,12 @@
     .actions-bar { background: var(--card-bg); padding: 20px; border-radius: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); margin-bottom: 24px; display: flex; justify-content: space-between; align-items: flex-end; gap: 20px; flex-wrap: wrap; }
     .filters-container { display: flex; gap: 16px; flex-wrap: wrap; align-items: center; flex-grow: 1;}
     .search-box { flex-grow: 1; min-width: 250px; position: relative; }
-    .search-box input { width: 100%; padding: 12px 16px 12px 40px; border: 2px solid var(--border-color); border-radius: 10px; font-size: 0.9rem; background: var(--main-bg); color: var(--text-primary); }
+    .search-box input, .filter-group select { width: 100%; padding: 12px 16px; border: 2px solid var(--border-color); border-radius: 10px; font-size: 0.9rem; background: var(--main-bg); color: var(--text-primary); -webkit-appearance: none; appearance: none; }
+    .search-box input { padding-left: 40px; }
     .search-box::before { content: '🔍'; position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--text-secondary); }
     .filter-group { min-width: 150px; }
     .filter-group label { display: block; font-size: 0.75rem; font-weight: 600; color: var(--text-secondary); margin-bottom: 4px; }
-    .filter-group select { 
-        width: 100%; padding: 12px 16px; border: 2px solid var(--border-color); border-radius: 10px; font-size: 0.9rem; background: var(--main-bg); color: var(--text-primary);
-        appearance: none; -webkit-appearance: none;
+    .filter-group select {
         background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3E%3Cpath stroke='%236B7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3E%3C/svg%3E");
         background-repeat: no-repeat; background-position: right 1rem center; background-size: 1.2em 1.2em; cursor: pointer;
     }
@@ -341,7 +342,7 @@
         selects.forEach(select => {
             const currentValue = select.value;
             select.innerHTML = select.id === 'filtroCategoria' ? '<option value="todas">Todas</option>' : '<option value="">Selecione...</option>';
-            categoriasEstoque.forEach(cat => select.add(new Option(cat, cat)));
+            categoriasEstoque.sort().forEach(cat => select.add(new Option(cat, cat)));
             select.value = currentValue;
         });
     }
@@ -365,7 +366,6 @@
     document.getElementById('btnNovaPeca').addEventListener('click', () => {
         editandoId = null;
         document.getElementById('modalTitle').textContent = 'Nova Peça';
-        document.getElementById('modalIcon').textContent = '➕';
         document.getElementById('formPeca').reset();
         abrirModal('modalPeca');
     });
@@ -373,7 +373,6 @@
     function editarPeca(id) {
         editandoId = id; const peca = estoqueData[id];
         document.getElementById('modalTitle').textContent = 'Editar Peça';
-        document.getElementById('modalIcon').textContent = '✏️';
         document.getElementById('pecaId').value = id;
         document.getElementById('nomePeca').value = peca.nomePeca || '';
         document.getElementById('codigoPeca').value = peca.codigoPeca || '';
@@ -419,21 +418,22 @@
 
     function calcularFinanceiro() {
         const custo = parseFloat(custoInput.value) || 0;
-        const margem = parseFloat(margemInput.value) || 0;
+        const markup = parseFloat(margemInput.value) || 0;
         const venda = parseFloat(vendaInput.value) || 0;
-        if (ultimoEditado === 'venda' && custo > 0 && venda > 0) {
-            const novaMargem = ((venda - custo) / venda) * 100;
-            if (isFinite(novaMargem)) margemInput.value = novaMargem.toFixed(2);
-        } else if (ultimoEditado === 'margem' && custo > 0 && margem >= 0 && margem < 100) {
-            const novoPreco = custo / (1 - (margem / 100));
+
+        if (ultimoEditado === 'venda' && custo > 0 && venda > custo) {
+            const novoMarkup = ((venda - custo) / custo) * 100;
+            if (isFinite(novoMarkup)) margemInput.value = novoMarkup.toFixed(2);
+        } else if (ultimoEditado === 'margem' && custo > 0 && markup >= 0) {
+            const novoPreco = custo * (1 + (markup / 100));
             if (isFinite(novoPreco)) vendaInput.value = novoPreco.toFixed(2);
         } else if (ultimoEditado === 'custo') {
-            if (margem > 0 && margem < 100) {
-                const novoPreco = custo / (1 - (margem / 100));
+            if (markup > 0) {
+                const novoPreco = custo * (1 + (markup / 100));
                 if (isFinite(novoPreco)) vendaInput.value = novoPreco.toFixed(2);
-            } else if (venda > 0) {
-                const novaMargem = ((venda - custo) / venda) * 100;
-                if (isFinite(novaMargem)) margemInput.value = novaMargem.toFixed(2);
+            } else if (venda > custo) {
+                const novoMarkup = ((venda - custo) / custo) * 100;
+                if (isFinite(novoMarkup)) margemInput.value = novoMarkup.toFixed(2);
             }
         }
     }
