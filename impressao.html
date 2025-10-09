@@ -49,9 +49,10 @@
         .btn-primary { background: var(--accent-blue); color: white; }
         .btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
+        /* Estilos para o documento de impressão (pré-visualização) */
         .print-document { border: 1px solid var(--border-color); padding: 2rem; }
         .print-header { display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 2px solid var(--text-primary); padding-bottom: 1rem; margin-bottom: 1.5rem; }
-        .company-logo { max-width: 150px; max-height: 70px; margin-right: 20px; }
+        .company-logo { max-width: 150px; max-height: 70px; margin-right: 20px; object-fit: contain; }
         .print-header .company-info h2 { font-size: 1.5rem; }
         .print-header .os-info { text-align: right; }
         .print-section { margin-bottom: 1.5rem; }
@@ -66,15 +67,31 @@
         .print-footer p { font-size: 0.8rem; color: var(--text-secondary); white-space: pre-wrap; }
         .signature-area { margin-top: 4rem; text-align: center; }
 
-        .mobile-menu-btn { display: none; } .overlay { display: none; }
+        .mobile-menu-btn { display: none; background: none; border: none; } .overlay { display: none; }
         @media (max-width: 768px) { /* ... estilos responsivos ... */ }
         
+        /* ESTILOS DE IMPRESSÃO CORRIGIDOS */
         @media print {
-            body * { visibility: hidden; }
-            .print-document, .print-document * { visibility: visible; }
-            .print-document { position: absolute; left: 0; top: 0; width: 100%; margin: 0; padding: 0; border: none; font-size: 12pt; color: #000; }
+            body { background: #fff; }
+            .sidebar, .main-header, .selection-panel, .mobile-menu-btn {
+                display: none;
+            }
+            .dashboard-container, .main-content, .print-container, .preview-panel {
+                display: block;
+                grid-template-columns: 1fr;
+                padding: 0;
+                margin: 0;
+                box-shadow: none;
+            }
+            .print-document {
+                visibility: visible;
+                width: 100%;
+                border: none;
+                box-shadow: none;
+                font-size: 12pt;
+                color: #000;
+            }
             .print-header .company-info h2 { font-size: 18pt; }
-            .btn, .sidebar, .main-header, .print-container { display: none; }
         }
     </style>
 </head>
@@ -242,7 +259,7 @@
                     <div class="info-grid">
                         <p><strong>Nome:</strong> ${os.clienteNome}</p>
                         <p><strong>Telefone:</strong> ${os.telefoneCliente}</p>
-                        ${printConfig.cpf && os.cpf ? `<p><strong>CPF:</strong> ${os.cpf}</p>` : ''}
+                        ${printConfig.cpf && os.cpfCliente ? `<p><strong>CPF:</strong> ${os.cpfCliente}</p>` : ''}
                     </div>
                 </section>
                 <section class="print-section">
@@ -275,6 +292,7 @@
     
     btnImprimir.addEventListener('click', () => {
         if(selectedOsId) {
+            // A pré-visualização já é o documento final, então apenas chamamos a impressão.
             window.print();
         }
     });
