@@ -190,6 +190,7 @@
                 <select id="tipoRelatorio">
                     <option value="financeiroDetalhado">Fechamento Financeiro Detalhado</option>
                     <option value="pecasMaisUtilizadas">Peças Mais Utilizadas</option>
+                    <option value="logPecasOS">Log de Peças por OS</option>
                     <option value="osPeriodo" disabled>Ordens de Serviço (em breve)</option>
                 </select>
             </div>
@@ -262,13 +263,14 @@
     });
 
     function formatarMoeda(valor) { return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(valor || 0); }
-
-    // --- LÓGICA DAS ABAS DOCUMENTOS E ETIQUETAS ---
+    
+    // --- LÓGICA DAS ABAS DOCUMENTOS E ETIQUETAS (COMPLETA) ---
     const recentOsList = document.getElementById('recent-os-list');
     const previewContainerDoc = document.getElementById('print-preview-container-doc');
     const placeholderDoc = document.getElementById('preview-placeholder-doc');
     const btnImprimirDoc = document.getElementById('btnImprimirDoc');
     function renderizarListaOSRecentes() {
+        if (!osData) return;
         const osFinalizadas = Object.entries(osData)
             .filter(([id, os]) => ['concluido', 'entregue'].includes(os.statusOS))
             .sort((a,b) => new Date(b[1].atualizadoEm || 0) - new Date(a[1].atualizadoEm || 0))
@@ -429,6 +431,8 @@
             gerarRelatorioFinanceiroDetalhado(inicio, fim);
         } else if (tipo === 'pecasMaisUtilizadas') {
             gerarRelatorioPecasUtilizadas(inicio, fim);
+        } else if (tipo === 'logPecasOS') {
+            gerarRelatorioLogDePecasPorOS(inicio, fim);
         } else if (tipo === 'osPeriodo') {
             previewContainerRelatorio.innerHTML = '<div class="report-preview"><p style="text-align:center;">Relatório de Ordens de Serviço ainda não implementado.</p></div>';
         }
@@ -441,52 +445,37 @@
             const dataAtualizacao = new Date(os.atualizadoEm);
             return dataAtualizacao >= inicio && dataAtualizacao <= fim;
         });
-
         const totalMaoDeObra = osConcluidasPeriodo.reduce((sum, os) => sum + (parseFloat(os.valorMaoObra) || 0), 0);
         const totalReceitaPecas = osConcluidasPeriodo.reduce((sum, os) => sum + (parseFloat(os.valorPecas) || 0), 0);
-
         const transacoesPeriodo = Object.values(transacoesData).filter(t => {
             const dataT = new Date(t.dataTransacao + 'T12:00:00Z');
             return dataT >= inicio && dataT <= fim && t.statusTransacao === 'pago';
         });
-        
         const outrasEntradas = transacoesPeriodo.filter(t => t.tipo === 'entrada' && !t.referenciaOS).reduce((sum, t) => sum + parseFloat(t.valor), 0);
         const totalSaidas = transacoesPeriodo.filter(t => t.tipo === 'saida').reduce((sum, t) => sum + parseFloat(t.valor), 0);
         const totalEntradas = totalMaoDeObra + totalReceitaPecas + outrasEntradas;
         const saldo = totalEntradas - totalSaidas;
-
         const html = `
             <div class="report-preview">
-                <header class="report-header">
-                    <h2>Fechamento Financeiro Detalhado</h2>
-                    <p>Período de ${inicio.toLocaleDateString('pt-BR')} a ${fim.toLocaleDateString('pt-BR')}</p>
-                </header>
+                <header class="report-header"><h2>Fechamento Financeiro Detalhado</h2><p>Período de ${inicio.toLocaleDateString('pt-BR')} a ${fim.toLocaleDateString('pt-BR')}</p></header>
                 <section class="report-summary">
                     <div class="summary-item"><span class="label">Receita Total</span><span class="value positive">${formatarMoeda(totalEntradas)}</span></div>
                     <div class="summary-item"><span class="label">Despesa Total</span><span class="value negative">${formatarMoeda(totalSaidas)}</span></div>
                     <div class="summary-item"><span class="label">Saldo Final</span><span class="value">${formatarMoeda(saldo)}</span></div>
                 </section>
-                <section class="report-details">
-                    <h3>Detalhamento da Receita</h3>
-                    <table class="print-table">
-                        <thead><tr><th>Origem da Receita</th><th>Valor Total</th></tr></thead>
-                        <tbody>
-                            <tr><td>Receita de Mão de Obra (OS)</td><td>${formatarMoeda(totalMaoDeObra)}</td></tr>
-                            <tr><td>Receita de Peças (OS)</td><td>${formatarMoeda(totalReceitaPecas)}</td></tr>
-                            <tr><td>Outras Entradas</td><td>${formatarMoeda(outrasEntradas)}</td></tr>
-                            <tr style="font-weight: bold;"><td>TOTAL</td><td>${formatarMoeda(totalEntradas)}</td></tr>
-                        </tbody>
-                    </table>
-                </section>
-                <section class="report-details">
-                    <h3>Detalhamento das Despesas (Saídas)</h3>
-                    <table class="print-table">
-                         <thead><tr><th>Categoria</th><th>Valor Total</th></tr></thead>
-                        <tbody>
-                            ${Object.entries(transacoesPeriodo.filter(t => t.tipo === 'saida').reduce((acc, t) => { acc[t.categoria] = (acc[t.categoria] || 0) + parseFloat(t.valor); return acc; }, {})).map(([cat, val]) => `<tr><td>${cat}</td><td>${formatarMoeda(val)}</td></tr>`).join('')}
-                        </tbody>
-                    </table>
-                </section>
+                <section class="report-details"><h3>Detalhamento da Receita</h3><table class="print-table">
+                    <thead><tr><th>Origem da Receita</th><th>Valor Total</th></tr></thead>
+                    <tbody>
+                        <tr><td>Receita de Mão de Obra (OS)</td><td>${formatarMoeda(totalMaoDeObra)}</td></tr>
+                        <tr><td>Receita de Peças (OS)</td><td>${formatarMoeda(totalReceitaPecas)}</td></tr>
+                        <tr><td>Outras Entradas</td><td>${formatarMoeda(outrasEntradas)}</td></tr>
+                        <tr style="font-weight: bold;"><td>TOTAL</td><td>${formatarMoeda(totalEntradas)}</td></tr>
+                    </tbody>
+                </table></section>
+                <section class="report-details"><h3>Detalhamento das Despesas (Saídas)</h3><table class="print-table">
+                    <thead><tr><th>Categoria</th><th>Valor Total</th></tr></thead>
+                    <tbody>${Object.entries(transacoesPeriodo.filter(t => t.tipo === 'saida').reduce((acc, t) => { acc[t.categoria] = (acc[t.categoria] || 0) + parseFloat(t.valor); return acc; }, {})).map(([cat, val]) => `<tr><td>${cat}</td><td>${formatarMoeda(val)}</td></tr>`).join('')}</tbody>
+                </table></section>
             </div>`;
         previewContainerRelatorio.innerHTML = html;
     }
@@ -498,46 +487,80 @@
             const dataAtualizacao = new Date(os.atualizadoEm);
             return dataAtualizacao >= inicio && dataAtualizacao <= fim;
         });
-
         const pecasAgregadas = {};
         osConcluidasPeriodo.forEach(os => {
             if (os.pecas && Array.isArray(os.pecas)) {
                 os.pecas.forEach(peca => {
                     const nomePeca = peca.nome.trim();
-                    if (!pecasAgregadas[nomePeca]) {
-                        pecasAgregadas[nomePeca] = { quantidade: 0, faturamento: 0 };
-                    }
+                    if (!pecasAgregadas[nomePeca]) { pecasAgregadas[nomePeca] = { quantidade: 0, faturamento: 0 }; }
                     pecasAgregadas[nomePeca].quantidade += parseInt(peca.quantidade) || 0;
                     pecasAgregadas[nomePeca].faturamento += (parseInt(peca.quantidade) || 0) * (parseFloat(peca.valorUnitario) || 0);
                 });
             }
         });
-
         const totalPecasVendidas = Object.values(pecasAgregadas).reduce((sum, p) => sum + p.quantidade, 0);
         const faturamentoTotalPecas = Object.values(pecasAgregadas).reduce((sum, p) => sum + p.faturamento, 0);
-
         const html = `
             <div class="report-preview">
-                <header class="report-header">
-                    <h2>Relatório de Peças Mais Utilizadas</h2>
-                    <p>Período de ${inicio.toLocaleDateString('pt-BR')} a ${fim.toLocaleDateString('pt-BR')}</p>
-                </header>
+                <header class="report-header"><h2>Relatório de Peças Mais Utilizadas</h2><p>Período de ${inicio.toLocaleDateString('pt-BR')} a ${fim.toLocaleDateString('pt-BR')}</p></header>
                 <section class="report-summary">
                     <div class="summary-item"><span class="label">Total de Itens de Peças</span><span class="value">${totalPecasVendidas}</span></div>
                     <div class="summary-item"><span class="label">Faturamento com Peças</span><span class="value positive">${formatarMoeda(faturamentoTotalPecas)}</span></div>
                 </section>
+                <section class="report-details"><h3>Detalhamento por Peça (Mais utilizadas primeiro)</h3><table class="print-table">
+                    <thead><tr><th>Item (Peça)</th><th>Quantidade Vendida</th><th>Faturamento Gerado</th></tr></thead>
+                    <tbody>
+                        ${Object.entries(pecasAgregadas).sort((a, b) => b[1].quantidade - a[1].quantidade).map(([nome, dados]) => `<tr><td>${nome}</td><td>${dados.quantidade}</td><td>${formatarMoeda(dados.faturamento)}</td></tr>`).join('')}
+                    </tbody>
+                </table></section>
+            </div>`;
+        previewContainerRelatorio.innerHTML = html;
+    }
+
+    function gerarRelatorioLogDePecasPorOS(inicio, fim) {
+        const osComPecasPeriodo = Object.values(osData)
+            .filter(os => {
+                const statusConcluido = ['concluido', 'entregue'].includes(os.statusOS);
+                if (!statusConcluido || !os.atualizadoEm || !os.pecas || os.pecas.length === 0) return false;
+                const dataAtualizacao = new Date(os.atualizadoEm);
+                return dataAtualizacao >= inicio && dataAtualizacao <= fim;
+            })
+            .sort((a,b) => b.numeroOS - a.numeroOS); // Ordena pela OS mais recente
+
+        const html = `
+            <div class="report-preview">
+                <header class="report-header">
+                    <h2>Log de Peças Utilizadas por Ordem de Serviço</h2>
+                    <p>Período de ${inicio.toLocaleDateString('pt-BR')} a ${fim.toLocaleDateString('pt-BR')}</p>
+                </header>
                 <section class="report-details">
-                    <h3>Detalhamento por Peça (Mais utilizadas primeiro)</h3>
                     <table class="print-table">
-                        <thead><tr><th>Item (Peça)</th><th>Quantidade Vendida</th><th>Faturamento Gerado</th></tr></thead>
+                        <thead>
+                            <tr>
+                                <th>OS</th>
+                                <th>Produto</th>
+                                <th>Peças Utilizadas (Qtd)</th>
+                                <th>Valor Total (Peças)</th>
+                            </tr>
+                        </thead>
                         <tbody>
-                            ${Object.entries(pecasAgregadas)
-                                .sort((a, b) => b[1].quantidade - a[1].quantidade)
-                                .map(([nome, dados]) => `<tr><td>${nome}</td><td>${dados.quantidade}</td><td>${formatarMoeda(dados.faturamento)}</td></tr>`).join('')}
+                            ${osComPecasPeriodo.map(os => {
+                                const produto = `${os.aparelho || ''} ${os.marca || ''} ${os.modelo || ''}`.trim();
+                                const listaPecas = os.pecas.map(p => `${p.nome} (x${p.quantidade})`).join(', ');
+                                return `
+                                    <tr>
+                                        <td>#${String(os.numeroOS).padStart(4, '0')}</td>
+                                        <td>${produto}</td>
+                                        <td>${listaPecas}</td>
+                                        <td>${formatarMoeda(os.valorPecas)}</td>
+                                    </tr>
+                                `;
+                            }).join('')}
                         </tbody>
                     </table>
                 </section>
-            </div>`;
+            </div>
+        `;
         previewContainerRelatorio.innerHTML = html;
     }
   </script>
