@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Desvie dos Obstáculos</title>
+    <style>
+        /* --- Estilos Gerais --- */
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background-color: #333;
+            color: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden; /* Evita barras de rolagem */
+        }
+
+        /* --- Contêiner Principal do Jogo --- */
+        #game-container {
+            width: 100%;
+            max-width: 400px; /* Largura máxima da pista */
+            height: 90vh; /* Altura responsiva */
+            max-height: 800px;
+            background-color: #111;
+            border: 2px solid #fff;
+            position: relative;
+            overflow: hidden; /* Obstáculos que saem da tela somem */
+        }
+
+        /* --- Personagem (Jogador) --- */
+        #player {
+            width: 50px;
+            height: 50px;
+            background-color: #0095DD; /* Azul */
+            position: absolute;
+            bottom: 20px;
+            left: 50%; /* Começa no centro */
+            transform: translateX(-50%);
+            transition: left 0.1s linear; /* Movimento suave */
+        }
+
+        /* --- Obstáculos --- */
+        .obstacle {
+            width: 60px;
+            height: 20px;
+            background-color: #DD4124; /* Vermelho */
+            position: absolute;
+            top: -20px; /* Começa fora da tela */
+        }
+
+        /* --- HUD (Placar) --- */
+        #score-board {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            font-size: 24px;
+            z-index: 10;
+        }
+
+        /* --- Telas de Início e Fim de Jogo --- */
+        .overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            z-index: 20;
+        }
+
+        .overlay h1 {
+            font-size: 3em;
+            margin-bottom: 10px;
+        }
+        
+        .overlay p {
+            font-size: 1.2em;
+            margin-top: 0;
+        }
+
+        .overlay button {
+            padding: 15px 30px;
+            font-size: 1.5em;
+            cursor: pointer;
+            background-color: #0095DD;
+            border: 2px solid #fff;
+            color: #fff;
+            border-radius: 10px;
+        }
+        
+        /* Esconde a tela de Game Over por padrão */
+        #game-over-screen {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="game-container">
+        <div id="player"></div>
+
+        <div id="score-board">Tempo: <span id="score">0</span>s</div>
+        
+        <div id="start-screen" class="overlay">
+            <h1>Desvie dos Obstáculos</h1>
+            <p>Recorde: <span id="high-score-start">0</span>s</p>
+            <button id="start-button">Iniciar Jogo</button>
+        </div>
+
+        <div id="game-over-screen" class="overlay">
+            <h1>Game Over</h1>
+            <p>Seu tempo: <span id="final-score">0</span>s</p>
+            <p>Recorde: <span id="high-score-end">0</span>s</p>
+            <button id="restart-button">Reiniciar</button>
+        </div>
+    </div>
+
+    <script>
+        // --- Seletores de Elementos do DOM ---
+        const gameContainer = document.getElementById('game-container');
+        const player = document.getElementById('player');
+        const scoreElement = document.getElementById('score');
+        const startScreen = document.getElementById('start-screen');
+        const gameOverScreen = document.getElementById('game-over-screen');
+        const startButton = document.getElementById('start-button');
+        const restartButton = document.getElementById('restart-button');
+        const finalScoreElement = document.getElementById('final-score');
+        const highScoreStartElement = document.getElementById('high-score-start');
+        const highScoreEndElement = document.getElementById('high-score-end');
+
+        // --- Variáveis de Estado do Jogo ---
+        let playerPosition = player.offsetLeft;
+        let playerSpeed = 15; // Pixels por movimento
+        let obstacleSpeed = 2;
+        let score = 0;
+        let isGameOver = true; // Começa como 'true' para aguardar o início
+        
+        let gameInterval;
+        let scoreInterval;
+        let obstacleInterval;
+        
+        // --- Armazenamento do Recorde (localStorage) ---
+        let highScore = localStorage.getItem('obstacleGameHighScore') || 0;
+        highScoreStartElement.innerText = highScore;
+        highScoreEndElement.innerText = highScore;
+
+        // --- Funções Principais do Jogo ---
+
+        /**
+         * Inicia o jogo, esconde a tela inicial e ativa os intervalos.
+         */
+        function startGame() {
+            isGameOver = false;
+            startScreen.style.display = 'none';
+            gameOverScreen.style.display = 'none';
+            
+            // Reseta as variáveis
+            score = 0;
+            obstacleSpeed = 2;
+            scoreElement.innerText = score;
+            
+            // Remove obstáculos antigos se houver
+            document.querySelectorAll('.obstacle').forEach(o => o.remove());
+
+            // Inicia os loops do jogo
+            gameInterval = setInterval(gameLoop, 20); // Loop principal do jogo (mais rápido para fluidez)
+            scoreInterval = setInterval(updateScore, 1000); // Atualiza o placar a cada segundo
+            obstacleInterval = setInterval(createObstacle, 1000); // Cria um novo obstáculo
+        }
+
+        /**
+         * Loop principal: move os obstáculos e verifica colisões.
+         */
+        function gameLoop() {
+            if (isGameOver) return;
+            
+            // Move cada obstáculo para baixo
+            document.querySelectorAll('.obstacle').forEach(obstacle => {
+                const obstacleTop = parseInt(window.getComputedStyle(obstacle).getPropertyValue('top'));
+                
+                // Remove o obstáculo se ele sair da tela
+                if (obstacleTop > gameContainer.clientHeight) {
+                    obstacle.remove();
+                } else {
+                    obstacle.style.top = (obstacleTop + obstacleSpeed) + 'px';
+                    checkCollision(obstacle);
+                }
+            });
+        }
+        
+        /**
+         * Atualiza a pontuação e aumenta a dificuldade.
+         */
+        function updateScore() {
+            if (isGameOver) return;
+            score++;
+            scoreElement.innerText = score;
+            
+            // Aumenta a velocidade a cada 10 segundos
+            if (score % 10 === 0) {
+                obstacleSpeed += 0.5;
+            }
+        }
+
+        /**
+         * Cria um novo obstáculo em uma posição horizontal aleatória.
+         */
+        function createObstacle() {
+            if (isGameOver) return;
+            
+            const obstacle = document.createElement('div');
+            obstacle.classList.add('obstacle');
+            
+            // Posição aleatória na largura do contêiner
+            const obstacleWidth = parseInt(window.getComputedStyle(obstacle).getPropertyValue('width'));
+            const maxLeft = gameContainer.clientWidth - obstacleWidth;
+            const randomLeft = Math.floor(Math.random() * maxLeft);
+            
+            obstacle.style.left = randomLeft + 'px';
+            gameContainer.appendChild(obstacle);
+        }
+
+        /**
+         * Verifica se o jogador colidiu com um obstáculo.
+         */
+        function checkCollision(obstacle) {
+            const playerRect = player.getBoundingClientRect();
+            const obstacleRect = obstacle.getBoundingClientRect();
+            
+            // Lógica de colisão de retângulos
+            if (
+                playerRect.left < obstacleRect.right &&
+                playerRect.right > obstacleRect.left &&
+                playerRect.top < obstacleRect.bottom &&
+                playerRect.bottom > obstacleRect.top
+            ) {
+                endGame();
+            }
+        }
+
+        /**
+         * Termina o jogo, para os intervalos e mostra a tela de Game Over.
+         */
+        function endGame() {
+            if(isGameOver) return;
+            isGameOver = true;
+            
+            // Para todos os loops do jogo
+            clearInterval(gameInterval);
+            clearInterval(scoreInterval);
+            clearInterval(obstacleInterval);
+            
+            // Atualiza o recorde se necessário
+            if (score > highScore) {
+                highScore = score;
+                localStorage.setItem('obstacleGameHighScore', highScore);
+                highScoreEndElement.innerText = highScore;
+                highScoreStartElement.innerText = highScore; // Atualiza na tela inicial também
+            }
+            
+            // Mostra a tela de Game Over
+            finalScoreElement.innerText = score;
+            gameOverScreen.style.display = 'flex';
+        }
+
+        // --- Controles do Jogador ---
+
+        /**
+         * Move o jogador para a esquerda ou direita.
+         * @param {string} direction - 'left' ou 'right'.
+         */
+        function movePlayer(direction) {
+            if (isGameOver) return;
+            
+            const playerRect = player.getBoundingClientRect();
+            const containerRect = gameContainer.getBoundingClientRect();
+            
+            if (direction === 'left' && playerRect.left > containerRect.left) {
+                playerPosition -= playerSpeed;
+            } else if (direction === 'right' && playerRect.right < containerRect.right) {
+                playerPosition += playerSpeed;
+            }
+            
+            player.style.left = playerPosition + 'px';
+        }
+
+        // Event listener para teclado (Setas)
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowLeft') {
+                movePlayer('left');
+            } else if (e.key === 'ArrowRight') {
+                movePlayer('right');
+            }
+        });
+
+        // Event listener para toque (Mobile)
+        gameContainer.addEventListener('touchstart', (e) => {
+            if (isGameOver) return;
+            
+            // Pega a posição X do primeiro toque
+            const touchX = e.touches[0].clientX;
+            const containerMidpoint = gameContainer.getBoundingClientRect().left + gameContainer.offsetWidth / 2;
+            
+            // Move para a esquerda se tocar na metade esquerda, senão para a direita
+            if (touchX < containerMidpoint) {
+                movePlayer('left');
+            } else {
+                movePlayer('right');
+            }
+        });
+
+        // --- Event Listeners dos Botões ---
+        startButton.addEventListener('click', startGame);
+        restartButton.addEventListener('click', startGame);
+
+    </script>
+
+</body>
+</html>
