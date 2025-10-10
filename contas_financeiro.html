@@ -111,10 +111,10 @@
     @media (max-width: 768px) {
       .dashboard-container { grid-template-columns: 1fr; }
       .sidebar { transform: translateX(-100%); }
-      .sidebar.is-open { transform: translateX(0); }
+      .sidebar.is-open { transform: translateX(0); } /* <-- REGRA ADICIONADA */
       .main-content { grid-column: 1 / 2; padding: 16px; }
       .mobile-menu-btn { display: block; }
-      .resumo-financeiro, .form-row { grid-template-columns: 1fr; } /* Regra corrigida/garantida aqui */
+      .resumo-financeiro, .form-row { grid-template-columns: 1fr; }
       .actions-bar { flex-direction: column; align-items: stretch; gap: 16px; }
       .filters { flex-direction: column; align-items: stretch; }
       .btn-group { display: flex; width: 100%; }
