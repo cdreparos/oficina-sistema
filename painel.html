@@ -32,10 +32,11 @@
     body { font-family: 'Inter', sans-serif; background: var(--main-bg); color: var(--text-primary); transition: background-color 0.3s, color 0.3s; }
     .dashboard-container { display: grid; grid-template-columns: 240px 1fr; min-height: 100vh; }
 
+    /* --- Sidebar --- */
     .sidebar { background: var(--sidebar-bg); color: #fff; display: flex; flex-direction: column; padding: 24px 16px; position: fixed; left: 0; top: 0; height: 100%; width: 240px; z-index: 100; transition: transform 0.3s ease-in-out; }
     .sidebar-header { display: flex; align-items: center; gap: 12px; padding-bottom: 24px; margin-bottom: 16px; border-bottom: 1px solid var(--sidebar-bg-hover); }
-    .sidebar-logo { width: 40px; height: 40px; background: var(--accent-blue); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; font-weight: bold; }
-    .sidebar-header h1 { font-size: 1.1rem; font-weight: 600; }
+    .sidebar-logo { width: 40px; height: 40px; background: var(--accent-blue); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; font-weight: bold; color: #ffffff; }
+    .sidebar-header h1 { font-size: 1.1rem; font-weight: 600; color: #fff; }
     .nav-list { list-style: none; flex-grow: 1; }
     .nav-list a { color: #cbd5e1; text-decoration: none; display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-radius: 8px; font-weight: 500; transition: all 0.2s ease-in-out; margin-bottom: 4px; }
     .nav-list a:hover { background: var(--sidebar-bg-hover); color: #fff; }
@@ -55,7 +56,9 @@
     .main-header p { color: var(--text-secondary); font-size: 1rem; }
 
     .summary-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 24px; margin-bottom: 32px; }
-    .summary-card { background: var(--card-bg); padding: 24px; border-radius: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); border-left: 4px solid; transition: background-color 0.3s; }
+    .summary-link { text-decoration: none; color: inherit; }
+    .summary-card { background: var(--card-bg); padding: 24px; border-radius: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); border-left: 4px solid; transition: all 0.3s; }
+    .summary-card:hover { transform: translateY(-4px); box-shadow: 0 8px 16px rgba(0,0,0,0.1); }
     .summary-card.blue { border-color: var(--accent-blue); }
     .summary-card.green { border-color: var(--accent-green); }
     .summary-card.yellow { border-color: var(--accent-yellow); }
@@ -79,7 +82,7 @@
     .list-item-details strong { display: block; font-weight: 500; font-size: 0.9rem; }
     .list-item-details small { color: var(--text-secondary); font-size: 0.8rem; }
     .list-item-value { font-weight: 600; font-size: 0.9rem; }
-    .income { color: var(--accent-green); }
+    .list-item-value.high-priority { color: var(--accent-red); }
     .expense { color: var(--accent-red); }
 
     .alerta-amarelo { border-left: 3px solid var(--accent-yellow); padding-left: 12px; border-radius: 4px; }
@@ -117,6 +120,8 @@
           <li><a href="estoque.html"><span class="nav-icon">📦</span> Estoque</a></li>
           <li><a href="contas_financeiro.html"><span class="nav-icon">💰</span> Financeiro</a></li>
           <li><a href="anotacoes.html"><span class="nav-icon">📝</span> Anotações</a></li>
+          <li><a href="pecas.html"><span class="nav-icon">🔩</span> Peças para Pedir</a></li>
+          <li><a href="impressao.html"><span class="nav-icon">🖨️</span> Impressão</a></li>
           <li><a href="configuracoes.html"><span class="nav-icon">⚙️</span> Configurações</a></li>
         </ul>
       </div>
@@ -139,28 +144,36 @@
       <header class="main-header">
         <div>
           <h2 id="greeting">Boa tarde, Usuário!</h2>
-          <p id="currentDate">Quarta-feira, 8 de Outubro de 2025</p>
+          <p id="currentDate">Sexta-feira, 10 de Outubro de 2025</p>
         </div>
         <button class="mobile-menu-btn" id="mobileMenuBtn">☰</button>
       </header>
 
       <section class="summary-grid">
-        <div class="summary-card blue">
-          <div class="card-header"><div class="card-icon">🛠️</div><span class="card-title">OS em Andamento</span></div>
-          <p class="card-value" id="stat-os-andamento">0</p>
-        </div>
-        <div class="summary-card green">
-          <div class="card-header"><div class="card-icon">💵</div><span class="card-title">Receita do Dia</span></div>
-          <p class="card-value" id="stat-receita-dia">R$ 0,00</p>
-        </div>
-        <div class="summary-card yellow">
-          <div class="card-header"><div class="card-icon">📅</div><span class="card-title">Agendamentos Hoje</span></div>
-          <p class="card-value" id="stat-agendamentos-hoje">0</p>
-        </div>
-        <div class="summary-card red">
-          <div class="card-header"><div class="card-icon">📦</div><span class="card-title">Estoque Baixo</span></div>
-          <p class="card-value" id="stat-estoque-baixo">0</p>
-        </div>
+        <a href="ordens-servico.html" class="summary-link">
+          <div class="summary-card blue">
+            <div class="card-header"><div class="card-icon">🛠️</div><span class="card-title">OS em Andamento</span></div>
+            <p class="card-value" id="stat-os-andamento">0</p>
+          </div>
+        </a>
+        <a href="contas_financeiro.html" class="summary-link">
+          <div class="summary-card green">
+            <div class="card-header"><div class="card-icon">💵</div><span class="card-title">Receita do Dia</span></div>
+            <p class="card-value" id="stat-receita-dia">R$ 0,00</p>
+          </div>
+        </a>
+        <a href="agendamentos.html" class="summary-link">
+          <div class="summary-card yellow">
+            <div class="card-header"><div class="card-icon">📅</div><span class="card-title">Agendamentos Hoje</span></div>
+            <p class="card-value" id="stat-agendamentos-hoje">0</p>
+          </div>
+        </a>
+        <a href="estoque.html" class="summary-link">
+          <div class="summary-card red">
+            <div class="card-header"><div class="card-icon">📦</div><span class="card-title">Estoque Baixo</span></div>
+            <p class="card-value" id="stat-estoque-baixo">0</p>
+          </div>
+        </a>
       </section>
 
       <section class="main-dashboard">
@@ -169,10 +182,12 @@
              <h3 class="dashboard-card-title">📅 Agenda do Dia</h3>
              <div id="lista-agenda-dia"><p style="text-align: center; color: var(--text-secondary);">Carregando agendamentos...</p></div>
           </div>
-          <div class="dashboard-card">
-             <h3 class="dashboard-card-title">Últimas Transações</h3>
-             <div id="lista-transacoes"><p style="text-align: center; color: var(--text-secondary);">Carregando transações...</p></div>
-          </div>
+          <a href="pecas.html" style="text-decoration: none;">
+            <div class="dashboard-card">
+              <h3 class="dashboard-card-title">🔩 Peças Urgentes para Pedir</h3>
+              <div id="lista-pecas-pedir"><p style="text-align: center; color: var(--text-secondary);">Verificando peças...</p></div>
+            </div>
+          </a>
         </div>
         <div class="dashboard-right">
           <div class="dashboard-card" style="margin-bottom: 24px;">
@@ -213,6 +228,7 @@
       agendamentos: database.ref("agendamentos"),
       estoque: database.ref("estoque"),
       anotacoes: database.ref("anotacoes"),
+      pecasPedir: database.ref("pecas_pedir"), // Nova referência
     };
     const configRef = database.ref('configuracoes');
     let dashboardData = {};
@@ -227,7 +243,6 @@
         document.getElementById('userAvatar').textContent = iniciais;
         updateHeader();
         
-        // Listener para aplicar o tema escuro
         configRef.on('value', (snapshot) => {
             const config = snapshot.val() || {};
             if (config.darkMode) {
@@ -237,7 +252,6 @@
             }
         });
 
-        // Anexa os listeners de dados do painel
         Object.keys(refs).forEach(key => {
             refs[key].on("value", snapshot => {
                 const data = snapshot.val() || {};
@@ -266,10 +280,10 @@
     function updateDashboard(key, data) {
         dashboardData[key] = data;
         updateSummaryCards();
-        updateTransactionList();
         updateAgendaDoDia();
         updateContasAVencer();
         updateAnotacoes();
+        updatePecasPedir(); // Nova função chamada
     }
 
     function formatarMoeda(valor) {
@@ -277,7 +291,6 @@
     }
 
     function updateSummaryCards() {
-        if (!dashboardData.os) return; 
         const hoje = new Date().toISOString().slice(0, 10);
         
         const osEmAndamento = Object.values(dashboardData.os || {}).filter(os => ['aguardando', 'em_andamento'].includes(os.statusOS)).length;
@@ -295,36 +308,6 @@
         const estoqueBaixo = Object.values(dashboardData.estoque || {})
             .filter(item => item.quantidade <= item.estoqueMinimo).length;
         document.getElementById('stat-estoque-baixo').textContent = estoqueBaixo;
-    }
-
-    function updateTransactionList() {
-        if (!dashboardData.transacoes) return;
-        const listaTransacoes = document.getElementById('lista-transacoes');
-        const transacoes = Object.values(dashboardData.transacoes || {})
-            .sort((a,b) => new Date(b.criadoEm || 0) - new Date(a.criadoEm || 0))
-            .slice(0, 3);
-
-        if (transacoes.length === 0) {
-            listaTransacoes.innerHTML = '<p style="text-align: center; color: var(--text-secondary);">Nenhuma transação recente.</p>';
-            return;
-        }
-
-        listaTransacoes.innerHTML = '';
-        transacoes.forEach(t => {
-            const isIncome = t.tipo === 'entrada';
-            const itemHTML = `
-                <div class="list-item">
-                    <div class="list-item-icon">${isIncome ? '↓' : '↑'}</div>
-                    <div class="list-item-details">
-                        <strong>${t.descricao.substring(0, 30)}${t.descricao.length > 30 ? '...' : ''}</strong>
-                        <small>${new Date(t.dataTransacao + 'T00:00:00').toLocaleDateString('pt-BR')}</small>
-                    </div>
-                    <span class="list-item-value ${isIncome ? 'income' : 'expense'}">
-                        ${isIncome ? '+' : '-'} ${formatarMoeda(t.valor)}
-                    </span>
-                </div>`;
-            listaTransacoes.innerHTML += itemHTML;
-        });
     }
 
     function updateAgendaDoDia() {
@@ -356,6 +339,37 @@
         });
     }
 
+    function updatePecasPedir() {
+        if (!dashboardData.pecasPedir) return;
+        const listaPecas = document.getElementById('lista-pecas-pedir');
+
+        const pecas = Object.values(dashboardData.pecasPedir || {})
+            .filter(p => p.status !== 'pedido') // Exemplo de filtro, ajuste conforme sua necessidade
+            .sort((a, b) => (b.prioridade === 'alta' ? 1 : -1) - (a.prioridade === 'alta' ? 1 : -1)) // Prioridade alta primeiro
+            .slice(0, 4);
+
+        if (pecas.length === 0) {
+            listaPecas.innerHTML = '<p style="text-align: center; color: var(--text-secondary);">Nenhuma peça urgente.</p>';
+            return;
+        }
+
+        listaPecas.innerHTML = '';
+        pecas.forEach(peca => {
+            const isHighPriority = peca.prioridade === 'alta';
+            const itemHTML = `
+                <div class="list-item">
+                    <div class="list-item-icon">🔩</div>
+                    <div class="list-item-details">
+                        <strong>${peca.nomePeca}</strong>
+                        <small>Fornecedor: ${peca.fornecedor || 'Não definido'}</small>
+                    </div>
+                    ${isHighPriority ? '<span class="list-item-value high-priority">Urgente</span>' : ''}
+                </div>`;
+            listaPecas.innerHTML += itemHTML;
+        });
+    }
+
+
     function updateContasAVencer() {
         if (!dashboardData.transacoes) return;
         const listaContas = document.getElementById('lista-contas-vencer');
@@ -368,7 +382,9 @@
             .sort((a,b) => new Date(a.dataVencimento) - new Date(b.dataVencimento));
             
         let htmlContas = '';
+        let count = 0;
         contasPendentes.forEach(conta => {
+            if(count >= 4) return; // Limita a 4 itens
             const dataVenc = new Date(conta.dataVencimento + 'T00:00:00');
             const diffTime = dataVenc - hoje;
             const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
@@ -376,8 +392,8 @@
             let classeAlerta = '';
             if (diffDays <= 0) {
                 classeAlerta = 'alerta-vermelho'; // Vencido ou vence hoje
-            } else if (diffDays <= 2) {
-                classeAlerta = 'alerta-amarelo'; // Vence em 1 ou 2 dias
+            } else if (diffDays <= 3) {
+                classeAlerta = 'alerta-amarelo'; // Vence em até 3 dias
             }
             
             if(classeAlerta) {
@@ -390,6 +406,7 @@
                         <span class="list-item-value expense">${formatarMoeda(conta.valor)}</span>
                     </div>`;
                 htmlContas += itemHTML;
+                count++;
             }
         });
         
