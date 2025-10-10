@@ -73,7 +73,8 @@
     .card-value { font-size: 2.2rem; font-weight: 800; color: var(--text-primary); }
     
     .main-dashboard { display: grid; grid-template-columns: 2fr 1fr; gap: 24px; }
-    .dashboard-card { background: var(--card-bg); padding: 24px; border-radius: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); transition: background-color 0.3s; }
+    .dashboard-card { background: var(--card-bg); padding: 24px; border-radius: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); transition: all 0.3s; }
+    .main-dashboard a .dashboard-card:hover { transform: translateY(-4px); box-shadow: 0 8px 16px rgba(0,0,0,0.1); }
     .dashboard-card-title { font-size: 1.2rem; font-weight: 600; margin-bottom: 20px; }
     .list-item { display: flex; align-items: center; gap: 16px; padding: 12px 0; border-bottom: 1px solid var(--border-color); }
     .list-item:last-child { border-bottom: none; }
@@ -178,11 +179,13 @@
 
       <section class="main-dashboard">
         <div class="dashboard-left">
-          <div class="dashboard-card" style="margin-bottom: 24px;">
-             <h3 class="dashboard-card-title">📅 Agenda do Dia</h3>
-             <div id="lista-agenda-dia"><p style="text-align: center; color: var(--text-secondary);">Carregando agendamentos...</p></div>
-          </div>
-          <a href="pecas.html" style="text-decoration: none;">
+          <a href="agendamentos.html" style="text-decoration: none; color: inherit;">
+            <div class="dashboard-card" style="margin-bottom: 24px;">
+              <h3 class="dashboard-card-title">📅 Agenda do Dia</h3>
+              <div id="lista-agenda-dia"><p style="text-align: center; color: var(--text-secondary);">Carregando agendamentos...</p></div>
+            </div>
+          </a>
+          <a href="pecas.html" style="text-decoration: none; color: inherit;">
             <div class="dashboard-card">
               <h3 class="dashboard-card-title">🔩 Peças Urgentes para Pedir</h3>
               <div id="lista-pecas-pedir"><p style="text-align: center; color: var(--text-secondary);">Verificando peças...</p></div>
@@ -190,14 +193,18 @@
           </a>
         </div>
         <div class="dashboard-right">
-          <div class="dashboard-card" style="margin-bottom: 24px;">
-            <h3 class="dashboard-card-title">⚠️ Contas a Vencer</h3>
-            <div id="lista-contas-vencer"><p style="text-align: center; color: var(--text-secondary);">Verificando contas...</p></div>
-          </div>
-          <div class="dashboard-card">
-            <h3 class="dashboard-card-title">📝 Anotações Recentes</h3>
-            <div id="lista-anotacoes"><p style="text-align: center; color: var(--text-secondary);">Carregando anotações...</p></div>
-          </div>
+          <a href="contas_financeiro.html" style="text-decoration: none; color: inherit;">
+            <div class="dashboard-card" style="margin-bottom: 24px;">
+              <h3 class="dashboard-card-title">⚠️ Contas a Vencer</h3>
+              <div id="lista-contas-vencer"><p style="text-align: center; color: var(--text-secondary);">Verificando contas...</p></div>
+            </div>
+          </a>
+          <a href="anotacoes.html" style="text-decoration: none; color: inherit;">
+            <div class="dashboard-card">
+              <h3 class="dashboard-card-title">📝 Anotações Recentes</h3>
+              <div id="lista-anotacoes"><p style="text-align: center; color: var(--text-secondary);">Carregando anotações...</p></div>
+            </div>
+          </a>
         </div>
       </section>
     </main>
@@ -228,7 +235,7 @@
       agendamentos: database.ref("agendamentos"),
       estoque: database.ref("estoque"),
       anotacoes: database.ref("anotacoes"),
-      pecasPedir: database.ref("pecas_pedir"), // Nova referência
+      pecasPedir: database.ref("pecas_pedir"), 
     };
     const configRef = database.ref('configuracoes');
     let dashboardData = {};
@@ -283,7 +290,7 @@
         updateAgendaDoDia();
         updateContasAVencer();
         updateAnotacoes();
-        updatePecasPedir(); // Nova função chamada
+        updatePecasPedir();
     }
 
     function formatarMoeda(valor) {
@@ -344,8 +351,8 @@
         const listaPecas = document.getElementById('lista-pecas-pedir');
 
         const pecas = Object.values(dashboardData.pecasPedir || {})
-            .filter(p => p.status !== 'pedido') // Exemplo de filtro, ajuste conforme sua necessidade
-            .sort((a, b) => (b.prioridade === 'alta' ? 1 : -1) - (a.prioridade === 'alta' ? 1 : -1)) // Prioridade alta primeiro
+            .filter(p => p.status !== 'pedido')
+            .sort((a, b) => (b.prioridade === 'alta' ? 1 : -1) - (a.prioridade === 'alta' ? 1 : -1))
             .slice(0, 4);
 
         if (pecas.length === 0) {
@@ -384,16 +391,16 @@
         let htmlContas = '';
         let count = 0;
         contasPendentes.forEach(conta => {
-            if(count >= 4) return; // Limita a 4 itens
+            if(count >= 4) return;
             const dataVenc = new Date(conta.dataVencimento + 'T00:00:00');
             const diffTime = dataVenc - hoje;
             const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 
             let classeAlerta = '';
             if (diffDays <= 0) {
-                classeAlerta = 'alerta-vermelho'; // Vencido ou vence hoje
+                classeAlerta = 'alerta-vermelho';
             } else if (diffDays <= 3) {
-                classeAlerta = 'alerta-amarelo'; // Vence em até 3 dias
+                classeAlerta = 'alerta-amarelo';
             }
             
             if(classeAlerta) {
