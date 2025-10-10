@@ -148,37 +148,37 @@
       </div>
 
       <div class="tab-content active" id="tab-documentos">
-        <div class="print-container">
-          <aside class="selection-panel no-print">
-            <h3>Últimas OS Finalizadas</h3>
-            <div class="recent-os-list" id="recent-os-list"></div>
-            <div id="print-actions-doc"><button class="btn btn-primary" id="btnImprimirDoc" disabled>🖨️ Imprimir Documento</button></div>
-          </aside>
-          <section class="preview-panel print-area" id="print-area-a4">
-            <div id="preview-placeholder-doc"><p>Selecione uma OS para pré-visualizar.</p></div>
-            <div id="print-preview-container-doc"></div>
-          </section>
-        </div>
+          <div class="print-container">
+              <aside class="selection-panel no-print">
+                  <h3>Últimas OS Finalizadas</h3>
+                  <div class="recent-os-list" id="recent-os-list"></div>
+                  <div id="print-actions-doc"><button class="btn btn-primary" id="btnImprimirDoc" disabled>🖨️ Imprimir Documento</button></div>
+              </aside>
+              <section class="preview-panel print-area" id="print-area-a4">
+                  <div id="preview-placeholder-doc"><p>Selecione uma OS para pré-visualizar.</p></div>
+                  <div id="print-preview-container-doc"></div>
+              </section>
+          </div>
       </div>
 
       <div class="tab-content" id="tab-etiquetas">
-        <div class="print-container">
-          <aside class="selection-panel no-print">
-            <h3>Gerar Etiqueta</h3>
-            <div class="form-group"><label>Buscar OS</label><div class="search-box"><input type="text" id="searchInputEtiqueta" placeholder="Nº da OS ou cliente..."></div><div class="search-results" id="searchResultsEtiqueta"></div></div>
-            <div class="form-group"><label>Tipo de Etiqueta</label><select id="tipoEtiqueta"><option value="cliente">Etiqueta do Cliente</option><option value="interna">Controle Interno</option></select></div>
-            <div class="form-group"><label>Tamanho da Etiqueta</label><select id="tamanhoEtiqueta">
-                <option value="50x80">50mm x 80mm</option>
-                <option value="50x30">50mm x 30mm</option><option value="50x40">50mm x 40mm</option>
-                <option value="80x40">80mm x 40mm</option><option value="80x50">80mm x 50mm</option>
-            </select></div>
-            <div id="print-actions-etiqueta"><button class="btn btn-primary" id="btnImprimirEtiqueta" disabled>🖨️ Imprimir Etiqueta</button></div>
-          </aside>
-          <section class="preview-panel print-area" id="print-area-etiqueta">
-            <div id="preview-placeholder-etiqueta"><p>Busque e selecione uma OS para gerar a etiqueta.</p></div>
-            <div class="etiqueta-preview-wrapper" id="print-preview-container-etiqueta"></div>
-          </section>
-        </div>
+          <div class="print-container">
+              <aside class="selection-panel no-print">
+                  <h3>Gerar Etiqueta</h3>
+                  <div class="form-group"><label>Buscar OS</label><div class="search-box"><input type="text" id="searchInputEtiqueta" placeholder="Nº da OS ou cliente..."></div><div class="search-results" id="searchResultsEtiqueta"></div></div>
+                  <div class="form-group"><label>Tipo de Etiqueta</label><select id="tipoEtiqueta"><option value="cliente">Etiqueta do Cliente</option><option value="interna">Controle Interno</option></select></div>
+                  <div class="form-group"><label>Tamanho da Etiqueta</label><select id="tamanhoEtiqueta">
+                      <option value="50x80">50mm x 80mm</option>
+                      <option value="50x30">50mm x 30mm</option><option value="50x40">50mm x 40mm</option>
+                      <option value="80x40">80mm x 40mm</option><option value="80x50">80mm x 50mm</option>
+                  </select></div>
+                  <div id="print-actions-etiqueta"><button class="btn btn-primary" id="btnImprimirEtiqueta" disabled>🖨️ Imprimir Etiqueta</button></div>
+              </aside>
+              <section class="preview-panel print-area" id="print-area-etiqueta">
+                  <div id="preview-placeholder-etiqueta"><p>Busque e selecione uma OS para gerar a etiqueta.</p></div>
+                  <div class="etiqueta-preview-wrapper" id="print-preview-container-etiqueta"></div>
+              </section>
+          </div>
       </div>
       
       <div class="tab-content" id="tab-relatorios">
@@ -188,9 +188,9 @@
             <div class="form-group">
                 <label for="tipoRelatorio">Tipo de Relatório</label>
                 <select id="tipoRelatorio">
-                    <option value="financeiroMensal">Fechamento Financeiro Mensal</option>
-                    <option value="pecasUtilizadas">Relatório de Peças Utilizadas</option>
-                    <option value="osPeriodo">Ordens de Serviço por Período</option>
+                    <option value="financeiroDetalhado">Fechamento Financeiro Detalhado</option>
+                    <option value="pecasMaisUtilizadas">Peças Mais Utilizadas</option>
+                    <option value="osPeriodo" disabled>Ordens de Serviço (em breve)</option>
                 </select>
             </div>
             <div class="form-group">
@@ -261,17 +261,18 @@
         });
     });
 
-    // --- LÓGICA DAS ABAS DOCUMENTOS E ETIQUETAS (RESTAURADA E COMPLETA) ---
+    function formatarMoeda(valor) { return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(valor || 0); }
+
+    // --- LÓGICA DAS ABAS DOCUMENTOS E ETIQUETAS ---
     const recentOsList = document.getElementById('recent-os-list');
     const previewContainerDoc = document.getElementById('print-preview-container-doc');
     const placeholderDoc = document.getElementById('preview-placeholder-doc');
     const btnImprimirDoc = document.getElementById('btnImprimirDoc');
-
     function renderizarListaOSRecentes() {
         const osFinalizadas = Object.entries(osData)
             .filter(([id, os]) => ['concluido', 'entregue'].includes(os.statusOS))
             .sort((a,b) => new Date(b[1].atualizadoEm || 0) - new Date(a[1].atualizadoEm || 0))
-            .slice(0, 5);
+            .slice(0, 10);
         recentOsList.innerHTML = '';
         if(osFinalizadas.length === 0) {
             recentOsList.innerHTML = '<p style="text-align: center; color: var(--text-secondary); padding: 16px;">Nenhuma OS finalizada recentemente.</p>'; return;
@@ -284,7 +285,6 @@
             recentOsList.appendChild(item);
         });
     }
-
     function selecionarOSParaDocumento(osId, element) {
         selectedOsIdDoc = osId;
         document.querySelectorAll('#recent-os-list .os-item').forEach(el => el.classList.remove('selected'));
@@ -293,9 +293,7 @@
         placeholderDoc.style.display = 'none';
         gerarPreviewDocumento(osId);
     }
-    
     btnImprimirDoc.addEventListener('click', () => { if(selectedOsIdDoc) { setPageSize('A4', 'auto'); window.print(); } });
-
     const searchInputEtiqueta = document.getElementById('searchInputEtiqueta');
     const searchResultsEtiqueta = document.getElementById('searchResultsEtiqueta');
     const tipoEtiqueta = document.getElementById('tipoEtiqueta');
@@ -303,11 +301,10 @@
     const previewContainerEtiqueta = document.getElementById('print-preview-container-etiqueta');
     const placeholderEtiqueta = document.getElementById('preview-placeholder-etiqueta');
     const btnImprimirEtiqueta = document.getElementById('btnImprimirEtiqueta');
-
     searchInputEtiqueta.addEventListener('input', () => {
         const termo = searchInputEtiqueta.value.toLowerCase();
         searchResultsEtiqueta.innerHTML = ''; if (termo.length < 2) return;
-        const resultados = Object.entries(osData).filter(([id, os]) => os.numeroOS.includes(termo) || os.clienteNome.toLowerCase().includes(termo)).sort((a,b) => b[1].numeroOS - a[1].numeroOS).slice(0, 5);
+        const resultados = Object.entries(osData).filter(([id, os]) => String(os.numeroOS).includes(termo) || os.clienteNome.toLowerCase().includes(termo)).sort((a,b) => b[1].numeroOS - a[1].numeroOS).slice(0, 5);
         resultados.forEach(([id, os]) => {
             const item = document.createElement('div');
             item.className = 'os-item';
@@ -316,10 +313,8 @@
             searchResultsEtiqueta.appendChild(item);
         });
     });
-
     tipoEtiqueta.addEventListener('change', gerarPreviewEtiqueta);
     tamanhoEtiqueta.addEventListener('change', gerarPreviewEtiqueta);
-
     function selecionarOSParaEtiqueta(osId) {
         selectedOsIdEtiqueta = osId;
         searchResultsEtiqueta.innerHTML = '';
@@ -328,7 +323,6 @@
         placeholderEtiqueta.style.display = 'none';
         gerarPreviewEtiqueta();
     }
-    
     function gerarPreviewEtiqueta() {
         if (!selectedOsIdEtiqueta) return;
         const os = osData[selectedOsIdEtiqueta];
@@ -336,9 +330,8 @@
         const tipo = tipoEtiqueta.value;
         const dataEntrada = new Date(os.dataEntrada + 'T00:00:00Z').toLocaleDateString('pt-BR');
         let html = '';
-        
         if(tipo === 'cliente') {
-             html = `<div class="etiqueta-preview" style="width:${width}mm; height:${height}mm; padding: 2mm; font-size: 8pt; line-height: 1.2;">
+             html = `<div class="etiqueta-preview" style="width:${width}mm; height:${height}mm; padding: 2mm; font-size: 8pt; line-height: 1.2; display: flex; flex-direction: column; justify-content: space-between;">
                 <div style="text-align:center; border-bottom: 1px solid #000; padding-bottom: 1mm; margin-bottom: 1mm;">
                     <strong style="font-size: 9pt;">${configData.nomeOficina || 'Sua Oficina'}</strong><br>
                     <span style="font-size: 7pt;">OS #${String(os.numeroOS).padStart(4, '0')}</span>
@@ -347,18 +340,17 @@
                 <div><strong>Aparelho:</strong> ${os.aparelho} ${os.marca || ''}</div>
                 <div><strong>Entrada:</strong> ${dataEntrada}</div>
              </div>`;
-        } else { // interna
-            html = `<div class="etiqueta-preview" style="width:${width}mm; height:${height}mm; padding: 2mm; font-size: 8pt; line-height: 1.2;">
-                <div style="text-align:center; font-weight: bold; font-size: 9pt;">OS #${String(os.numeroOS).padStart(4, '0')}</div>
+        } else {
+            html = `<div class="etiqueta-preview" style="width:${width}mm; height:${height}mm; padding: 2mm; font-size: 8pt; line-height: 1.2; display: flex; flex-direction: column; justify-content: space-between;">
+                <div style="text-align:center; font-weight: bold; font-size: 10pt;">OS #${String(os.numeroOS).padStart(4, '0')}</div>
                 <div><strong>Cliente:</strong> ${os.clienteNome.substring(0, 25)}</div>
-                <div><strong>Aparelho:</strong> ${os.aparelho.substring(0, 25)}</div>
+                <div><strong>Aparelho:</strong> ${(os.aparelho + ' ' + (os.marca || '')).substring(0, 25)}</div>
                 <div><strong>Defeito:</strong> ${os.defeitoRelatado.substring(0, 30)}...</div>
-                <div><strong>Entrada:</strong> ${dataEntrada}</div>
+                <div style="text-align: right;"><strong>Entrada:</strong> ${dataEntrada}</div>
             </div>`;
         }
         previewContainerEtiqueta.innerHTML = html;
     }
-    
     btnImprimirEtiqueta.addEventListener('click', () => {
         if (selectedOsIdEtiqueta) {
             const [width, height] = tamanhoEtiqueta.value.split('x');
@@ -368,17 +360,13 @@
             window.print();
         }
     });
-
     function setPageSize(width, height) {
         let style = document.getElementById('page-size-style');
         if (!style) {
-            style = document.createElement('style');
-            style.id = 'page-size-style';
-            document.head.appendChild(style);
+            style = document.createElement('style'); style.id = 'page-size-style'; document.head.appendChild(style);
         }
         style.innerHTML = `@page { size: ${width} ${height}; margin: 0; }`;
     }
-
     function gerarPreviewDocumento(osId) {
         const os = osData[osId];
         const empresa = configData || {};
@@ -437,48 +425,68 @@
         placeholderRelatorio.style.display = 'none';
         btnImprimirRelatorio.disabled = false;
         
-        if (tipo === 'financeiroMensal') {
-            gerarRelatorioFinanceiroMensal(inicio, fim);
-        } else if (tipo === 'pecasUtilizadas') {
+        if (tipo === 'financeiroDetalhado') {
+            gerarRelatorioFinanceiroDetalhado(inicio, fim);
+        } else if (tipo === 'pecasMaisUtilizadas') {
             gerarRelatorioPecasUtilizadas(inicio, fim);
         } else if (tipo === 'osPeriodo') {
             previewContainerRelatorio.innerHTML = '<div class="report-preview"><p style="text-align:center;">Relatório de Ordens de Serviço ainda não implementado.</p></div>';
         }
     }
 
-    function gerarRelatorioFinanceiroMensal(inicio, fim) {
+    function gerarRelatorioFinanceiroDetalhado(inicio, fim) {
+        const osConcluidasPeriodo = Object.values(osData).filter(os => {
+            const statusConcluido = ['concluido', 'entregue'].includes(os.statusOS);
+            if (!statusConcluido || !os.atualizadoEm) return false;
+            const dataAtualizacao = new Date(os.atualizadoEm);
+            return dataAtualizacao >= inicio && dataAtualizacao <= fim;
+        });
+
+        const totalMaoDeObra = osConcluidasPeriodo.reduce((sum, os) => sum + (parseFloat(os.valorMaoObra) || 0), 0);
+        const totalReceitaPecas = osConcluidasPeriodo.reduce((sum, os) => sum + (parseFloat(os.valorPecas) || 0), 0);
+
         const transacoesPeriodo = Object.values(transacoesData).filter(t => {
             const dataT = new Date(t.dataTransacao + 'T12:00:00Z');
             return dataT >= inicio && dataT <= fim && t.statusTransacao === 'pago';
         });
-
-        const totalEntradas = transacoesPeriodo.filter(t => t.tipo === 'entrada').reduce((sum, t) => sum + parseFloat(t.valor), 0);
+        
+        const outrasEntradas = transacoesPeriodo.filter(t => t.tipo === 'entrada' && !t.referenciaOS).reduce((sum, t) => sum + parseFloat(t.valor), 0);
         const totalSaidas = transacoesPeriodo.filter(t => t.tipo === 'saida').reduce((sum, t) => sum + parseFloat(t.valor), 0);
+        const totalEntradas = totalMaoDeObra + totalReceitaPecas + outrasEntradas;
         const saldo = totalEntradas - totalSaidas;
-
-        const entradasPorCategoria = transacoesPeriodo.filter(t => t.tipo === 'entrada').reduce((acc, t) => {
-            acc[t.categoria] = (acc[t.categoria] || 0) + parseFloat(t.valor);
-            return acc;
-        }, {});
-
-        const saidasPorCategoria = transacoesPeriodo.filter(t => t.tipo === 'saida').reduce((acc, t) => {
-            acc[t.categoria] = (acc[t.categoria] || 0) + parseFloat(t.valor);
-            return acc;
-        }, {});
 
         const html = `
             <div class="report-preview">
                 <header class="report-header">
-                    <h2>Relatório de Fechamento Financeiro</h2>
+                    <h2>Fechamento Financeiro Detalhado</h2>
                     <p>Período de ${inicio.toLocaleDateString('pt-BR')} a ${fim.toLocaleDateString('pt-BR')}</p>
                 </header>
                 <section class="report-summary">
-                    <div class="summary-item"><span class="label">Total de Entradas</span><span class="value positive">${formatarMoeda(totalEntradas)}</span></div>
-                    <div class="summary-item"><span class="label">Total de Saídas</span><span class="value negative">${formatarMoeda(totalSaidas)}</span></div>
-                    <div class="summary-item"><span class="label">Saldo do Período</span><span class="value">${formatarMoeda(saldo)}</span></div>
+                    <div class="summary-item"><span class="label">Receita Total</span><span class="value positive">${formatarMoeda(totalEntradas)}</span></div>
+                    <div class="summary-item"><span class="label">Despesa Total</span><span class="value negative">${formatarMoeda(totalSaidas)}</span></div>
+                    <div class="summary-item"><span class="label">Saldo Final</span><span class="value">${formatarMoeda(saldo)}</span></div>
                 </section>
-                <section class="report-details"><h3>Detalhamento de Entradas por Categoria</h3><table class="print-table"><thead><tr><th>Categoria</th><th>Valor Total</th></tr></thead><tbody>${Object.entries(entradasPorCategoria).map(([cat, val]) => `<tr><td>${cat}</td><td>${formatarMoeda(val)}</td></tr>`).join('')}</tbody></table></section>
-                <section class="report-details"><h3>Detalhamento de Saídas por Categoria</h3><table class="print-table"><thead><tr><th>Categoria</th><th>Valor Total</th></tr></thead><tbody>${Object.entries(saidasPorCategoria).map(([cat, val]) => `<tr><td>${cat}</td><td>${formatarMoeda(val)}</td></tr>`).join('')}</tbody></table></section>
+                <section class="report-details">
+                    <h3>Detalhamento da Receita</h3>
+                    <table class="print-table">
+                        <thead><tr><th>Origem da Receita</th><th>Valor Total</th></tr></thead>
+                        <tbody>
+                            <tr><td>Receita de Mão de Obra (OS)</td><td>${formatarMoeda(totalMaoDeObra)}</td></tr>
+                            <tr><td>Receita de Peças (OS)</td><td>${formatarMoeda(totalReceitaPecas)}</td></tr>
+                            <tr><td>Outras Entradas</td><td>${formatarMoeda(outrasEntradas)}</td></tr>
+                            <tr style="font-weight: bold;"><td>TOTAL</td><td>${formatarMoeda(totalEntradas)}</td></tr>
+                        </tbody>
+                    </table>
+                </section>
+                <section class="report-details">
+                    <h3>Detalhamento das Despesas (Saídas)</h3>
+                    <table class="print-table">
+                         <thead><tr><th>Categoria</th><th>Valor Total</th></tr></thead>
+                        <tbody>
+                            ${Object.entries(transacoesPeriodo.filter(t => t.tipo === 'saida').reduce((acc, t) => { acc[t.categoria] = (acc[t.categoria] || 0) + parseFloat(t.valor); return acc; }, {})).map(([cat, val]) => `<tr><td>${cat}</td><td>${formatarMoeda(val)}</td></tr>`).join('')}
+                        </tbody>
+                    </table>
+                </section>
             </div>`;
         previewContainerRelatorio.innerHTML = html;
     }
@@ -487,7 +495,6 @@
         const osConcluidasPeriodo = Object.values(osData).filter(os => {
             const statusConcluido = ['concluido', 'entregue'].includes(os.statusOS);
             if (!statusConcluido || !os.atualizadoEm) return false;
-            
             const dataAtualizacao = new Date(os.atualizadoEm);
             return dataAtualizacao >= inicio && dataAtualizacao <= fim;
         });
@@ -512,19 +519,21 @@
         const html = `
             <div class="report-preview">
                 <header class="report-header">
-                    <h2>Relatório de Peças Utilizadas</h2>
+                    <h2>Relatório de Peças Mais Utilizadas</h2>
                     <p>Período de ${inicio.toLocaleDateString('pt-BR')} a ${fim.toLocaleDateString('pt-BR')}</p>
                 </header>
                 <section class="report-summary">
-                    <div class="summary-item"><span class="label">Total de Peças Vendidas</span><span class="value">${totalPecasVendidas}</span></div>
+                    <div class="summary-item"><span class="label">Total de Itens de Peças</span><span class="value">${totalPecasVendidas}</span></div>
                     <div class="summary-item"><span class="label">Faturamento com Peças</span><span class="value positive">${formatarMoeda(faturamentoTotalPecas)}</span></div>
                 </section>
                 <section class="report-details">
-                    <h3>Detalhamento por Peça</h3>
+                    <h3>Detalhamento por Peça (Mais utilizadas primeiro)</h3>
                     <table class="print-table">
                         <thead><tr><th>Item (Peça)</th><th>Quantidade Vendida</th><th>Faturamento Gerado</th></tr></thead>
                         <tbody>
-                            ${Object.entries(pecasAgregadas).sort((a, b) => a[0].localeCompare(b[0])).map(([nome, dados]) => `<tr><td>${nome}</td><td>${dados.quantidade}</td><td>${formatarMoeda(dados.faturamento)}</td></tr>`).join('')}
+                            ${Object.entries(pecasAgregadas)
+                                .sort((a, b) => b[1].quantidade - a[1].quantidade)
+                                .map(([nome, dados]) => `<tr><td>${nome}</td><td>${dados.quantidade}</td><td>${formatarMoeda(dados.faturamento)}</td></tr>`).join('')}
                         </tbody>
                     </table>
                 </section>
