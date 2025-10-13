@@ -30,7 +30,7 @@
     body { font-family: 'Inter', sans-serif; background: var(--main-bg); color: var(--text-primary); }
     .dashboard-container { display: grid; grid-template-columns: 240px 1fr; min-height: 100vh; }
 
-    /* --- SIDEBAR (Sem alterações) --- */
+    /* --- SIDEBAR --- */
     .sidebar { background: var(--sidebar-bg); color: #fff; display: flex; flex-direction: column; padding: 24px 16px; position: fixed; left: 0; top: 0; height: 100%; width: 240px; z-index: 100; transition: transform 0.3s ease-in-out; }
     .sidebar-header { display: flex; align-items: center; gap: 12px; padding-bottom: 24px; margin-bottom: 16px; border-bottom: 1px solid var(--sidebar-bg-hover); }
     .sidebar-logo { width: 40px; height: 40px; background: var(--accent-blue); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; font-weight: bold; }
@@ -70,11 +70,8 @@
     .tab:hover:not(.active) { background: #dcdcdc; }
     body.dark-mode .tab:hover:not(.active) { background: var(--sidebar-bg-hover); }
     
-    /* --- ESTRUTURA VISUAL: TABELA (Desktop) E CARDS (Mobile) --- */
-    .transacoes-table-container { display: none; /* Escondido por padrão */ }
-    .transacoes-cards { display: block; /* Visível por padrão */ }
-
-    /* ESTILO TABELA (Desktop) */
+    .transacoes-table-container { display: none; }
+    .transacoes-cards { display: block; }
     .transacoes-table-container { background: var(--card-bg); border-radius: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); overflow-x: auto; }
     .transacoes-table { min-width: 900px; width: 100%; border-collapse: collapse; }
     .transacoes-table th, .transacoes-table td { padding: 16px 20px; text-align: left; border-bottom: 1px solid var(--border-color); }
@@ -83,7 +80,6 @@
     .transacoes-table tbody tr:last-child td { border-bottom: none; }
     .transacoes-table tbody tr:hover { background: var(--main-bg); }
     
-    /* ESTILO CARDS (Mobile) */
     .transacoes-cards { display: grid; gap: 12px; }
     .transacao-card { background: var(--card-bg); border-radius: 12px; padding: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.07); }
     .card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; }
@@ -93,7 +89,6 @@
     .card-info-item .label { color: var(--text-secondary); font-size: 0.75rem; margin-bottom: 2px; }
     .card-footer { border-top: 1px solid var(--border-color); padding-top: 12px; display: flex; justify-content: flex-end; gap: 8px; }
     
-    /* Componentes Comuns (Badges, Botões) */
     .status-badge { padding: 4px 10px; border-radius: 20px; font-size: 0.7rem; font-weight: 700; text-align: center; display: inline-block; }
     .status-pago { background: #d1fae5; color: #065f46; } .status-pendente { background: #fef3c7; color: #92400e; } .status-vencido { background: #fee2e2; color: #991b1b; }
     .valor-entrada { color: var(--accent-green); } .valor-saida { color: var(--accent-red); }
@@ -103,17 +98,11 @@
     .btn-delete { background: #fee2e2; color: #991b1b; } .btn-delete:hover { background: #ef4444; color: white; }
     .btn-pay { background: #d1fae5; color: #065f46; } .btn-pay:hover { background: #10b981; color: white; }
 
-    /* --- GERAL --- */
     .empty-state { display: none; text-align: center; padding: 60px 20px; }
     .mobile-menu-btn { display: none; background: none; border: none; font-size: 1.8rem; cursor: pointer; color: var(--text-primary); }
     .overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 99; }
     .overlay.is-open { display: block; }
 
-    /* ============================================== */
-    /* === LÓGICA DE RESPONSIVIDADE (MEDIA QUERIES) === */
-    /* ============================================== */
-    
-    /* MOBILE (Até 991px) */
     @media (max-width: 991px) {
       .dashboard-container { grid-template-columns: 1fr; }
       .main-content { grid-column: 1 / 2; padding: 16px; }
@@ -122,12 +111,10 @@
       .mobile-menu-btn { display: block; }
       .main-header { margin-bottom: 16px; }
       .main-header h1 { font-size: 1.5rem; }
-      
       .resumo-financeiro { grid-template-columns: repeat(2, 1fr); gap: 12px; }
       .card-resumo { padding: 16px; }
       .card-label { font-size: 0.8rem; }
       .card-valor { font-size: 1.6rem; }
-      
       .actions-bar { flex-direction: column; align-items: stretch; gap: 16px; padding: 0; background: none; box-shadow: none; }
       .filters { flex-direction: column; gap: 12px; width: 100%; }
       .filter-group { display: flex; flex-direction: column; background: var(--card-bg); padding: 12px; border-radius: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
@@ -136,21 +123,23 @@
       .btn-group .btn-primary { flex: 1; justify-content: center; padding: 12px; }
     }
 
-    /* DESKTOP (992px em diante) */
     @media (min-width: 992px) {
-      .transacoes-cards { display: none; } /* Esconde os cards */
-      .transacoes-table-container { display: block; } /* Mostra a tabela */
+      .transacoes-cards { display: none; }
+      .transacoes-table-container { display: block; }
     }
 
-    /* --- MODAL (Sem alterações significativas) --- */
     .modal { display: none; position: fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.6); z-index:1000; align-items:center; justify-content:center; padding: 20px; }
     .modal.active { display: flex; }
     .modal-content { background: var(--card-bg); border-radius: 20px; padding: 32px; max-width: 600px; width: 100%; box-shadow: 0 20px 60px rgba(0,0,0,0.3); }
     .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; padding-bottom: 16px; border-bottom: 1px solid var(--border-color); }
+    .btn-close { background: var(--main-bg); border: none; width: 36px; height: 36px; border-radius: 8px; cursor: pointer; font-size: 1.2rem; transition: all 0.3s; color: var(--text-secondary); }
     .form-group { margin-bottom: 20px; } .form-group label { display: block; margin-bottom: 8px; font-weight: 600; font-size: 0.9rem; }
     .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 12px 16px; border: 2px solid var(--border-color); border-radius: 10px; font-size: 0.95rem; background: var(--main-bg); color: var(--text-primary); }
+    .btn-link { background: none; border: none; color: var(--accent-blue); font-weight: 600; cursor: pointer; padding: 0 8px; font-size: 0.85rem; }
     .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
     .form-actions { display: flex; gap: 12px; margin-top: 28px; }
+    .btn-submit { flex: 1; padding: 14px; background: var(--accent-blue); color: white; border: none; border-radius: 10px; font-weight: 600; cursor: pointer; transition: all 0.3s; }
+    .btn-cancel { flex: 1; padding: 14px; background: var(--main-bg); color: var(--text-primary); border: none; border-radius: 10px; font-weight: 600; cursor: pointer; transition: all 0.3s; }
     @media (max-width: 768px) { .form-row { grid-template-columns: 1fr; } }
   </style>
 </head>
@@ -229,7 +218,55 @@
   </div>
 
   <div class="modal" id="modalTransacao">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 id="modalTitle">Nova Transação</h2>
+        <button class="btn-close" onclick="fecharModal()">✕</button>
+      </div>
+      <form id="formTransacao" onsubmit="salvarTransacao(event)">
+        <input type="hidden" id="transacaoId">
+        <input type="hidden" id="transacaoTipo">
+        <div class="form-group">
+          <label for="descricao">Descrição *</label>
+          <input type="text" id="descricao" required>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="valor">Valor (R$) *</label>
+            <input type="number" id="valor" step="0.01" required>
+          </div>
+          <div class="form-group">
+            <label for="dataTransacao">Data da Transação *</label>
+            <input type="date" id="dataTransacao" required>
+          </div>
+        </div>
+        <div class="form-group">
+            <label for="categoria">Categoria *</label>
+            <div style="display: flex; gap: 8px;">
+                <select id="categoria" required style="flex-grow: 1;"></select>
+                <button type="button" class="btn-link" id="btnNovaCategoria">[+]</button>
+            </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="statusTransacao">Status *</label>
+            <select id="statusTransacao" required>
+              <option value="pago">Pago</option>
+              <option value="pendente">Pendente</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="dataVencimento">Data de Vencimento (se pendente)</label>
+            <input type="date" id="dataVencimento">
+          </div>
+        </div>
+        <div class="form-actions">
+          <button type="button" class="btn-cancel btn" onclick="fecharModal()">Cancelar</button>
+          <button type="submit" class="btn-submit">Salvar</button>
+        </div>
+      </form>
     </div>
+  </div>
 
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
@@ -240,14 +277,12 @@
   <script>
     protegerPagina();
 
-    // Lógica do menu mobile (inalterada)
     const sidebar = document.getElementById('sidebar');
     const mobileMenuBtn = document.getElementById('mobileMenuBtn');
     const overlay = document.getElementById('overlay');
     mobileMenuBtn.addEventListener('click', () => { sidebar.classList.toggle('is-open'); overlay.classList.toggle('is-open'); });
     overlay.addEventListener('click', () => { sidebar.classList.remove('is-open'); overlay.classList.remove('is-open'); });
     
-    // Referências do Firebase (inalteradas)
     const configRef = database.ref('configuracoes');
     const transacoesRef = database.ref("transacoes");
     const osRef = database.ref("ordens_servico");
@@ -264,16 +299,12 @@
             categoriasFinanceiro = config.categoriasFinanceiro || ['Serviços', 'Venda de Peças', 'Compra de Peças', 'Salário', 'Contas (Água, Luz, etc.)', 'Outro'];
             carregarCategoriasFinanceiro();
         });
-
-        // listener CORRIGIDO para carregar os dados das OS
+        
         osRef.on("value", snapshot => { osData = snapshot.val() || {}; });
 
-        // NOVO CÓDIGO PARA SINCRONIZAR PAGAMENTOS DE FORMA SEGURA
         osRef.on('child_changed', (snapshot) => {
             const os = snapshot.val();
             const osId = snapshot.key;
-
-            // Condição: A OS foi movida para 'entregue' e ainda não tem transação?
             if (os.statusOS === 'entregue' && !os.transacaoGerada) {
                 const transacao = {
                     tipo: 'entrada',
@@ -285,14 +316,8 @@
                     referenciaOS: osId,
                     criadoEm: new Date().toISOString()
                 };
-
-                // 1. Cria a transação no financeiro
                 transacoesRef.push(transacao).then(() => {
-                    // 2. Atualiza a OS para evitar futuras duplicidades
                     osRef.child(osId).update({ transacaoGerada: true });
-                }).catch(error => {
-                    console.error("Erro ao gerar transação da OS:", error);
-                    alert("Ocorreu um erro ao gerar a transação financeira para a OS #" + os.numeroOS);
                 });
             }
         });
@@ -309,36 +334,28 @@
       return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(valor || 0);
     }
 
-    // Função de resumo (inalterada)
     function calcularResumo() {
       const transacoesArray = Object.values(transacoesData);
       const totalEntradas = transacoesArray.filter(t => t.tipo === 'entrada' && t.statusTransacao === 'pago').reduce((sum, t) => sum + parseFloat(t.valor || 0), 0);
       const totalSaidas = transacoesArray.filter(t => t.tipo === 'saida' && t.statusTransacao === 'pago').reduce((sum, t) => sum + parseFloat(t.valor || 0), 0);
       const saldoAtual = totalEntradas - totalSaidas;
-      
       const hoje = new Date(); const mesAtual = hoje.getMonth(); const anoAtual = hoje.getFullYear();
-      
       const entradasMes = transacoesArray.filter(t => { const data = new Date(t.dataTransacao + 'T00:00:00Z'); return t.tipo === 'entrada' && t.statusTransacao === 'pago' && data.getUTCMonth() === mesAtual && data.getUTCFullYear() === anoAtual; }).reduce((sum, t) => sum + parseFloat(t.valor || 0), 0);
       const saidasMes = transacoesArray.filter(t => { const data = new Date(t.dataTransacao + 'T00:00:00Z'); return t.tipo === 'saida' && t.statusTransacao === 'pago' && data.getUTCMonth() === mesAtual && data.getUTCFullYear() === anoAtual; }).reduce((sum, t) => sum + parseFloat(t.valor || 0), 0);
       const saldoMes = entradasMes - saidasMes;
-      
       document.getElementById('saldoAtual').textContent = formatarMoeda(saldoAtual);
       document.getElementById('totalEntradas').textContent = formatarMoeda(totalEntradas);
       document.getElementById('totalSaidas').textContent = formatarMoeda(totalSaidas);
       document.getElementById('saldoMes').textContent = formatarMoeda(saldoMes);
     }
     
-    // NOVA LÓGICA DE RENDERIZAÇÃO
     function renderizarTransacoes() {
         const tableList = document.getElementById('transacoesTableList');
         const cardList = document.getElementById('transacoesCardsList');
         const emptyState = document.getElementById('emptyState');
         tableList.innerHTML = '';
         cardList.innerHTML = '';
-
         let transacoesArray = Object.entries(transacoesData).map(([id, data]) => ({ id, ...data }));
-        
-        // Aplica filtro das abas
         if (filtroTabAtual === 'entradas') transacoesArray = transacoesArray.filter(t => t.tipo === 'entrada');
         else if (filtroTabAtual === 'saidas') transacoesArray = transacoesArray.filter(t => t.tipo === 'saida');
         else if (filtroTabAtual === 'pendentes') transacoesArray = transacoesArray.filter(t => t.statusTransacao === 'pendente');
@@ -346,13 +363,9 @@
             const hoje = new Date(); hoje.setHours(0,0,0,0);
             transacoesArray = transacoesArray.filter(t => t.statusTransacao === 'pendente' && t.dataVencimento && new Date(t.dataVencimento + 'T00:00:00Z') < hoje);
         }
-      
-        // Aplica filtros de período e categoria
         const periodo = document.getElementById('filtroPeriodo').value;
         const categoria = document.getElementById('filtroCategoria').value;
         transacoesArray = aplicarFiltros(transacoesArray, periodo, categoria);
-      
-        // Exibe estado vazio se não houver transações
         if (transacoesArray.length === 0) {
             emptyState.style.display = 'block';
             cardList.style.display = 'none';
@@ -360,13 +373,9 @@
             return;
         }
         emptyState.style.display = 'none';
-        // CSS controlará qual lista será exibida, então garantimos que ambas estejam "visíveis" para o CSS decidir
         cardList.style.display = ''; 
         document.querySelector('.transacoes-table-container').style.display = '';
-
         transacoesArray.sort((a, b) => new Date(b.dataTransacao) - new Date(a.dataTransacao));
-      
-        // Itera e cria o HTML para a Tabela E para os Cards
         transacoesArray.forEach(transacao => {
             const data = new Date(transacao.dataTransacao + 'T00:00:00Z');
             const vencimento = transacao.dataVencimento ? new Date(transacao.dataVencimento + 'T00:00:00Z') : null;
@@ -379,7 +388,6 @@
             }
             const valorClass = transacao.tipo === 'entrada' ? 'valor-entrada' : 'valor-saida';
             const valorSinal = transacao.tipo === 'entrada' ? '+' : '-';
-            
             const actionButtonsHTML = `
                 <div class="action-buttons">
                     ${transacao.statusTransacao === 'pendente' ? `<button class="btn-icon btn-pay" onclick="marcarComoPago('${transacao.id}')" title="Marcar como pago">✓</button>` : ''}
@@ -389,8 +397,6 @@
                     ` : '<small style="color: var(--text-secondary); align-self: center;">OS</small>'}
                 </div>
             `;
-
-            // HTML para a Tabela
             const row = document.createElement('tr');
             row.innerHTML = `
                 <td>${data.toLocaleDateString('pt-BR')}</td>
@@ -402,8 +408,6 @@
                 <td>${actionButtonsHTML}</td>
             `;
             tableList.appendChild(row);
-
-            // HTML para os Cards
             const card = document.createElement('div');
             card.className = 'transacao-card';
             card.innerHTML = `
@@ -412,24 +416,10 @@
                     <div class="card-valor ${valorClass}">${valorSinal} ${formatarMoeda(transacao.valor)}</div>
                 </div>
                 <div class="card-body">
-                    <div class="card-info-item">
-                        <div class="label">Data</div>
-                        <div>${data.toLocaleDateString('pt-BR')}</div>
-                    </div>
-                    <div class="card-info-item">
-                        <div class="label">Status</div>
-                        <div><span class="status-badge ${statusClass}">${statusTexto}</span></div>
-                    </div>
-                    <div class="card-info-item">
-                        <div class="label">Categoria</div>
-                        <div>${transacao.categoria}</div>
-                    </div>
-                    ${vencimento ? `
-                    <div class="card-info-item">
-                        <div class="label">Vencimento</div>
-                        <div>${vencimento.toLocaleDateString('pt-BR')}</div>
-                    </div>
-                    ` : ''}
+                    <div class="card-info-item"><div class="label">Data</div><div>${data.toLocaleDateString('pt-BR')}</div></div>
+                    <div class="card-info-item"><div class="label">Status</div><div><span class="status-badge ${statusClass}">${statusTexto}</span></div></div>
+                    <div class="card-info-item"><div class="label">Categoria</div><div>${transacao.categoria}</div></div>
+                    ${vencimento ? `<div class="card-info-item"><div class="label">Vencimento</div><div>${vencimento.toLocaleDateString('pt-BR')}</div></div>` : ''}
                 </div>
                 <div class="card-footer">${actionButtonsHTML}</div>
             `;
@@ -437,7 +427,6 @@
         });
     }
 
-    // Função de filtro (inalterada)
     function aplicarFiltros(transacoes, periodo, categoria) {
       let filtradas = [...transacoes];
       if (periodo !== 'todos') {
@@ -454,7 +443,6 @@
       return filtradas;
     }
 
-    // Lógica de eventos para abas e filtros (inalterada)
     document.querySelectorAll('.tab').forEach(tab => {
       tab.addEventListener('click', function() {
         document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
@@ -463,18 +451,115 @@
       });
     });
     ['filtroPeriodo', 'filtroCategoria'].forEach(id => document.getElementById(id).addEventListener('change', renderizarTransacoes));
+    
+    // --- FUNÇÕES DO MODAL (ADICIONADAS/CORRIGIDAS) ---
+    function fecharModal() {
+        document.getElementById('modalTransacao').classList.remove('active');
+    }
 
-    // Funções do Modal e de CRUD (inalteradas)
-    function carregarCategoriasFinanceiro() { /* ... inalterada ... */ }
-    document.getElementById('btnNovaCategoria').addEventListener('click', () => { /* ... inalterada ... */ });
-    function fecharModal() { /* ... inalterada ... */ }
-    function abrirModal(tipo) { /* ... inalterada ... */ }
+    function abrirModal(tipo, id = null) {
+        const modal = document.getElementById('modalTransacao');
+        const form = document.getElementById('formTransacao');
+        form.reset();
+        editandoId = id;
+
+        const title = document.getElementById('modalTitle');
+        const tipoInput = document.getElementById('transacaoTipo');
+
+        if (id) { // Modo Edição
+            const transacao = transacoesData[id];
+            title.textContent = `Editar ${transacao.tipo === 'entrada' ? 'Entrada' : 'Saída'}`;
+            tipoInput.value = transacao.tipo;
+            document.getElementById('transacaoId').value = id;
+            document.getElementById('descricao').value = transacao.descricao;
+            document.getElementById('valor').value = transacao.valor;
+            document.getElementById('dataTransacao').value = transacao.dataTransacao;
+            document.getElementById('categoria').value = transacao.categoria;
+            document.getElementById('statusTransacao').value = transacao.statusTransacao;
+            document.getElementById('dataVencimento').value = transacao.dataVencimento || '';
+        } else { // Modo Criação
+            title.textContent = `Nova ${tipo === 'entrada' ? 'Entrada' : 'Saída'}`;
+            tipoInput.value = tipo;
+            document.getElementById('transacaoId').value = '';
+            document.getElementById('dataTransacao').value = new Date().toISOString().split('T')[0];
+        }
+        
+        modal.classList.add('active');
+    }
+    
+    function salvarTransacao(event) {
+        event.preventDefault();
+        const transacaoData = {
+            tipo: document.getElementById('transacaoTipo').value,
+            descricao: document.getElementById('descricao').value,
+            valor: parseFloat(document.getElementById('valor').value),
+            dataTransacao: document.getElementById('dataTransacao').value,
+            categoria: document.getElementById('categoria').value,
+            statusTransacao: document.getElementById('statusTransacao').value,
+            dataVencimento: document.getElementById('dataVencimento').value || null,
+            criadoEm: editandoId ? transacoesData[editandoId].criadoEm : new Date().toISOString(),
+            atualizadoEm: new Date().toISOString(),
+        };
+
+        const promise = editandoId
+            ? transacoesRef.child(editandoId).update(transacaoData)
+            : transacoesRef.push(transacaoData);
+
+        promise.then(() => {
+            alert(`Transação salva com sucesso!`);
+            fecharModal();
+        }).catch(error => {
+            alert('Erro ao salvar: ' + error.message);
+        });
+    }
+
+    function editarTransacao(id) {
+        abrirModal(null, id);
+    }
+    
+    function marcarComoPago(id) {
+        if (confirm('Deseja marcar esta transação como paga?')) {
+            transacoesRef.child(id).update({
+                statusTransacao: 'pago',
+                dataTransacao: new Date().toISOString().split('T')[0] 
+            });
+        }
+    }
+
+    function excluirTransacao(id, desc) {
+        if (confirm(`Deseja realmente excluir a transação "${desc}"?`)) {
+            transacoesRef.child(id).remove();
+        }
+    }
+
+    function carregarCategoriasFinanceiro() {
+        const select = document.getElementById('categoria');
+        const filtro = document.getElementById('filtroCategoria');
+        if (!select) return;
+        
+        [select, filtro].forEach(s => {
+            const currentValue = s.value;
+            s.innerHTML = s.id === 'filtroCategoria' ? '<option value="todas">Todas</option>' : '<option value="">Selecione...</option>';
+            categoriasFinanceiro.sort().forEach(cat => s.add(new Option(cat, cat)));
+            s.value = currentValue;
+        });
+    }
+
+    document.getElementById('btnNovaCategoria').addEventListener('click', () => {
+        const novaCat = prompt("Digite o nome da nova categoria:");
+        if (novaCat && !categoriasFinanceiro.includes(novaCat)) {
+            categoriasFinanceiro.push(novaCat);
+            configRef.child('categoriasFinanceiro').set(categoriasFinanceiro).then(() => {
+                alert(`Categoria "${novaCat}" adicionada!`);
+                document.getElementById('categoria').value = novaCat;
+            });
+        } else if (novaCat) {
+            document.getElementById('categoria').value = novaCat;
+        }
+    });
+
     document.getElementById('btnNovaEntrada').addEventListener('click', () => abrirModal('entrada'));
     document.getElementById('btnNovaSaida').addEventListener('click', () => abrirModal('saida'));
-    function editarTransacao(id) { /* ... inalterada ... */ }
-    function salvarTransacao(event) { /* ... inalterada ... */ }
-    function marcarComoPago(id) { /* ... inalterada ... */ }
-    function excluirTransacao(id, desc) { /* ... inalterada ... */ }
   </script>
 </body>
 </html>
