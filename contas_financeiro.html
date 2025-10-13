@@ -264,32 +264,49 @@
             categoriasFinanceiro = config.categoriasFinanceiro || ['Serviços', 'Venda de Peças', 'Compra de Peças', 'Salário', 'Contas (Água, Luz, etc.)', 'Outro'];
             carregarCategoriasFinanceiro();
         });
-        osRef.on("value", snapshot => { osData = snapshot.val() || {}; sincronizarOSPagas(); });
+
+        // listener CORRIGIDO para carregar os dados das OS
+        osRef.on("value", snapshot => { osData = snapshot.val() || {}; });
+
+        // NOVO CÓDIGO PARA SINCRONIZAR PAGAMENTOS DE FORMA SEGURA
+        osRef.on('child_changed', (snapshot) => {
+            const os = snapshot.val();
+            const osId = snapshot.key;
+
+            // Condição: A OS foi movida para 'entregue' e ainda não tem transação?
+            if (os.statusOS === 'entregue' && !os.transacaoGerada) {
+                const transacao = {
+                    tipo: 'entrada',
+                    descricao: `Recebimento OS #${String(os.numeroOS).padStart(4, '0')}`,
+                    categoria: 'Serviços',
+                    valor: parseFloat(os.valorTotalFinal),
+                    dataTransacao: os.dataPagamento ? os.dataPagamento.split('T')[0] : new Date().toISOString().split('T')[0],
+                    statusTransacao: 'pago',
+                    referenciaOS: osId,
+                    criadoEm: new Date().toISOString()
+                };
+
+                // 1. Cria a transação no financeiro
+                transacoesRef.push(transacao).then(() => {
+                    // 2. Atualiza a OS para evitar futuras duplicidades
+                    osRef.child(osId).update({ transacaoGerada: true });
+                }).catch(error => {
+                    console.error("Erro ao gerar transação da OS:", error);
+                    alert("Ocorreu um erro ao gerar a transação financeira para a OS #" + os.numeroOS);
+                });
+            }
+        });
+        
         transacoesRef.on("value", snapshot => {
           transacoesData = snapshot.val() || {};
           calcularResumo();
-          renderizarTransacoes(); // Função principal de renderização foi alterada
+          renderizarTransacoes();
         });
       }
     });
 
     function formatarMoeda(valor) {
       return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(valor || 0);
-    }
-
-    // Função de sincronização com OS (inalterada)
-    async function sincronizarOSPagas() {
-        const osPagas = Object.entries(osData).filter(([id, os]) => os.statusOS === 'entregue' && !os.transacaoGerada);
-        for (const [id, os] of osPagas) {
-            const transacao = {
-                tipo: 'entrada', descricao: `Recebimento OS #${String(os.numeroOS).padStart(4, '0')}`,
-                categoria: 'Serviços', valor: parseFloat(os.valorTotalFinal),
-                dataTransacao: os.dataPagamento ? os.dataPagamento.split('T')[0] : new Date().toISOString().split('T')[0],
-                statusTransacao: 'pago', referenciaOS: id, criadoEm: new Date().toISOString()
-            };
-            await transacoesRef.push(transacao);
-            await osRef.child(id).update({ transacaoGerada: true });
-        }
     }
 
     // Função de resumo (inalterada)
