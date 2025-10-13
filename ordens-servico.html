@@ -47,11 +47,29 @@
       .tab { padding: 10px 20px; border: none; background: var(--card-bg); border-radius: 8px; cursor: pointer; font-weight: 600; transition: all 0.3s; color: var(--text-secondary); white-space: nowrap; }
       .tab.active { background: var(--accent-blue); color: white; }
 
+      /* --- ESTRUTURA VISUAL: TABELA (Desktop) E CARDS (Mobile) --- */
+      .os-table-container { display: none; } /* Escondido por padrão em telas pequenas */
+      .os-cards-grid { display: grid; gap: 16px; } /* Visível por padrão em telas pequenas */
+
+      /* ESTILOS DA TABELA (Desktop) */
       .os-table-container { background: var(--card-bg); border-radius: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); overflow-x: auto; }
       .os-table { width: 100%; border-collapse: collapse; }
       .os-table th, .os-table td { padding: 16px 20px; text-align: left; border-bottom: 1px solid var(--border-color); }
       .os-table th { font-size: 0.8rem; color: var(--text-secondary); text-transform: uppercase; }
       .subtext { font-size: 0.8rem; color: var(--text-secondary); margin-top: 2px; }
+      .actions-cell { text-align: right; white-space: nowrap; }
+      
+      /* ESTILOS DOS CARDS (Mobile) */
+      .os-card { background: var(--card-bg); border-radius: 12px; padding: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.07); }
+      .os-card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; }
+      .os-card-header .info strong { font-size: 1.1rem; }
+      .os-card-body { font-size: 0.9rem; color: var(--text-secondary); }
+      .os-card-body .detail { margin-bottom: 8px; }
+      .os-card-footer { border-top: 1px solid var(--border-color); padding-top: 12px; margin-top: 16px; display: flex; justify-content: space-between; align-items: center; }
+      .os-card-valor { font-weight: 700; font-size: 1.2rem; color: var(--accent-blue); }
+      .os-card-actions { display: flex; gap: 8px; }
+      
+      /* Componentes Comuns */
       .status-badge { display: inline-block; padding: 6px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 700; }
       .status-orcamento { background: #e0e7ff; color: #3730a3; } .status-aguardando_pecas { background: #fef3c7; color: #92400e; }
       .status-em_servico { background: #dbeafe; color: #1e40af; } .status-concluido { background: #d1fae5; color: #065f46; }
@@ -59,11 +77,11 @@
       .dias-badge { background: var(--main-bg); color: var(--text-secondary); padding: 4px 8px; border-radius: 6px; font-size: 0.7rem; font-weight: 600; }
       .prazo-badge { padding: 4px 8px; border-radius: 6px; font-size: 0.7rem; font-weight: 600; }
       .prazo-urgente { background: #fef3c7; color: #92400e; } .prazo-atrasado { background: #fee2e2; color: #991b1b; }
-      .actions-cell { text-align: right; }
-      .btn-action { padding: 8px 16px; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; transition: all 0.2s; font-size: 0.8rem; margin-left: 8px; }
+      .btn-action { padding: 8px 16px; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; transition: all 0.2s; font-size: 0.8rem; }
       .btn-edit { background: #dbeafe; color: #1e40af; } .btn-edit:hover { background: #3b82f6; color: white; }
       .btn-reabrir { background: #fef3c7; color: #92400e; } .btn-reabrir:hover { background: #f59e0b; color: white; }
       
+      /* Estilos do Modal (sem alterações significativas) */
       .modal { display: none; position: fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.6); z-index:1000; padding:20px; }
       .modal.active { display: flex; align-items: flex-start; justify-content: center; overflow-y: auto; }
       .modal-content { background: var(--card-bg); border-radius: 20px; padding: 24px 32px; max-width: 800px; width: 100%; box-shadow: 0 20px 60px rgba(0,0,0,0.3); margin-top: 5vh; margin-bottom: 5vh; }
@@ -87,7 +105,16 @@
       
       .mobile-menu-btn { display: none; background: none; border: none; font-size: 1.8rem; cursor: pointer; color: var(--text-primary); }
       .overlay { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:99; }
-      @media (max-width: 768px) {
+
+      /* --- LÓGICA DE RESPONSIVIDADE --- */
+      /* DESKTOP (992px em diante) */
+      @media (min-width: 992px) {
+        .os-cards-grid { display: none; } /* Esconde os cards */
+        .os-table-container { display: block; } /* Mostra a tabela */
+      }
+      
+      /* MOBILE (Até 991px) */
+      @media (max-width: 991px) {
         .dashboard-container { grid-template-columns: 1fr; }
         .sidebar { transform: translateX(-100%); }
         .sidebar.is-open { transform: translateX(0); }
@@ -152,6 +179,9 @@
           <tbody id="osTableBody"></tbody>
         </table>
       </div>
+
+      <div class="os-cards-grid" id="osCardsGrid"></div>
+
     </main>
   </div>
 
@@ -196,6 +226,7 @@
         return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(valor || 0);
     }
 
+    // FUNÇÃO PRINCIPAL DE RENDERIZAÇÃO ATUALIZADA
     function renderizarConteudo() {
       const osArray = Object.entries(osData).map(([id, data]) => ({ id, ...data }));
       const termoBusca = document.getElementById('searchInput').value.toLowerCase();
@@ -214,15 +245,15 @@
       });
       
       osFiltradas.sort((a,b) => b.numeroOS - a.numeroOS);
-      renderizarTabelaOS(osFiltradas);
-    }
-    
-    function renderizarTabelaOS(listaOS) {
-      const corpoTabela = document.getElementById("osTableBody");
-      corpoTabela.innerHTML = "";
-      if (listaOS.length === 0) return;
 
-      listaOS.forEach(os => {
+      const corpoTabela = document.getElementById("osTableBody");
+      const gridCards = document.getElementById("osCardsGrid");
+      corpoTabela.innerHTML = "";
+      gridCards.innerHTML = "";
+
+      if (osFiltradas.length === 0) return;
+
+      osFiltradas.forEach(os => {
         const dataEntrada = new Date(os.dataEntrada + 'T00:00:00Z');
         const diasDesdeEntrada = Math.floor((new Date() - dataEntrada) / (1000 * 60 * 60 * 24));
         let prazoTexto = '';
@@ -236,15 +267,15 @@
             prazoTexto = `<span class="prazo-badge prazo-urgente">Faltam ${diffPrazo}d</span>`;
           }
         }
+        
+        let actionButtonsHTML = `<button class="btn-action btn-edit" onclick="editarOS('${os.id}')">✏️ Editar</button>`;
+        if (os.statusOS === 'entregue') {
+            actionButtonsHTML += `<button class="btn-action btn-reabrir" onclick="reabrirOS('${os.id}')">⮌ Reabrir</button>`;
+        }
 
+        // HTML para a Tabela
         const linha = document.createElement("tr");
         linha.className = `status-row-${os.statusOS}`;
-        
-        let actionButtons = `<button class="btn-action btn-edit" onclick="editarOS('${os.id}')">✏️ Editar</button>`;
-        if (os.statusOS === 'entregue') {
-            actionButtons += `<button class="btn-action btn-reabrir" onclick="reabrirOS('${os.id}')">⮌ Reabrir</button>`;
-        }
-        
         linha.innerHTML = `
           <td><span class="status-badge status-${os.statusOS}">${os.statusOS.replace("_", " ").toUpperCase()}</span></td>
           <td><strong>#${String(os.numeroOS).padStart(4, '0')}</strong></td>
@@ -252,9 +283,31 @@
           <td>${os.aparelho}<div class="subtext">${os.marca || ''}</div></td>
           <td>${dataEntrada.toLocaleDateString('pt-BR')} <span class="dias-badge">${diasDesdeEntrada}d</span></td>
           <td>${formatarMoeda(os.valorTotalFinal)} ${prazoTexto}</td>
-          <td class="actions-cell">${actionButtons}</td>
+          <td class="actions-cell">${actionButtonsHTML}</td>
         `;
         corpoTabela.appendChild(linha);
+
+        // HTML para os Cards
+        const card = document.createElement('div');
+        card.className = 'os-card';
+        card.innerHTML = `
+            <div class="os-card-header">
+                <div class="info">
+                    <strong>#${String(os.numeroOS).padStart(4, '0')}</strong>
+                    <div class="subtext">${dataEntrada.toLocaleDateString('pt-BR')}</div>
+                </div>
+                <span class="status-badge status-${os.statusOS}">${os.statusOS.replace("_", " ").toUpperCase()}</span>
+            </div>
+            <div class="os-card-body">
+                <div class="detail"><strong>Cliente:</strong> ${os.clienteNome}</div>
+                <div class="detail"><strong>Aparelho:</strong> ${os.aparelho} ${os.marca || ''}</div>
+            </div>
+            <div class="os-card-footer">
+                <div class="os-card-valor">${formatarMoeda(os.valorTotalFinal)}</div>
+                <div class="os-card-actions">${actionButtonsHTML}</div>
+            </div>
+        `;
+        gridCards.appendChild(card);
       });
     }
 
@@ -352,7 +405,7 @@
                     <div>
                         <div class="form-section-title">Status e Prazos</div>
                         <div class="form-row">
-                            <div class="form-group"><label>Nº OS</label><input type="text" value="${String(os.numeroOS || proximoNumeroOS).padStart(4, '0')}" readonly></div>
+                            <div class="form-group"><label>Nº OS</label><input type="text" value="#${String(os.numeroOS || proximoNumeroOS).padStart(4, '0')}" readonly></div>
                             <div class="form-group"><label for="statusOS">Status *</label>
                                 <select id="statusOS" required>
                                     <option value="orcamento" ${os.statusOS === 'orcamento' ? 'selected' : ''}>Orçamento</option>
@@ -403,7 +456,6 @@
     }
 
     function setupModalListeners() {
-        // Lógica para busca e seleção de clientes
         const clienteInput = document.getElementById('clienteNome');
         const clienteSuggestions = document.getElementById('clienteSuggestions');
         clienteInput.addEventListener('input', () => {
@@ -421,7 +473,6 @@
             }
         });
         
-        // Lógica para busca e seleção de peças
         const pecaInput = document.getElementById('pecaSearch');
         const pecaSuggestions = document.getElementById('pecaSuggestions');
         pecaInput.addEventListener('input', () => {
@@ -438,7 +489,7 @@
                 if (jaExiste) {
                     jaExiste.quantidade++;
                 } else {
-                    pecasSelecionadas.push({ id: pecaId, nome: peca.nomePeca, valorUnitario: peca.valorUnitario, quantidade: 1 });
+                    pecasSelecionadas.push({ id: pecaId, nome: peca.nomePeca, valorUnitario: peca.valorUnitario, quantidade: 1, custo: peca.custo || 0 });
                 }
                 pecaInput.value = '';
                 pecaSuggestions.innerHTML = '';
@@ -447,10 +498,8 @@
             }
         });
 
-        // Lógica para cálculo automático de totais
         ['valorMaoObra', 'desconto'].forEach(id => document.getElementById(id).addEventListener('input', calcularTotaisOS));
         
-        // Mostrar/ocultar campo de data de pagamento
         document.getElementById('statusOS').addEventListener('change', e => {
             document.getElementById('dataPagamentoGroup').style.display = e.target.value === 'entregue' ? 'block' : 'none';
         });
@@ -459,10 +508,14 @@
     function renderizarPecasSelecionadas() {
         const lista = document.getElementById('pecasList');
         if (!lista) return;
+        if (pecasSelecionadas.length === 0) {
+            lista.innerHTML = `<p style="text-align: center; color: var(--text-secondary); padding: 20px;">Nenhuma peça adicionada.</p>`;
+            return;
+        }
         lista.innerHTML = pecasSelecionadas.map((peca, index) => `
             <div class="peca-item">
                 <span style="flex-grow: 1;">${peca.nome}</span>
-                <input type="number" value="${peca.quantidade}" min="1" oninput="atualizarQtdPeca(${index}, this.value)" style="width: 60px; text-align: center;">
+                <input type="number" value="${peca.quantidade}" min="1" oninput="atualizarQtdPeca(${index}, this.value)" style="width: 60px; text-align: center; padding: 4px;">
                 <span>${formatarMoeda(peca.valorUnitario * peca.quantidade)}</span>
                 <button type="button" class="btn-delete-peca" onclick="removerPeca(${index})">✕</button>
             </div>
@@ -500,6 +553,7 @@
         const valorTotalFinal = valorMaoObra + valorPecas - desconto;
 
         const osAtual = editandoId ? osData[editandoId] : {};
+        const proximoNumeroOS = osAtual.numeroOS || (Object.keys(osData).length > 0 ? Math.max(...Object.values(osData).map(o => o.numeroOS)) + 1 : 1);
 
         const data = {
             clienteId: document.getElementById('clienteId').value,
@@ -518,7 +572,7 @@
             valorPecas,
             desconto,
             valorTotalFinal,
-            numeroOS: osAtual.numeroOS || parseInt(document.querySelector('input[value^="#"]').value.replace('#', '')) || 1,
+            numeroOS: proximoNumeroOS,
             atualizadoEm: new Date().toISOString(),
             criadoEm: osAtual.criadoEm || new Date().toISOString()
         };
