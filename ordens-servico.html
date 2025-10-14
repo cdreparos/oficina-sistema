@@ -47,11 +47,9 @@
       .tab { padding: 10px 20px; border: none; background: var(--card-bg); border-radius: 8px; cursor: pointer; font-weight: 600; transition: all 0.3s; color: var(--text-secondary); white-space: nowrap; }
       .tab.active { background: var(--accent-blue); color: white; }
 
-      /* --- ESTRUTURA VISUAL: TABELA (Desktop) E CARDS (Mobile) --- */
-      .os-table-container { display: none; } /* Escondido por padrão em telas pequenas */
-      .os-cards-grid { display: grid; gap: 16px; } /* Visível por padrão em telas pequenas */
+      .os-table-container { display: none; }
+      .os-cards-grid { display: grid; gap: 12px; }
 
-      /* ESTILOS DA TABELA (Desktop) */
       .os-table-container { background: var(--card-bg); border-radius: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); overflow-x: auto; }
       .os-table { width: 100%; border-collapse: collapse; }
       .os-table th, .os-table td { padding: 16px 20px; text-align: left; border-bottom: 1px solid var(--border-color); }
@@ -59,17 +57,14 @@
       .subtext { font-size: 0.8rem; color: var(--text-secondary); margin-top: 2px; }
       .actions-cell { text-align: right; white-space: nowrap; }
       
-      /* ESTILOS DOS CARDS (Mobile) */
       .os-card { background: var(--card-bg); border-radius: 12px; padding: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.07); }
-      .os-card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; }
-      .os-card-header .info strong { font-size: 1.1rem; }
-      .os-card-body { font-size: 0.9rem; color: var(--text-secondary); }
-      .os-card-body .detail { margin-bottom: 8px; }
-      .os-card-footer { border-top: 1px solid var(--border-color); padding-top: 12px; margin-top: 16px; display: flex; justify-content: space-between; align-items: center; }
-      .os-card-valor { font-weight: 700; font-size: 1.2rem; color: var(--accent-blue); }
+      .os-card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px; }
+      .os-card-id { font-weight: 700; font-size: 1.1rem; color: var(--text-primary); margin-bottom: 2px; }
+      .os-card-body { display: flex; flex-direction: column; gap: 8px; font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 16px; }
+      .os-card-footer { border-top: 1px solid var(--border-color); padding-top: 12px; display: flex; justify-content: space-between; align-items: center; }
+      .os-card-valor { font-weight: 700; font-size: 1.1rem; color: var(--accent-blue); }
       .os-card-actions { display: flex; gap: 8px; }
       
-      /* Componentes Comuns */
       .status-badge { display: inline-block; padding: 6px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 700; }
       .status-orcamento { background: #e0e7ff; color: #3730a3; } .status-aguardando_pecas { background: #fef3c7; color: #92400e; }
       .status-em_servico { background: #dbeafe; color: #1e40af; } .status-concluido { background: #d1fae5; color: #065f46; }
@@ -81,7 +76,6 @@
       .btn-edit { background: #dbeafe; color: #1e40af; } .btn-edit:hover { background: #3b82f6; color: white; }
       .btn-reabrir { background: #fef3c7; color: #92400e; } .btn-reabrir:hover { background: #f59e0b; color: white; }
       
-      /* Estilos do Modal (sem alterações significativas) */
       .modal { display: none; position: fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.6); z-index:1000; padding:20px; }
       .modal.active { display: flex; align-items: flex-start; justify-content: center; overflow-y: auto; }
       .modal-content { background: var(--card-bg); border-radius: 20px; padding: 24px 32px; max-width: 800px; width: 100%; box-shadow: 0 20px 60px rgba(0,0,0,0.3); margin-top: 5vh; margin-bottom: 5vh; }
@@ -106,14 +100,11 @@
       .mobile-menu-btn { display: none; background: none; border: none; font-size: 1.8rem; cursor: pointer; color: var(--text-primary); }
       .overlay { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:99; }
 
-      /* --- LÓGICA DE RESPONSIVIDADE --- */
-      /* DESKTOP (992px em diante) */
       @media (min-width: 992px) {
-        .os-cards-grid { display: none; } /* Esconde os cards */
-        .os-table-container { display: block; } /* Mostra a tabela */
+        .os-cards-grid { display: none; }
+        .os-table-container { display: block; }
       }
       
-      /* MOBILE (Até 991px) */
       @media (max-width: 991px) {
         .dashboard-container { grid-template-columns: 1fr; }
         .sidebar { transform: translateX(-100%); }
@@ -226,7 +217,6 @@
         return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(valor || 0);
     }
 
-    // FUNÇÃO PRINCIPAL DE RENDERIZAÇÃO ATUALIZADA
     function renderizarConteudo() {
       const osArray = Object.entries(osData).map(([id, data]) => ({ id, ...data }));
       const termoBusca = document.getElementById('searchInput').value.toLowerCase();
@@ -273,41 +263,39 @@
             actionButtonsHTML += `<button class="btn-action btn-reabrir" onclick="reabrirOS('${os.id}')">⮌ Reabrir</button>`;
         }
 
-        // HTML para a Tabela
-        const linha = document.createElement("tr");
-        linha.className = `status-row-${os.statusOS}`;
-        linha.innerHTML = `
-          <td><span class="status-badge status-${os.statusOS}">${os.statusOS.replace("_", " ").toUpperCase()}</span></td>
-          <td><strong>#${String(os.numeroOS).padStart(4, '0')}</strong></td>
-          <td>${os.clienteNome}<div class="subtext">${os.telefoneCliente}</div></td>
-          <td>${os.aparelho}<div class="subtext">${os.marca || ''}</div></td>
-          <td>${dataEntrada.toLocaleDateString('pt-BR')} <span class="dias-badge">${diasDesdeEntrada}d</span></td>
-          <td>${formatarMoeda(os.valorTotalFinal)} ${prazoTexto}</td>
-          <td class="actions-cell">${actionButtonsHTML}</td>
+        const linhaHTML = `
+          <tr class="status-row-${os.statusOS}">
+            <td><span class="status-badge status-${os.statusOS}">${os.statusOS.replace("_", " ").toUpperCase()}</span></td>
+            <td><strong>#${String(os.numeroOS).padStart(4, '0')}</strong></td>
+            <td>${os.clienteNome}<div class="subtext">${os.telefoneCliente}</div></td>
+            <td>${os.aparelho}<div class="subtext">${os.marca || ''}</div></td>
+            <td>${dataEntrada.toLocaleDateString('pt-BR')} <span class="dias-badge">${diasDesdeEntrada}d</span></td>
+            <td>${formatarMoeda(os.valorTotalFinal)} ${prazoTexto}</td>
+            <td class="actions-cell">${actionButtonsHTML}</td>
+          </tr>
         `;
-        corpoTabela.appendChild(linha);
-
-        // HTML para os Cards
-        const card = document.createElement('div');
-        card.className = 'os-card';
-        card.innerHTML = `
-            <div class="os-card-header">
-                <div class="info">
-                    <strong>#${String(os.numeroOS).padStart(4, '0')}</strong>
-                    <div class="subtext">${dataEntrada.toLocaleDateString('pt-BR')}</div>
+        corpoTabela.innerHTML += linhaHTML;
+        
+        const cardHTML = `
+            <div class="os-card">
+                <div class="os-card-header">
+                    <div>
+                        <div class="os-card-id">#${String(os.numeroOS).padStart(4, '0')}</div>
+                        <div class="subtext">${dataEntrada.toLocaleDateString('pt-BR')}</div>
+                    </div>
+                    <span class="status-badge status-${os.statusOS}">${os.statusOS.replace("_", " ").toUpperCase()}</span>
                 </div>
-                <span class="status-badge status-${os.statusOS}">${os.statusOS.replace("_", " ").toUpperCase()}</span>
-            </div>
-            <div class="os-card-body">
-                <div class="detail"><strong>Cliente:</strong> ${os.clienteNome}</div>
-                <div class="detail"><strong>Aparelho:</strong> ${os.aparelho} ${os.marca || ''}</div>
-            </div>
-            <div class="os-card-footer">
-                <div class="os-card-valor">${formatarMoeda(os.valorTotalFinal)}</div>
-                <div class="os-card-actions">${actionButtonsHTML}</div>
+                <div class="os-card-body">
+                    <div><strong>Cliente:</strong> ${os.clienteNome}</div>
+                    <div><strong>Aparelho:</strong> ${os.aparelho} ${os.marca || ''}</div>
+                </div>
+                <div class="os-card-footer">
+                    <div class="os-card-valor">${formatarMoeda(os.valorTotalFinal)}</div>
+                    <div class="os-card-actions">${actionButtonsHTML}</div>
+                </div>
             </div>
         `;
-        gridCards.appendChild(card);
+        gridCards.innerHTML += cardHTML;
       });
     }
 
@@ -317,31 +305,25 @@
             alert("Ordem de Serviço não encontrada!");
             return;
         }
-
         if (!confirm(`Deseja reabrir a OS #${String(os.numeroOS).padStart(4, '0')}?\n\nEsta ação irá:\n1. EXCLUIR o lançamento do caixa.\n2. Mudar o status da OS para "Concluído".\n\nVocê poderá então finalizar e gerar o pagamento novamente.`)) {
             return;
         }
-
         try {
             const transacoesSnapshot = await database.ref('transacoes').orderByChild('referenciaOS').equalTo(osId).once('value');
             const transacoes = transacoesSnapshot.val();
-
             if (transacoes) {
                 const transacaoId = Object.keys(transacoes)[0];
                 await database.ref('transacoes').child(transacaoId).remove();
             } else {
                 console.warn(`Nenhuma transação financeira encontrada para a OS ${osId}, reabrindo mesmo assim.`);
             }
-
             await osRef.child(osId).update({
                 statusOS: 'concluido',
                 transacaoGerada: false,
                 dataPagamento: null,
                 atualizadoEm: new Date().toISOString()
             });
-
             alert('OS reaberta e transação do caixa excluída com sucesso!');
-
         } catch (error) {
             console.error("Erro ao reabrir OS:", error);
             alert("Ocorreu um erro: " + error.message);
@@ -358,8 +340,6 @@
       }
     });
     
-    // --- FUNÇÕES DO MODAL ---
-    
     function fecharModal() {
         document.getElementById('modalOS').classList.remove('active');
         document.getElementById('modalContentOS').innerHTML = '';
@@ -369,7 +349,6 @@
         editandoId = id;
         pecasSelecionadas = id ? (osData[id].pecas || []) : [];
         const os = id ? osData[id] : {};
-        
         let proximoNumeroOS = 1;
         if (!id) {
             const todasOS = Object.values(osData);
@@ -377,7 +356,6 @@
                 proximoNumeroOS = Math.max(...todasOS.map(o => o.numeroOS || 0)) + 1;
             }
         }
-
         const modalContent = document.getElementById('modalContentOS');
         modalContent.innerHTML = `
             <div class="modal-header">
@@ -427,7 +405,6 @@
                         </div>
                     </div>
                 </div>
-                
                 <div class="form-section-title" style="margin-top: 24px;">Peças e Valores</div>
                 <div class="form-grid">
                     <div>
@@ -472,7 +449,6 @@
                 clienteSuggestions.innerHTML = '';
             }
         });
-        
         const pecaInput = document.getElementById('pecaSearch');
         const pecaSuggestions = document.getElementById('pecaSuggestions');
         pecaInput.addEventListener('input', () => {
@@ -497,9 +473,7 @@
                 calcularTotaisOS();
             }
         });
-
         ['valorMaoObra', 'desconto'].forEach(id => document.getElementById(id).addEventListener('input', calcularTotaisOS));
-        
         document.getElementById('statusOS').addEventListener('change', e => {
             document.getElementById('dataPagamentoGroup').style.display = e.target.value === 'entregue' ? 'block' : 'none';
         });
@@ -538,7 +512,6 @@
         const valorMaoObra = parseFloat(document.getElementById('valorMaoObra').value) || 0;
         const desconto = parseFloat(document.getElementById('desconto').value) || 0;
         const valorPecas = pecasSelecionadas.reduce((total, p) => total + (p.valorUnitario * p.quantidade), 0);
-        
         document.getElementById('valorPecas').textContent = formatarMoeda(valorPecas);
         document.getElementById('valorTotalFinal').textContent = formatarMoeda(valorMaoObra + valorPecas - desconto);
     }
@@ -546,15 +519,12 @@
     async function salvarOS(event) {
         event.preventDefault();
         const osId = editandoId || osRef.push().key;
-
         const valorMaoObra = parseFloat(document.getElementById('valorMaoObra').value) || 0;
         const valorPecas = pecasSelecionadas.reduce((total, p) => total + (p.valorUnitario * p.quantidade), 0);
         const desconto = parseFloat(document.getElementById('desconto').value) || 0;
         const valorTotalFinal = valorMaoObra + valorPecas - desconto;
-
         const osAtual = editandoId ? osData[editandoId] : {};
         const proximoNumeroOS = osAtual.numeroOS || (Object.keys(osData).length > 0 ? Math.max(...Object.values(osData).map(o => o.numeroOS)) + 1 : 1);
-
         const data = {
             clienteId: document.getElementById('clienteId').value,
             clienteNome: document.getElementById('clienteNome').value,
@@ -576,14 +546,11 @@
             atualizadoEm: new Date().toISOString(),
             criadoEm: osAtual.criadoEm || new Date().toISOString()
         };
-        
         await osRef.child(osId).set(data);
         alert('Ordem de Serviço salva com sucesso!');
         fecharModal();
     }
-
     document.getElementById('btnNovaOS').addEventListener('click', () => editarOS());
-
   </script>
 </body>
 </html>
