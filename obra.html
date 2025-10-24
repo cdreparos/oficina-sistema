@@ -268,101 +268,52 @@
     }
 
     .progress-bar-container {
-      height: 24px;
       background: var(--card-secondary);
-      border-radius: 12px;
+      height: 24px;
+      border-radius: var(--radius-lg);
       overflow: hidden;
-      position: relative;
+      box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.06);
     }
 
     .progress-bar {
       height: 100%;
       background: linear-gradient(90deg, var(--accent-primary), var(--accent-info));
-      border-radius: 12px;
-      transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
-      position: relative;
-      overflow: hidden;
+      border-radius: var(--radius-lg);
+      transition: width 0.6s ease;
+      box-shadow: 0 2px 8px rgba(59, 130, 246, 0.4);
     }
 
-    .progress-bar::after {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      bottom: 0;
-      right: 0;
-      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
-      animation: shimmer 2s infinite;
-    }
-
-    @keyframes shimmer {
-      0% { transform: translateX(-100%); }
-      100% { transform: translateX(100%); }
-    }
-
-    /* ========== FILTROS E AÇÕES ========== */
-    .controls-section {
+    /* ========== CONTROLES E TABELA ========== */
+    .data-section {
       background: var(--card-bg);
       border-radius: var(--radius-xl);
-      padding: 24px;
-      margin-bottom: 24px;
+      padding: 28px;
       box-shadow: var(--shadow-lg);
       animation: fadeIn 0.8s ease;
     }
 
-    .controls-grid {
-      display: grid;
-      grid-template-columns: 2fr 1fr 1fr auto;
-      gap: 16px;
-      align-items: end;
-    }
-
-    .filter-group {
+    .controls-section {
       display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-
-    .filter-label {
-      font-size: 0.875rem;
-      font-weight: 600;
-      color: var(--text-secondary);
-    }
-
-    .filter-input,
-    .filter-select {
-      padding: 12px 16px;
-      border: 2px solid var(--border-color);
-      border-radius: var(--radius-md);
-      font-size: 0.95rem;
-      font-family: inherit;
-      background: white;
-      transition: var(--transition);
-      width: 100%;
-    }
-
-    .filter-input:focus,
-    .filter-select:focus {
-      outline: none;
-      border-color: var(--accent-primary);
-      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 24px;
+      align-items: center;
     }
 
     .btn-primary {
       background: linear-gradient(135deg, var(--accent-primary), var(--accent-info));
       color: white;
       border: none;
-      padding: 12px 28px;
+      padding: 14px 28px;
       border-radius: var(--radius-md);
       font-weight: 600;
       cursor: pointer;
       transition: var(--transition);
-      font-size: 0.95rem;
       display: flex;
       align-items: center;
       gap: 8px;
+      font-size: 0.95rem;
       box-shadow: var(--shadow-md);
-      white-space: nowrap;
     }
 
     .btn-primary:hover {
@@ -370,104 +321,106 @@
       box-shadow: var(--shadow-lg);
     }
 
-    .btn-secondary {
-      background: var(--card-secondary);
-      color: var(--text-primary);
-      border: 2px solid var(--border-color);
-      padding: 12px 28px;
-      border-radius: var(--radius-md);
-      font-weight: 600;
-      cursor: pointer;
-      transition: var(--transition);
-      font-size: 0.95rem;
-      display: flex;
-      align-items: center;
-      gap: 8px;
+    .search-box {
+      flex: 1;
+      min-width: 250px;
+      position: relative;
     }
 
-    .btn-secondary:hover {
-      background: white;
+    .search-box input {
+      width: 100%;
+      padding: 14px 20px 14px 44px;
+      border: 2px solid var(--border-color);
+      border-radius: var(--radius-md);
+      font-size: 0.95rem;
+      transition: var(--transition);
+    }
+
+    .search-box input:focus {
+      outline: none;
       border-color: var(--accent-primary);
-      color: var(--accent-primary);
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 18px;
+      color: var(--text-muted);
+    }
+
+    .filter-group {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .filter-group select {
+      padding: 14px 16px;
+      border: 2px solid var(--border-color);
+      border-radius: var(--radius-md);
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: var(--transition);
+      background: white;
+    }
+
+    .filter-group select:focus {
+      outline: none;
+      border-color: var(--accent-primary);
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
     }
 
     /* ========== TABELA ========== */
-    .table-section {
-      background: var(--card-bg);
-      border-radius: var(--radius-xl);
-      padding: 24px;
-      box-shadow: var(--shadow-lg);
-      animation: fadeIn 0.9s ease;
-    }
-
-    .table-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 20px;
-      padding-bottom: 16px;
-      border-bottom: 2px solid var(--border-color);
-    }
-
-    .table-title {
-      font-size: 1.25rem;
-      font-weight: 700;
-      color: var(--text-primary);
-    }
-
-    .table-count {
-      font-size: 0.875rem;
-      color: var(--text-secondary);
-      background: var(--card-secondary);
-      padding: 6px 12px;
-      border-radius: 20px;
-      font-weight: 600;
-    }
-
-    .table-container {
+    .table-wrapper {
       overflow-x: auto;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border-color);
     }
 
-    .table-lancamentos {
+    .table {
       width: 100%;
       border-collapse: collapse;
-      min-width: 900px;
+      background: white;
     }
 
-    .table-lancamentos thead {
+    .table thead {
       background: var(--card-secondary);
     }
 
-    .table-lancamentos th {
-      padding: 16px 20px;
+    .table th {
+      padding: 16px;
       text-align: left;
-      font-size: 0.8rem;
-      color: var(--text-secondary);
       font-weight: 700;
+      color: var(--text-primary);
+      font-size: 0.875rem;
       text-transform: uppercase;
       letter-spacing: 0.5px;
       border-bottom: 2px solid var(--border-color);
     }
 
-    .table-lancamentos td {
-      padding: 20px;
+    .table td {
+      padding: 16px;
       border-bottom: 1px solid var(--border-color);
       font-size: 0.95rem;
     }
 
-    .table-lancamentos tbody tr {
+    .table tbody tr {
       transition: var(--transition);
     }
 
-    .table-lancamentos tbody tr:hover {
+    .table tbody tr:hover {
       background: var(--card-secondary);
     }
 
     .tipo-badge {
-      padding: 6px 12px;
-      border-radius: 20px;
-      font-size: 0.75rem;
-      font-weight: 700;
+      display: inline-block;
+      padding: 6px 14px;
+      border-radius: var(--radius-sm);
+      font-size: 0.8rem;
+      font-weight: 600;
       text-transform: uppercase;
       letter-spacing: 0.5px;
     }
@@ -478,67 +431,56 @@
     }
 
     .tipo-mao-obra {
-      background: #fce7f3;
-      color: #9f1239;
+      background: #fef3c7;
+      color: #92400e;
     }
 
     .tipo-devolucao {
-      background: var(--accent-success-light);
+      background: #d1fae5;
       color: #065f46;
     }
 
     .status-badge {
-      padding: 6px 12px;
-      border-radius: 20px;
-      font-size: 0.75rem;
-      font-weight: 700;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
+      display: inline-block;
+      padding: 6px 14px;
+      border-radius: var(--radius-sm);
+      font-size: 0.8rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
     }
 
     .status-pago {
       background: var(--accent-success-light);
-      color: #065f46;
-    }
-
-    .status-a::before {
-      content: '⏳';
-    }
-
-    .status-pago::before {
-      content: '✓';
-    }
-
-    .status-recebido::before {
-      content: '↓';
+      color: var(--accent-success);
     }
 
     .status-a {
       background: var(--accent-warning-light);
-      color: #92400e;
+      color: var(--accent-warning);
     }
 
     .status-recebido {
-      background: #cceeff;
-      color: #0056b3;
+      background: var(--accent-success-light);
+      color: var(--accent-success);
     }
 
     .valor-saida {
       color: var(--accent-danger);
       font-weight: 700;
-      font-size: 1.05rem;
+      font-size: 1rem;
     }
 
     .valor-entrada {
       color: var(--accent-success);
       font-weight: 700;
-      font-size: 1.05rem;
+      font-size: 1rem;
     }
 
     .actions-cell {
       display: flex;
       gap: 8px;
+      justify-content: center;
     }
 
     .btn-icon {
@@ -548,42 +490,106 @@
       height: 36px;
       border-radius: var(--radius-sm);
       cursor: pointer;
-      font-size: 1.1rem;
+      transition: var(--transition);
       display: flex;
       align-items: center;
       justify-content: center;
-      transition: var(--transition);
+      font-size: 16px;
     }
 
-    .btn-icon:hover {
+    .btn-icon.btn-edit:hover {
+      background: #dbeafe;
       transform: scale(1.1);
     }
 
-    .btn-edit:hover {
-      background: #dbeafe;
-      color: var(--accent-primary);
-    }
-
-    .btn-delete:hover {
+    .btn-icon.btn-delete:hover {
       background: var(--accent-danger-light);
-      color: var(--accent-danger);
+      transform: scale(1.1);
     }
 
     .empty-state {
-      text-align: center;
       padding: 60px 20px;
-      color: var(--text-muted);
+      text-align: center;
     }
 
     .empty-state-icon {
-      font-size: 4rem;
+      font-size: 64px;
       margin-bottom: 16px;
       opacity: 0.5;
     }
 
     .empty-state-text {
+      color: var(--text-secondary);
       font-size: 1.1rem;
+      font-weight: 500;
+    }
+
+    /* ========== MOBILE CARDS ========== */
+    .mobile-cards {
+      display: none;
+    }
+
+    .mobile-card {
+      background: white;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border-color);
+      margin-bottom: 16px;
+      overflow: hidden;
+      transition: var(--transition);
+    }
+
+    .mobile-card:hover {
+      box-shadow: var(--shadow-md);
+    }
+
+    .mobile-card-header {
+      background: var(--card-secondary);
+      padding: 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .mobile-card-title {
+      font-weight: 700;
+      font-size: 1rem;
+      color: var(--text-primary);
+    }
+
+    .mobile-card-body {
+      padding: 16px;
+    }
+
+    .mobile-card-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--card-secondary);
+    }
+
+    .mobile-card-row:last-child {
+      border-bottom: none;
+    }
+
+    .mobile-card-label {
+      color: var(--text-secondary);
       font-weight: 600;
+      font-size: 0.875rem;
+    }
+
+    .mobile-card-value {
+      font-weight: 500;
+      color: var(--text-primary);
+    }
+
+    .mobile-card-actions {
+      display: flex;
+      gap: 8px;
+      padding: 12px 16px;
+      background: var(--card-secondary);
+      border-top: 1px solid var(--border-color);
     }
 
     /* ========== MODAL ========== */
@@ -592,15 +598,14 @@
       position: fixed;
       top: 0;
       left: 0;
-      right: 0;
-      bottom: 0;
-      background: rgba(15, 23, 42, 0.8);
+      width: 100%;
+      height: 100%;
+      background: rgba(15, 23, 42, 0.75);
       backdrop-filter: blur(4px);
       z-index: 1000;
       align-items: center;
       justify-content: center;
-      padding: 20px;
-      animation: fadeIn 0.2s ease;
+      animation: fadeIn 0.3s ease;
     }
 
     .modal.active {
@@ -610,22 +615,17 @@
     .modal-content {
       background: var(--card-bg);
       border-radius: var(--radius-xl);
-      padding: 32px;
+      width: 90%;
       max-width: 600px;
-      width: 100%;
-      box-shadow: var(--shadow-xl);
-      animation: slideUp 0.3s ease;
       max-height: 90vh;
       overflow-y: auto;
+      box-shadow: var(--shadow-xl);
+      animation: slideUp 0.3s ease;
     }
 
     .modal-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 28px;
-      padding-bottom: 20px;
-      border-bottom: 2px solid var(--border-color);
+      padding: 28px;
+      border-bottom: 1px solid var(--border-color);
     }
 
     .modal-title {
@@ -634,121 +634,86 @@
       color: var(--text-primary);
     }
 
-    .btn-close {
-      background: var(--card-secondary);
-      border: none;
-      width: 36px;
-      height: 36px;
-      border-radius: 50%;
-      cursor: pointer;
-      font-size: 1.2rem;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: var(--transition);
-      color: var(--text-secondary);
-    }
-
-    .btn-close:hover {
-      background: var(--accent-danger-light);
-      color: var(--accent-danger);
-      transform: rotate(90deg);
+    .modal-body {
+      padding: 28px;
     }
 
     .form-group {
       margin-bottom: 24px;
     }
 
-    .form-label {
+    .form-group label {
       display: block;
       margin-bottom: 8px;
       font-weight: 600;
       color: var(--text-primary);
-      font-size: 0.9rem;
+      font-size: 0.95rem;
     }
 
-    .form-label .required {
-      color: var(--accent-danger);
-    }
-
-    .form-input,
-    .form-select,
-    .form-textarea {
+    .form-group input,
+    .form-group select {
       width: 100%;
       padding: 14px 16px;
       border: 2px solid var(--border-color);
       border-radius: var(--radius-md);
       font-size: 0.95rem;
-      font-family: inherit;
-      background: white;
       transition: var(--transition);
+      font-family: inherit;
     }
 
-    .form-input:focus,
-    .form-select:focus,
-    .form-textarea:focus {
+    .form-group input:focus,
+    .form-group select:focus {
       outline: none;
       border-color: var(--accent-primary);
       box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
     }
 
-    .form-row {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 16px;
+    /* Estilo para o grupo do Tipo com botão [+] */
+    .form-group-with-button {
+      display: flex;
+      gap: 8px;
+      align-items: center;
     }
 
-    .form-actions {
+    .form-group-with-button select {
+      flex: 1;
+    }
+
+    .form-group-with-button .btn-icon {
+      width: 44px;
+      height: 44px;
+      flex-shrink: 0;
+    }
+
+    .modal-footer {
+      padding: 28px;
+      border-top: 1px solid var(--border-color);
       display: flex;
       gap: 12px;
-      margin-top: 32px;
-      padding-top: 24px;
-      border-top: 2px solid var(--border-color);
+      justify-content: flex-end;
     }
 
-    .btn-submit {
-      flex: 1;
-      padding: 16px;
-      background: linear-gradient(135deg, var(--accent-primary), var(--accent-info));
-      color: white;
-      border: none;
-      border-radius: var(--radius-md);
-      font-weight: 700;
-      font-size: 1rem;
-      cursor: pointer;
-      transition: var(--transition);
-      box-shadow: var(--shadow-md);
-    }
-
-    .btn-submit:hover {
-      transform: translateY(-2px);
-      box-shadow: var(--shadow-lg);
-    }
-
-    .btn-cancel {
-      flex: 1;
-      padding: 16px;
+    .btn-secondary {
       background: var(--card-secondary);
       color: var(--text-primary);
-      border: 2px solid var(--border-color);
+      border: none;
+      padding: 14px 28px;
       border-radius: var(--radius-md);
-      font-weight: 700;
-      font-size: 1rem;
+      font-weight: 600;
       cursor: pointer;
       transition: var(--transition);
+      font-size: 0.95rem;
     }
 
-    .btn-cancel:hover {
-      background: white;
-      border-color: var(--accent-danger);
-      color: var(--accent-danger);
+    .btn-secondary:hover {
+      background: var(--border-color);
     }
 
     /* ========== TOAST NOTIFICATIONS ========== */
     .toast {
       position: fixed;
-      top: 20px;
-      right: 20px;
+      bottom: 24px;
+      right: 24px;
       background: white;
       padding: 16px 24px;
       border-radius: var(--radius-md);
@@ -758,19 +723,28 @@
       gap: 12px;
       z-index: 2000;
       animation: slideInRight 0.3s ease;
-      max-width: 400px;
-    }
-
-    .toast.success {
       border-left: 4px solid var(--accent-success);
     }
 
     .toast.error {
-      border-left: 4px solid var(--accent-danger);
+      border-left-color: var(--accent-danger);
     }
 
     .toast-icon {
-      font-size: 1.5rem;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--accent-success-light);
+      color: var(--accent-success);
+      font-weight: 700;
+    }
+
+    .toast.error .toast-icon {
+      background: var(--accent-danger-light);
+      color: var(--accent-danger);
     }
 
     .toast-message {
@@ -780,12 +754,8 @@
 
     /* ========== ANIMAÇÕES ========== */
     @keyframes fadeIn {
-      from {
-        opacity: 0;
-      }
-      to {
-        opacity: 1;
-      }
+      from { opacity: 0; }
+      to { opacity: 1; }
     }
 
     @keyframes slideDown {
@@ -821,76 +791,12 @@
       }
     }
 
-    /* ========== MODO MOBILE - CARDS ========== */
-    .mobile-cards {
-      display: none;
+    @keyframes fadeOut {
+      from { opacity: 1; }
+      to { opacity: 0; }
     }
 
-    .mobile-card {
-      background: white;
-      border-radius: var(--radius-lg);
-      padding: 20px;
-      margin-bottom: 16px;
-      box-shadow: var(--shadow-md);
-      border-left: 4px solid var(--accent-primary);
-    }
-
-    .mobile-card-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: start;
-      margin-bottom: 16px;
-      padding-bottom: 12px;
-      border-bottom: 1px solid var(--border-color);
-    }
-
-    .mobile-card-title {
-      font-weight: 700;
-      font-size: 1.1rem;
-      color: var(--text-primary);
-    }
-
-    .mobile-card-body {
-      display: grid;
-      gap: 12px;
-    }
-
-    .mobile-card-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .mobile-card-label {
-      font-size: 0.85rem;
-      color: var(--text-secondary);
-      font-weight: 600;
-    }
-
-    .mobile-card-value {
-      font-weight: 600;
-      color: var(--text-primary);
-    }
-
-    .mobile-card-actions {
-      display: flex;
-      gap: 8px;
-      margin-top: 16px;
-      padding-top: 12px;
-      border-top: 1px solid var(--border-color);
-    }
-
-    /* ========== RESPONSIVIDADE ========== */
-    @media (max-width: 1024px) {
-      .controls-grid {
-        grid-template-columns: 1fr 1fr;
-      }
-
-      .controls-grid .filter-group:first-child {
-        grid-column: 1 / -1;
-      }
-    }
-
+    /* ========== RESPONSIVO ========== */
     @media (max-width: 768px) {
       body {
         padding: 12px;
@@ -898,43 +804,48 @@
 
       .header {
         flex-direction: column;
-        align-items: flex-start;
-        gap: 20px;
+        gap: 16px;
         padding: 20px;
       }
 
       .header-left {
-        width: 100%;
+        flex-direction: column;
+        text-align: center;
       }
 
-      .btn-logout {
-        width: 100%;
-        justify-content: center;
+      .header-title h1 {
+        font-size: 1.5rem;
       }
 
       .dashboard-grid {
-        grid-template-columns: 1fr 1fr;
-        gap: 12px;
-      }
-
-      .stat-card {
-        padding: 20px;
-      }
-
-      .stat-value,
-      #orcamentoInicialInput {
-        font-size: 1.75rem;
-      }
-
-      .controls-grid {
         grid-template-columns: 1fr;
       }
 
-      .controls-grid .filter-group:first-child {
-        grid-column: 1;
+      .stat-value {
+        font-size: 1.875rem;
       }
 
-      .table-container {
+      #orcamentoInicialInput {
+        font-size: 1.875rem;
+      }
+
+      .controls-section {
+        flex-direction: column;
+      }
+
+      .search-box {
+        min-width: 100%;
+      }
+
+      .filter-group {
+        width: 100%;
+      }
+
+      .filter-group select {
+        flex: 1;
+      }
+
+      .table-wrapper {
         display: none;
       }
 
@@ -943,147 +854,118 @@
       }
 
       .modal-content {
-        padding: 24px;
+        width: 95%;
+        max-height: 85vh;
       }
 
-      .form-row {
-        grid-template-columns: 1fr;
+      .modal-header,
+      .modal-body,
+      .modal-footer {
+        padding: 20px;
+      }
+
+      .modal-title {
+        font-size: 1.25rem;
       }
 
       .toast {
-        left: 20px;
-        right: 20px;
-        max-width: none;
-      }
-    }
-
-    @media (max-width: 480px) {
-      .dashboard-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .header-title h1 {
-        font-size: 1.5rem;
-      }
-
-      .stat-value,
-      #orcamentoInicialInput {
-        font-size: 1.5rem;
+        left: 12px;
+        right: 12px;
+        bottom: 12px;
       }
     }
   </style>
 </head>
 <body>
   <div class="main-container">
-    <!-- HEADER -->
+    <!-- Header -->
     <div class="header">
       <div class="header-left">
         <div class="header-icon">🏗️</div>
         <div class="header-title">
           <h1>Controle de Custos da Obra</h1>
-          <div class="header-subtitle">Gerencie seu orçamento de forma inteligente</div>
+          <p class="header-subtitle">Gerenciamento financeiro completo</p>
         </div>
       </div>
-      <button class="btn-logout" onclick="logout()">
-        <span>🚪</span>
-        Sair
+      <button class="btn-logout" id="btnLogout">
+        🚪 Sair
       </button>
     </div>
 
-    <!-- DASHBOARD DE RESUMO -->
+    <!-- Dashboard -->
     <div class="dashboard-grid">
       <div class="stat-card primary">
         <div class="stat-header">
           <div class="stat-icon">💰</div>
         </div>
         <div class="stat-label">Orçamento Inicial</div>
-        <input type="number" id="orcamentoInicialInput" placeholder="0.00" step="100" onblur="salvarOrcamento()">
-      </div>
-
-      <div class="stat-card danger">
-        <div class="stat-header">
-          <div class="stat-icon">📊</div>
-        </div>
-        <div class="stat-label">Custo Comprometido</div>
-        <div class="stat-value" id="resumo-comprometido">R$ 0,00</div>
+        <input type="number" id="orcamentoInicialInput" placeholder="R$ 0,00" step="0.01">
       </div>
 
       <div class="stat-card success">
         <div class="stat-header">
-          <div class="stat-icon">💵</div>
+          <div class="stat-icon">📊</div>
         </div>
-        <div class="stat-label">Total Devolvido</div>
-        <div class="stat-value" id="resumo-devolvido">R$ 0,00</div>
+        <div class="stat-label">Total Gasto</div>
+        <div class="stat-value" id="totalGasto">R$ 0,00</div>
       </div>
 
       <div class="stat-card warning">
         <div class="stat-header">
+          <div class="stat-icon">⏳</div>
+        </div>
+        <div class="stat-label">A Pagar</div>
+        <div class="stat-value" id="totalAPagar">R$ 0,00</div>
+      </div>
+
+      <div class="stat-card danger">
+        <div class="stat-header">
           <div class="stat-icon">🎯</div>
         </div>
-        <div class="stat-label">Saldo Restante</div>
-        <div class="stat-value" id="resumo-saldo">R$ 0,00</div>
+        <div class="stat-label">Saldo</div>
+        <div class="stat-value" id="saldo">R$ 0,00</div>
       </div>
     </div>
 
-    <!-- BARRA DE PROGRESSO -->
+    <!-- Barra de Progresso -->
     <div class="progress-section">
       <div class="progress-header">
-        <div class="progress-title">Utilização do Orçamento</div>
-        <div class="progress-percentage" id="progress-percentage">0%</div>
+        <div class="progress-title">Progresso do Orçamento</div>
+        <div class="progress-percentage" id="progressPercentage">0%</div>
       </div>
       <div class="progress-bar-container">
-        <div class="progress-bar" id="progress-bar" style="width: 0%"></div>
+        <div class="progress-bar" id="progressBar"></div>
       </div>
     </div>
 
-    <!-- CONTROLES E FILTROS -->
-    <div class="controls-section">
-      <div class="controls-grid">
-        <div class="filter-group">
-          <label class="filter-label">Buscar</label>
-          <input type="text" id="searchInput" class="filter-input" placeholder="Buscar por descrição...">
+    <!-- Controles e Tabela -->
+    <div class="data-section">
+      <div class="controls-section">
+        <button class="btn-primary" id="btnNovoLancamento">
+          ➕ Novo Lançamento
+        </button>
+        
+        <div class="search-box">
+          <span class="search-icon">🔍</span>
+          <input type="text" id="searchInput" placeholder="Buscar lançamentos...">
         </div>
 
         <div class="filter-group">
-          <label class="filter-label">Tipo</label>
-          <select id="filterTipo" class="filter-select">
+          <select id="filterTipo">
             <option value="">Todos</option>
-            <option value="Material">Material</option>
-            <option value="Mão de Obra">Mão de Obra</option>
-            <option value="Devolução">Devolução</option>
           </select>
-        </div>
-
-        <div class="filter-group">
-          <label class="filter-label">Status</label>
-          <select id="filterStatus" class="filter-select">
+          <select id="filterStatus">
             <option value="">Todos</option>
             <option value="Pago">Pago</option>
             <option value="A Pagar">A Pagar</option>
             <option value="Recebido">Recebido</option>
           </select>
         </div>
-
-        <div class="filter-group">
-          <label class="filter-label">&nbsp;</label>
-          <button class="btn-primary" id="btnNovoLancamento">
-            <span>➕</span>
-            Novo Lançamento
-          </button>
-        </div>
-      </div>
-    </div>
-
-    <!-- TABELA DE LANÇAMENTOS -->
-    <div class="table-section">
-      <div class="table-header">
-        <div class="table-title">Lançamentos</div>
-        <div class="table-count" id="table-count">0 lançamentos</div>
       </div>
 
       <!-- Tabela Desktop -->
-      <div class="table-container">
-        <table class="table-lancamentos">
+      <div class="table-wrapper">
+        <table class="table">
           <thead>
             <tr>
               <th>Data</th>
@@ -1091,215 +973,336 @@
               <th>Tipo</th>
               <th>Status</th>
               <th>Valor</th>
-              <th>Ações</th>
+              <th style="text-align: center;">Ações</th>
             </tr>
           </thead>
-          <tbody id="tabela-corpo"></tbody>
+          <tbody id="tabelaCorpo"></tbody>
         </table>
       </div>
 
       <!-- Cards Mobile -->
-      <div class="mobile-cards" id="mobile-cards"></div>
+      <div class="mobile-cards" id="mobileCards"></div>
     </div>
   </div>
 
-  <!-- MODAL DE LANÇAMENTO -->
+  <!-- Modal -->
   <div class="modal" id="modalLancamento">
     <div class="modal-content">
       <div class="modal-header">
         <h2 class="modal-title" id="modalTitle">Novo Lançamento</h2>
-        <button class="btn-close" onclick="fecharModal()">✕</button>
       </div>
-
-      <form id="formLancamento" onsubmit="salvarLancamento(event)">
-        <input type="hidden" id="lancamentoId">
-
-        <div class="form-group">
-          <label class="form-label">Descrição <span class="required">*</span></label>
-          <input type="text" id="descricao" class="form-input" placeholder="Ex: Cimento, Tijolo, Pedreiro..." required>
-        </div>
-
-        <div class="form-row">
+      <form id="formLancamento">
+        <div class="modal-body">
+          <input type="hidden" id="lancamentoId">
+          
           <div class="form-group">
-            <label class="form-label">Valor (R$) <span class="required">*</span></label>
-            <input type="number" id="valor" class="form-input" placeholder="0.00" step="0.01" min="0" required>
+            <label for="descricao">Descrição</label>
+            <input type="text" id="descricao" required placeholder="Ex: Cimento, Pedreiro, etc.">
           </div>
 
           <div class="form-group">
-            <label class="form-label">Data <span class="required">*</span></label>
-            <input type="date" id="dataLancamento" class="form-input" required>
-          </div>
-        </div>
-
-        <div class="form-row">
-          <div class="form-group">
-            <label class="form-label">Tipo <span class="required">*</span></label>
-            <select id="tipo" class="form-select" required onchange="ajustarModalStatus()">
-              <option value="Material">Material</option>
-              <option value="Mão de Obra">Mão de Obra</option>
-              <option value="Devolução">Devolução</option>
-            </select>
+            <label for="valor">Valor (R$)</label>
+            <input type="number" id="valor" step="0.01" required placeholder="0.00">
           </div>
 
           <div class="form-group">
-            <label class="form-label">Status <span class="required">*</span></label>
-            <select id="status" class="form-select" required>
+            <label for="dataLancamento">Data</label>
+            <input type="date" id="dataLancamento" required>
+          </div>
+
+          <div class="form-group">
+            <label for="tipo">Tipo</label>
+            <div class="form-group-with-button">
+              <select id="tipo" required></select>
+              <button type="button" class="btn-icon btn-edit" id="btnNovaCategoria" title="Adicionar nova categoria">➕</button>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="status">Status</label>
+            <select id="status" required>
               <option value="Pago">Pago (PIX, Débito)</option>
               <option value="A Pagar">A Pagar (Fim do mês)</option>
             </select>
           </div>
         </div>
 
-        <div class="form-actions">
-          <button type="button" class="btn-cancel" onclick="fecharModal()">Cancelar</button>
-          <button type="submit" class="btn-submit">Salvar Lançamento</button>
+        <div class="modal-footer">
+          <button type="button" class="btn-secondary" onclick="fecharModal()">Cancelar</button>
+          <button type="submit" class="btn-primary">Salvar</button>
         </div>
       </form>
     </div>
   </div>
 
-  <!-- SCRIPTS FIREBASE -->
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
-  
-  <script src="firebase-config.js"></script>
+  <!-- Firebase -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
 
   <script>
-    // ========== PROTEÇÃO E INICIALIZAÇÃO ==========
-    protegerPagina();
+    // ========== CONFIG FIREBASE ==========
+    const firebaseConfig = {
+      apiKey: "AIzaSyDzfXgSSZq2Dq2KD0IDTxO_KQqUfDEGjnY",
+      authDomain: "app-login-70d84.firebaseapp.com",
+      databaseURL: "https://app-login-70d84-default-rtdb.firebaseio.com",
+      projectId: "app-login-70d84",
+      storageBucket: "app-login-70d84.firebasestorage.app",
+      messagingSenderId: "1006952848348",
+      appId: "1:1006952848348:web:d476ac31c32f044bf04a9f"
+    };
 
-    // Referências Firebase
-    const orcamentoRef = database.ref("obra_orcamento");
-    const lancamentosRef = database.ref("obra_lancamentos");
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const database = firebase.database();
 
-    // Elementos DOM
-    const orcamentoInput = document.getElementById('orcamentoInicialInput');
-    const tabelaCorpo = document.getElementById('tabela-corpo');
-    const mobileCards = document.getElementById('mobile-cards');
-    const modal = document.getElementById('modalLancamento');
-    const form = document.getElementById('formLancamento');
-    const modalTitle = document.getElementById('modalTitle');
-    const searchInput = document.getElementById('searchInput');
-    const filterTipo = document.getElementById('filterTipo');
-    const filterStatus = document.getElementById('filterStatus');
-    const tableCount = document.getElementById('table-count');
+    // ========== REFERÊNCIAS ==========
+    let currentUserId = null;
+    let orcamentoRef = null;
+    let lancamentosRef = null;
+    let categoriasRef = null;
 
-    // Estado
+    // ========== ESTADO ==========
     let lancamentosData = {};
     let orcamentoAtual = 0;
     let editandoId = null;
+    let categoriasPersonalizadas = [];
+    const categoriasPadrao = ['Material', 'Mão de Obra', 'Devolução'];
 
-    // ========== INICIALIZAÇÃO ==========
+    // ========== ELEMENTOS DOM ==========
+    const orcamentoInput = document.getElementById('orcamentoInicialInput');
+    const totalGastoEl = document.getElementById('totalGasto');
+    const totalAPagarEl = document.getElementById('totalAPagar');
+    const saldoEl = document.getElementById('saldo');
+    const progressBar = document.getElementById('progressBar');
+    const progressPercentage = document.getElementById('progressPercentage');
+    const tabelaCorpo = document.getElementById('tabelaCorpo');
+    const mobileCards = document.getElementById('mobileCards');
+    const searchInput = document.getElementById('searchInput');
+    const filterTipo = document.getElementById('filterTipo');
+    const filterStatus = document.getElementById('filterStatus');
+    const modal = document.getElementById('modalLancamento');
+    const form = document.getElementById('formLancamento');
+    const modalTitle = document.getElementById('modalTitle');
+
+    // ========== AUTENTICAÇÃO ==========
     auth.onAuthStateChanged(user => {
       if (user) {
+        currentUserId = user.uid;
+        orcamentoRef = database.ref(`usuarios/${currentUserId}/orcamento_inicial`);
+        lancamentosRef = database.ref(`usuarios/${currentUserId}/lancamentos`);
+        categoriasRef = database.ref(`usuarios/${currentUserId}/obra_categorias`);
+
+        // Listener orçamento
         orcamentoRef.on('value', (snapshot) => {
-          orcamentoAtual = parseFloat(snapshot.val()) || 0;
-          orcamentoInput.value = orcamentoAtual.toFixed(2);
+          orcamentoAtual = snapshot.val() || 0;
+          orcamentoInput.value = orcamentoAtual;
           calcularResumo();
           atualizarProgresso();
         });
 
+        // Listener lançamentos
         lancamentosRef.on('value', (snapshot) => {
           lancamentosData = snapshot.val() || {};
-          renderizarTabela();
           calcularResumo();
           atualizarProgresso();
+          renderizarTabela();
         });
+
+        // Listener categorias
+        categoriasRef.on('value', (snapshot) => {
+          categoriasPersonalizadas = snapshot.val() || [];
+          carregarCategorias();
+        });
+
+      } else {
+        window.location.href = 'login.html';
       }
     });
 
-    // ========== FORMATAÇÃO ==========
-    function formatarMoeda(valor) {
-      return new Intl.NumberFormat('pt-BR', { 
-        style: 'currency', 
-        currency: 'BRL' 
-      }).format(valor || 0);
+    // Salvar orçamento
+    orcamentoInput.addEventListener('blur', salvarOrcamento);
+    orcamentoInput.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') salvarOrcamento();
+    });
+
+    // Logout
+    document.getElementById('btnLogout').addEventListener('click', () => {
+      auth.signOut();
+    });
+
+    // ========== GERENCIAMENTO DE CATEGORIAS ==========
+    function carregarCategorias() {
+      // Combinar categorias padrão e personalizadas
+      const todasCategorias = [...categoriasPadrao];
+      
+      categoriasPersonalizadas.forEach(cat => {
+        if (!todasCategorias.some(c => c.toLowerCase() === cat.toLowerCase())) {
+          todasCategorias.push(cat);
+        }
+      });
+
+      // Ordenar alfabeticamente
+      todasCategorias.sort((a, b) => a.localeCompare(b, 'pt-BR'));
+
+      // Salvar valores selecionados
+      const selectModal = document.getElementById('tipo');
+      const selectFiltro = document.getElementById('filterTipo');
+      const valorSelecionadoModal = selectModal.value;
+      const valorSelecionadoFiltro = selectFiltro.value;
+
+      // Repopular select do modal
+      selectModal.innerHTML = '';
+      todasCategorias.forEach(cat => {
+        const option = document.createElement('option');
+        option.value = cat;
+        option.textContent = cat;
+        selectModal.appendChild(option);
+      });
+
+      // Repopular select do filtro (mantém "Todos")
+      selectFiltro.innerHTML = '<option value="">Todos</option>';
+      todasCategorias.forEach(cat => {
+        const option = document.createElement('option');
+        option.value = cat;
+        option.textContent = cat;
+        selectFiltro.appendChild(option);
+      });
+
+      // Restaurar valores selecionados
+      if (valorSelecionadoModal && todasCategorias.includes(valorSelecionadoModal)) {
+        selectModal.value = valorSelecionadoModal;
+      }
+      if (valorSelecionadoFiltro && todasCategorias.includes(valorSelecionadoFiltro)) {
+        selectFiltro.value = valorSelecionadoFiltro;
+      }
     }
 
-    function formatarData(dataString) {
-      const data = new Date(dataString + 'T12:00:00Z');
-      return data.toLocaleDateString('pt-BR', { 
-        day: '2-digit', 
-        month: '2-digit', 
-        year: 'numeric' 
-      });
+    function adicionarNovaCategoria() {
+      const novaCategoria = prompt('Digite o nome da nova categoria:');
+      
+      if (!novaCategoria) {
+        return; // Usuário cancelou
+      }
+
+      const categoriaTrimmed = novaCategoria.trim();
+      
+      if (!categoriaTrimmed) {
+        showToast('O nome da categoria não pode estar vazio!', 'error');
+        return;
+      }
+
+      // Verificar duplicatas (case-insensitive)
+      const todasCategorias = [...categoriasPadrao, ...categoriasPersonalizadas];
+      const jaExiste = todasCategorias.some(cat => 
+        cat.toLowerCase() === categoriaTrimmed.toLowerCase()
+      );
+
+      if (jaExiste) {
+        showToast('Esta categoria já existe!', 'error');
+        return;
+      }
+
+      // Adicionar nova categoria
+      const novasCategorias = [...categoriasPersonalizadas, categoriaTrimmed];
+      
+      categoriasRef.set(novasCategorias)
+        .then(() => {
+          showToast('Categoria adicionada com sucesso!', 'success');
+        })
+        .catch(error => {
+          showToast('Erro ao adicionar categoria: ' + error.message, 'error');
+        });
     }
 
     // ========== CÁLCULOS ==========
     function calcularResumo() {
-      const lancamentosArray = Object.values(lancamentosData);
-      let totalComprometido = 0;
-      let totalDevolvido = 0;
+      let totalGasto = 0;
+      let totalAPagar = 0;
 
-      lancamentosArray.forEach(item => {
-        const valor = parseFloat(item.valor) || 0;
-        
+      Object.values(lancamentosData).forEach(item => {
         if (item.tipo === 'Devolução') {
-          totalDevolvido += valor;
-          totalComprometido -= valor;
+          // Devoluções somam ao saldo
+          totalGasto -= item.valor;
         } else {
-          totalComprometido += valor;
+          totalGasto += item.valor;
+          if (item.status === 'A Pagar') {
+            totalAPagar += item.valor;
+          }
         }
       });
 
-      const saldoRestante = orcamentoAtual - totalComprometido;
+      const saldo = orcamentoAtual - totalGasto;
 
-      document.getElementById('resumo-comprometido').textContent = formatarMoeda(totalComprometido);
-      document.getElementById('resumo-devolvido').textContent = formatarMoeda(totalDevolvido);
-      document.getElementById('resumo-saldo').textContent = formatarMoeda(saldoRestante);
+      totalGastoEl.textContent = formatarMoeda(totalGasto);
+      totalAPagarEl.textContent = formatarMoeda(totalAPagar);
+      saldoEl.textContent = formatarMoeda(saldo);
     }
 
     function atualizarProgresso() {
-      const lancamentosArray = Object.values(lancamentosData);
-      let totalComprometido = 0;
+      if (orcamentoAtual === 0) {
+        progressBar.style.width = '0%';
+        progressPercentage.textContent = '0%';
+        return;
+      }
 
-      lancamentosArray.forEach(item => {
-        const valor = parseFloat(item.valor) || 0;
+      let totalGasto = 0;
+      Object.values(lancamentosData).forEach(item => {
         if (item.tipo === 'Devolução') {
-          totalComprometido -= valor;
+          totalGasto -= item.valor;
         } else {
-          totalComprometido += valor;
+          totalGasto += item.valor;
         }
       });
 
-      const percentual = orcamentoAtual > 0 ? (totalComprometido / orcamentoAtual) * 100 : 0;
-      const percentualFormatado = Math.min(percentual, 100).toFixed(1);
+      const percentual = Math.min((totalGasto / orcamentoAtual) * 100, 100);
+      progressBar.style.width = percentual + '%';
+      progressPercentage.textContent = percentual.toFixed(1) + '%';
 
-      document.getElementById('progress-bar').style.width = percentualFormatado + '%';
-      document.getElementById('progress-percentage').textContent = percentualFormatado + '%';
-
-      // Mudar cor se ultrapassar 100%
-      const progressBar = document.getElementById('progress-bar');
-      if (percentual > 100) {
-        progressBar.style.background = 'linear-gradient(90deg, var(--accent-danger), #dc2626)';
-      } else if (percentual > 80) {
+      // Mudar cor conforme percentual
+      if (percentual < 70) {
+        progressBar.style.background = 'linear-gradient(90deg, var(--accent-success), #059669)';
+      } else if (percentual < 90) {
         progressBar.style.background = 'linear-gradient(90deg, var(--accent-warning), #d97706)';
       } else {
-        progressBar.style.background = 'linear-gradient(90deg, var(--accent-primary), var(--accent-info))';
+        progressBar.style.background = 'linear-gradient(90deg, var(--accent-danger), #dc2626)';
       }
+    }
+
+    // ========== FORMATAÇÃO ==========
+    function formatarMoeda(valor) {
+      return new Intl.NumberFormat('pt-BR', {
+        style: 'currency',
+        currency: 'BRL'
+      }).format(valor);
+    }
+
+    function formatarData(dataISO) {
+      const [ano, mes, dia] = dataISO.split('-');
+      return `${dia}/${mes}/${ano}`;
     }
 
     // ========== RENDERIZAÇÃO ==========
     function renderizarTabela() {
-      const searchTerm = searchInput.value.toLowerCase();
-      const tipoFilter = filterTipo.value;
-      const statusFilter = filterStatus.value;
+      const search = searchInput.value.toLowerCase();
+      const tipo = filterTipo.value;
+      const status = filterStatus.value;
 
-      let lancamentosArray = Object.entries(lancamentosData)
-        .map(([id, data]) => ({ id, ...data }))
-        .sort((a, b) => new Date(b.dataLancamento) - new Date(a.dataLancamento));
+      let lancamentosArray = Object.keys(lancamentosData).map(id => ({
+        id,
+        ...lancamentosData[id]
+      }));
 
-      // Aplicar filtros
+      // Filtros
       lancamentosArray = lancamentosArray.filter(item => {
-        const matchSearch = item.descricao.toLowerCase().includes(searchTerm);
-        const matchTipo = !tipoFilter || item.tipo === tipoFilter;
-        const matchStatus = !statusFilter || item.status === statusFilter;
+        const matchSearch = item.descricao.toLowerCase().includes(search);
+        const matchTipo = !tipo || item.tipo === tipo;
+        const matchStatus = !status || item.status === status;
         return matchSearch && matchTipo && matchStatus;
       });
 
-      // Atualizar contador
-      tableCount.textContent = `${lancamentosArray.length} lançamento${lancamentosArray.length !== 1 ? 's' : ''}`;
+      // Ordenar por data (mais recente primeiro)
+      lancamentosArray.sort((a, b) => new Date(b.dataLancamento) - new Date(a.dataLancamento));
 
       // Renderizar tabela desktop
       tabelaCorpo.innerHTML = '';
@@ -1550,6 +1553,12 @@
 
     // ========== EVENT LISTENERS ==========
     document.getElementById('btnNovoLancamento').addEventListener('click', () => abrirModal());
+    
+    document.getElementById('btnNovaCategoria').addEventListener('click', adicionarNovaCategoria);
+    
+    document.getElementById('tipo').addEventListener('change', ajustarModalStatus);
+    
+    form.addEventListener('submit', salvarLancamento);
     
     modal.addEventListener('click', (e) => {
       if (e.target === modal) fecharModal();
