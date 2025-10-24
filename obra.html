@@ -1040,36 +1040,26 @@
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
 
+  <script src="firebase-config.js"></script>
+
   <script>
-    // ========== CONFIG FIREBASE ==========
-    const firebaseConfig = {
-      apiKey: "AIzaSyDzfXgSSZq2Dq2KD0IDTxO_KQqUfDEGjnY",
-      authDomain: "app-login-70d84.firebaseapp.com",
-      databaseURL: "https://app-login-70d84-default-rtdb.firebaseio.com",
-      projectId: "app-login-70d84",
-      storageBucket: "app-login-70d84.firebasestorage.app",
-      messagingSenderId: "1006952848348",
-      appId: "1:1006952848348:web:d476ac31c32f044bf04a9f"
-    };
+    // 2. Chama a função de login do SEU arquivo
+    protegerPagina();
 
-    firebase.initializeApp(firebaseConfig);
-    const auth = firebase.auth();
-    const database = firebase.database();
-
-    // ========== REFERÊNCIAS ==========
+    // ========== REFERÊNCIAS (serão definidas após o login) ==========
     let currentUserId = null;
     let orcamentoRef = null;
     let lancamentosRef = null;
     let categoriasRef = null;
 
-    // ========== ESTADO ==========
+    // ========== ESTADO (igual ao seu arquivo) ==========
     let lancamentosData = {};
     let orcamentoAtual = 0;
     let editandoId = null;
     let categoriasPersonalizadas = [];
     const categoriasPadrao = ['Material', 'Mão de Obra', 'Devolução'];
 
-    // ========== ELEMENTOS DOM ==========
+    // ========== ELEMENTOS DOM (igual ao seu arquivo) ==========
     const orcamentoInput = document.getElementById('orcamentoInicialInput');
     const totalGastoEl = document.getElementById('totalGasto');
     const totalAPagarEl = document.getElementById('totalAPagar');
@@ -1085,13 +1075,17 @@
     const form = document.getElementById('formLancamento');
     const modalTitle = document.getElementById('modalTitle');
 
-    // ========== AUTENTICAÇÃO ==========
+    // ========== AUTENTICAÇÃO (Corrigida) ==========
+    // 3. Usa a função 'auth' e 'database' do seu firebase-config.js
     auth.onAuthStateChanged(user => {
       if (user) {
-        currentUserId = user.uid;
-        orcamentoRef = database.ref(`usuarios/${currentUserId}/orcamento_inicial`);
-        lancamentosRef = database.ref(`usuarios/${currentUserId}/lancamentos`);
-        categoriasRef = database.ref(`usuarios/${currentUserId}/obra_categorias`);
+        currentUserId = user.uid; // Pega o ID do usuário logado
+        
+        // 4. Define as referências do banco com base no ID do usuário
+        // (Isso é uma ótima prática do novo código!)
+        orcamentoRef = database.ref(`usuarios/${currentUserId}/obra/orcamento_inicial`);
+        lancamentosRef = database.ref(`usuarios/${currentUserId}/obra/lancamentos`);
+        categoriasRef = database.ref(`usuarios/${currentUserId}/obra/categorias`);
 
         // Listener orçamento
         orcamentoRef.on('value', (snapshot) => {
@@ -1115,9 +1109,8 @@
           carregarCategorias();
         });
 
-      } else {
-        window.location.href = 'login.html';
-      }
+      } 
+      // Não precisa de 'else', pois a 'protegerPagina()' já trata disso.
     });
 
     // Salvar orçamento
@@ -1126,32 +1119,24 @@
       if (e.key === 'Enter') salvarOrcamento();
     });
 
-    // Logout
-    document.getElementById('btnLogout').addEventListener('click', () => {
-      auth.signOut();
-    });
+    // 5. Conecta o botão de logout à sua função 'logout()'
+    document.getElementById('btnLogout').addEventListener('click', logout);
 
-    // ========== GERENCIAMENTO DE CATEGORIAS ==========
+    // ========== GERENCIAMENTO DE CATEGORIAS (igual ao seu arquivo) ==========
     function carregarCategorias() {
-      // Combinar categorias padrão e personalizadas
       const todasCategorias = [...categoriasPadrao];
-      
       categoriasPersonalizadas.forEach(cat => {
         if (!todasCategorias.some(c => c.toLowerCase() === cat.toLowerCase())) {
           todasCategorias.push(cat);
         }
       });
-
-      // Ordenar alfabeticamente
       todasCategorias.sort((a, b) => a.localeCompare(b, 'pt-BR'));
 
-      // Salvar valores selecionados
       const selectModal = document.getElementById('tipo');
       const selectFiltro = document.getElementById('filterTipo');
       const valorSelecionadoModal = selectModal.value;
       const valorSelecionadoFiltro = selectFiltro.value;
 
-      // Repopular select do modal
       selectModal.innerHTML = '';
       todasCategorias.forEach(cat => {
         const option = document.createElement('option');
@@ -1160,7 +1145,6 @@
         selectModal.appendChild(option);
       });
 
-      // Repopular select do filtro (mantém "Todos")
       selectFiltro.innerHTML = '<option value="">Todos</option>';
       todasCategorias.forEach(cat => {
         const option = document.createElement('option');
@@ -1169,7 +1153,6 @@
         selectFiltro.appendChild(option);
       });
 
-      // Restaurar valores selecionados
       if (valorSelecionadoModal && todasCategorias.includes(valorSelecionadoModal)) {
         selectModal.value = valorSelecionadoModal;
       }
@@ -1180,32 +1163,21 @@
 
     function adicionarNovaCategoria() {
       const novaCategoria = prompt('Digite o nome da nova categoria:');
-      
-      if (!novaCategoria) {
-        return; // Usuário cancelou
-      }
-
+      if (!novaCategoria) return;
       const categoriaTrimmed = novaCategoria.trim();
-      
       if (!categoriaTrimmed) {
         showToast('O nome da categoria não pode estar vazio!', 'error');
         return;
       }
-
-      // Verificar duplicatas (case-insensitive)
       const todasCategorias = [...categoriasPadrao, ...categoriasPersonalizadas];
       const jaExiste = todasCategorias.some(cat => 
         cat.toLowerCase() === categoriaTrimmed.toLowerCase()
       );
-
       if (jaExiste) {
         showToast('Esta categoria já existe!', 'error');
         return;
       }
-
-      // Adicionar nova categoria
       const novasCategorias = [...categoriasPersonalizadas, categoriaTrimmed];
-      
       categoriasRef.set(novasCategorias)
         .then(() => {
           showToast('Categoria adicionada com sucesso!', 'success');
@@ -1215,126 +1187,96 @@
         });
     }
 
-    // ========== CÁLCULOS ==========
+    // ========== CÁLCULOS (igual ao seu arquivo) ==========
     function calcularResumo() {
       let totalGasto = 0;
       let totalAPagar = 0;
-
       Object.values(lancamentosData).forEach(item => {
+        const valor = parseFloat(item.valor) || 0;
         if (item.tipo === 'Devolução') {
-          // Devoluções somam ao saldo
-          totalGasto -= item.valor;
+          totalGasto -= valor;
         } else {
-          totalGasto += item.valor;
+          totalGasto += valor;
           if (item.status === 'A Pagar') {
-            totalAPagar += item.valor;
+            totalAPagar += valor;
           }
         }
       });
-
       const saldo = orcamentoAtual - totalGasto;
-
       totalGastoEl.textContent = formatarMoeda(totalGasto);
       totalAPagarEl.textContent = formatarMoeda(totalAPagar);
       saldoEl.textContent = formatarMoeda(saldo);
     }
 
     function atualizarProgresso() {
-      if (orcamentoAtual === 0) {
-        progressBar.style.width = '0%';
-        progressPercentage.textContent = '0%';
-        return;
-      }
-
       let totalGasto = 0;
       Object.values(lancamentosData).forEach(item => {
+        const valor = parseFloat(item.valor) || 0;
         if (item.tipo === 'Devolução') {
-          totalGasto -= item.valor;
+          totalGasto -= valor;
         } else {
-          totalGasto += item.valor;
+          totalGasto += valor;
         }
       });
+      
+      const percentual = orcamentoAtual > 0 ? (totalGasto / orcamentoAtual) * 100 : 0;
+      const percentualDisplay = percentual.toFixed(1);
+      const percentualBarra = Math.min(percentual, 100); // Trava a barra em 100%
 
-      const percentual = Math.min((totalGasto / orcamentoAtual) * 100, 100);
-      progressBar.style.width = percentual + '%';
-      progressPercentage.textContent = percentual.toFixed(1) + '%';
+      progressBar.style.width = percentualBarra + '%';
+      progressPercentage.textContent = percentualDisplay + '%'; // Mostra o valor real (ex: 110%)
 
-      // Mudar cor conforme percentual
-      if (percentual < 70) {
-        progressBar.style.background = 'linear-gradient(90deg, var(--accent-success), #059669)';
-      } else if (percentual < 90) {
+      if (percentual > 100) {
+        progressBar.style.background = 'linear-gradient(90deg, var(--accent-danger), #dc2626)';
+      } else if (percentual > 80) {
         progressBar.style.background = 'linear-gradient(90deg, var(--accent-warning), #d97706)';
       } else {
-        progressBar.style.background = 'linear-gradient(90deg, var(--accent-danger), #dc2626)';
+        progressBar.style.background = 'linear-gradient(90deg, var(--accent-primary), var(--accent-info))';
       }
     }
 
-    // ========== FORMATAÇÃO ==========
+    // ========== FORMATAÇÃO (igual ao seu arquivo) ==========
     function formatarMoeda(valor) {
       return new Intl.NumberFormat('pt-BR', {
         style: 'currency',
         currency: 'BRL'
       }).format(valor);
     }
-
     function formatarData(dataISO) {
       const [ano, mes, dia] = dataISO.split('-');
       return `${dia}/${mes}/${ano}`;
     }
 
-    // ========== RENDERIZAÇÃO ==========
+    // ========== RENDERIZAÇÃO (igual ao seu arquivo) ==========
     function renderizarTabela() {
       const search = searchInput.value.toLowerCase();
       const tipo = filterTipo.value;
       const status = filterStatus.value;
-
       let lancamentosArray = Object.keys(lancamentosData).map(id => ({
         id,
         ...lancamentosData[id]
       }));
-
-      // Filtros
       lancamentosArray = lancamentosArray.filter(item => {
         const matchSearch = item.descricao.toLowerCase().includes(search);
         const matchTipo = !tipo || item.tipo === tipo;
         const matchStatus = !status || item.status === status;
         return matchSearch && matchTipo && matchStatus;
       });
-
-      // Ordenar por data (mais recente primeiro)
       lancamentosArray.sort((a, b) => new Date(b.dataLancamento) - new Date(a.dataLancamento));
-
-      // Renderizar tabela desktop
       tabelaCorpo.innerHTML = '';
-      
-      // Renderizar cards mobile
       mobileCards.innerHTML = '';
-
       if (lancamentosArray.length === 0) {
-        tabelaCorpo.innerHTML = `
-          <tr>
-            <td colspan="6">
-              <div class="empty-state">
-                <div class="empty-state-icon">📋</div>
-                <div class="empty-state-text">Nenhum lançamento encontrado</div>
-              </div>
-            </td>
-          </tr>
-        `;
-        mobileCards.innerHTML = `
+        const emptyHtml = `
           <div class="empty-state">
             <div class="empty-state-icon">📋</div>
             <div class="empty-state-text">Nenhum lançamento encontrado</div>
-          </div>
-        `;
+          </div>`;
+        tabelaCorpo.innerHTML = `<tr><td colspan="6">${emptyHtml}</td></tr>`;
+        mobileCards.innerHTML = emptyHtml;
         return;
       }
-
       lancamentosArray.forEach(item => {
-        // Renderizar linha da tabela
         renderizarLinhaTabela(item);
-        
-        // Renderizar card mobile
         renderizarCardMobile(item);
       });
     }
@@ -1343,22 +1285,14 @@
       const data = formatarData(item.dataLancamento);
       let valorHtml = '';
       let statusHtml = '';
-      let tipoBadgeClass = '';
+      let tipoBadgeClass = 'tipo-material'; // default
+      const categoriasConhecidas = {
+        'Material': 'tipo-material',
+        'Mão de Obra': 'tipo-mao-obra',
+        'Devolução': 'tipo-devolucao'
+      };
+      tipoBadgeClass = categoriasConhecidas[item.tipo] || 'tipo-material';
 
-      // Tipo badge
-      switch(item.tipo) {
-        case 'Material':
-          tipoBadgeClass = 'tipo-material';
-          break;
-        case 'Mão de Obra':
-          tipoBadgeClass = 'tipo-mao-obra';
-          break;
-        case 'Devolução':
-          tipoBadgeClass = 'tipo-devolucao';
-          break;
-      }
-
-      // Valor e Status
       if (item.tipo === 'Devolução') {
         valorHtml = `<span class="valor-entrada">+ ${formatarMoeda(item.valor)}</span>`;
         statusHtml = `<span class="status-badge status-recebido">Recebido</span>`;
@@ -1367,7 +1301,6 @@
         const statusClass = item.status === 'Pago' ? 'status-pago' : 'status-a';
         statusHtml = `<span class="status-badge ${statusClass}">${item.status}</span>`;
       }
-
       const row = document.createElement('tr');
       row.innerHTML = `
         <td>${data}</td>
@@ -1389,19 +1322,13 @@
       const data = formatarData(item.dataLancamento);
       let valorHtml = '';
       let statusHtml = '';
-      let tipoBadgeClass = '';
-
-      switch(item.tipo) {
-        case 'Material':
-          tipoBadgeClass = 'tipo-material';
-          break;
-        case 'Mão de Obra':
-          tipoBadgeClass = 'tipo-mao-obra';
-          break;
-        case 'Devolução':
-          tipoBadgeClass = 'tipo-devolucao';
-          break;
-      }
+      let tipoBadgeClass = 'tipo-material'; // default
+      const categoriasConhecidas = {
+        'Material': 'tipo-material',
+        'Mão de Obra': 'tipo-mao-obra',
+        'Devolução': 'tipo-devolucao'
+      };
+      tipoBadgeClass = categoriasConhecidas[item.tipo] || 'tipo-material';
 
       if (item.tipo === 'Devolução') {
         valorHtml = `<span class="valor-entrada">+ ${formatarMoeda(item.valor)}</span>`;
@@ -1411,7 +1338,6 @@
         const statusClass = item.status === 'Pago' ? 'status-pago' : 'status-a';
         statusHtml = `<span class="status-badge ${statusClass}">${item.status}</span>`;
       }
-
       const card = document.createElement('div');
       card.className = 'mobile-card';
       card.innerHTML = `
@@ -1441,7 +1367,7 @@
       mobileCards.appendChild(card);
     }
 
-    // ========== CRUD ==========
+    // ========== CRUD (igual ao seu arquivo) ==========
     function salvarOrcamento() {
       const novoOrcamento = parseFloat(orcamentoInput.value) || 0;
       orcamentoRef.set(novoOrcamento)
@@ -1457,7 +1383,6 @@
     function abrirModal(id = null) {
       editandoId = id;
       form.reset();
-
       if (id) {
         modalTitle.textContent = 'Editar Lançamento';
         const item = lancamentosData[id];
@@ -1471,7 +1396,6 @@
         modalTitle.textContent = 'Novo Lançamento';
         document.getElementById('dataLancamento').value = new Date().toISOString().split('T')[0];
       }
-
       ajustarModalStatus();
       modal.classList.add('active');
     }
@@ -1482,7 +1406,6 @@
 
     function salvarLancamento(event) {
       event.preventDefault();
-
       const lancamentoData = {
         descricao: document.getElementById('descricao').value,
         valor: parseFloat(document.getElementById('valor').value),
@@ -1490,11 +1413,9 @@
         tipo: document.getElementById('tipo').value,
         status: document.getElementById('status').value,
       };
-
       const promise = editandoId
         ? lancamentosRef.child(editandoId).update(lancamentoData)
         : lancamentosRef.push(lancamentoData);
-
       promise
         .then(() => {
           fecharModal();
@@ -1521,7 +1442,6 @@
     function ajustarModalStatus() {
       const tipoSelect = document.getElementById('tipo');
       const statusSelect = document.getElementById('status');
-
       if (tipoSelect.value === 'Devolução') {
         statusSelect.innerHTML = '<option value="Recebido">Recebido</option>';
         statusSelect.value = 'Recebido';
@@ -1535,7 +1455,7 @@
       }
     }
 
-    // ========== TOAST NOTIFICATIONS ==========
+    // ========== TOAST (igual ao seu arquivo) ==========
     function showToast(message, type = 'success') {
       const toast = document.createElement('div');
       toast.className = `toast ${type}`;
@@ -1544,36 +1464,29 @@
         <div class="toast-message">${message}</div>
       `;
       document.body.appendChild(toast);
-
       setTimeout(() => {
         toast.style.animation = 'fadeOut 0.3s ease';
         setTimeout(() => toast.remove(), 300);
       }, 3000);
     }
 
-    // ========== EVENT LISTENERS ==========
+    // ========== EVENT LISTENERS (igual ao seu arquivo) ==========
     document.getElementById('btnNovoLancamento').addEventListener('click', () => abrirModal());
-    
     document.getElementById('btnNovaCategoria').addEventListener('click', adicionarNovaCategoria);
-    
     document.getElementById('tipo').addEventListener('change', ajustarModalStatus);
-    
     form.addEventListener('submit', salvarLancamento);
-    
     modal.addEventListener('click', (e) => {
       if (e.target === modal) fecharModal();
     });
-
     searchInput.addEventListener('input', renderizarTabela);
     filterTipo.addEventListener('change', renderizarTabela);
     filterStatus.addEventListener('change', renderizarTabela);
-
-    // Fechar modal com ESC
     document.addEventListener('keydown', (e) => {
       if (e.key === 'Escape' && modal.classList.contains('active')) {
         fecharModal();
       }
     });
+
   </script>
-</body>
+  </body>
 </html>
