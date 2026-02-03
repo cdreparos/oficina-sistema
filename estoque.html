@@ -109,10 +109,15 @@
     .destino-selector label:hover { border-color: var(--accent-indigo); }
     .btn-link { background: none; border: none; color: var(--accent-blue); font-weight: 600; cursor: pointer; padding: 0 8px; font-size: 0.85rem; }
     .input-group { display: flex; align-items: center; gap: 8px; }
+    
     .form-actions { display: flex; gap: 12px; margin-top: 28px; }
     .btn-submit { flex: 1; padding: 14px; border-radius: 10px; font-weight: 600; font-size: 1rem; cursor: pointer; background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%); color: white; border: none; }
     .btn-cancel { flex: 1; padding: 14px; border-radius: 10px; font-weight: 600; font-size: 1rem; cursor: pointer; background: var(--main-bg); color: var(--text-primary); border: none; }
     
+    /* ESTILO PARA O BOTÃO EXCLUIR */
+    .btn-delete { flex: 1; padding: 14px; border-radius: 10px; font-weight: 600; font-size: 1rem; cursor: pointer; background: #fee2e2; color: #991b1b; border: none; transition: background 0.3s; }
+    .btn-delete:hover { background: #ef4444; color: white; }
+
     .mobile-menu-btn { display: none; background: none; border: none; font-size: 1.8rem; cursor: pointer; color: var(--text-primary); }
     .overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 99; }
     .overlay.is-open { display: block; }
@@ -221,7 +226,11 @@
             <div class="form-section-title">Controle de Estoque</div>
             <div class="form-row"><div class="form-group"><label for="quantidadePeca">Quantidade Atual *</label><input type="number" id="quantidadePeca" required min="0" value="0"></div><div class="form-group"><label for="estoqueMinimo">Estoque Mínimo *</label><input type="number" id="estoqueMinimo" required min="1" value="5"></div></div>
         </div>
-        <div class="form-actions"><button type="button" class="btn-cancel" onclick="fecharModal('modalPeca')">Cancelar</button><button type="submit" class="btn-submit">Salvar Peça</button></div>
+        <div class="form-actions">
+            <button type="button" class="btn-cancel" onclick="fecharModal('modalPeca')">Cancelar</button>
+            <button type="button" class="btn-delete" id="btnDeletePeca" style="display: none;" onclick="excluirPeca()">Excluir</button>
+            <button type="submit" class="btn-submit">Salvar Peça</button>
+        </div>
       </form>
     </div>
   </div>
@@ -368,6 +377,8 @@
         editandoId = null;
         document.getElementById('modalTitle').textContent = 'Nova Peça';
         document.getElementById('formPeca').reset();
+        // Esconde o botão de excluir pois é uma peça nova
+        document.getElementById('btnDeletePeca').style.display = 'none';
         abrirModal('modalPeca');
     });
 
@@ -384,7 +395,25 @@
         document.getElementById('valorUnitario').value = peca.valorUnitario || '';
         document.getElementById('quantidadePeca').value = peca.quantidade || 0;
         document.getElementById('estoqueMinimo').value = peca.estoqueMinimo || 5;
+        
+        // Mostra o botão de excluir
+        document.getElementById('btnDeletePeca').style.display = 'block';
+        
         abrirModal('modalPeca');
+    }
+
+    function excluirPeca() {
+        if (!editandoId) return;
+        if (confirm("Tem certeza que deseja excluir esta peça do estoque?")) {
+            estoqueRef.child(editandoId).remove()
+                .then(() => {
+                    alert("Peça excluída com sucesso!");
+                    fecharModal('modalPeca');
+                })
+                .catch(error => {
+                    alert("Erro ao excluir: " + error.message);
+                });
+        }
     }
 
     function salvarPeca(event) {
