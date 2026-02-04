@@ -11,7 +11,7 @@
       --card-bg: #ffffff;
       --text-primary: #1e293b;
       --text-secondary: #64748b;
-      --accent-purple: #8b5cf6; /* Cor temática do PDV */
+      --accent-purple: #8b5cf6;
       --accent-green: #10b981;
       --accent-red: #ef4444;
       --border-color: #e2e8f0;
@@ -28,10 +28,10 @@
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body { font-family: 'Inter', sans-serif; background: var(--main-bg); color: var(--text-primary); height: 100vh; overflow: hidden; }
     
-    /* Layout principal dividido */
+    /* Layout principal */
     .pdv-container { display: grid; grid-template-columns: 240px 1fr 400px; height: 100vh; }
     
-    /* Sidebar (Simplificada para manter contexto) */
+    /* Sidebar */
     .sidebar { background: var(--sidebar-bg); color: #fff; display: flex; flex-direction: column; padding: 24px 16px; height: 100%; z-index: 100; }
     .sidebar-header { display: flex; align-items: center; gap: 12px; margin-bottom: 30px; }
     .sidebar-logo { width: 40px; height: 40px; background: var(--accent-purple); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; font-weight: bold; }
@@ -49,7 +49,7 @@
     .search-icon { position: absolute; left: 18px; top: 50%; transform: translateY(-50%); font-size: 1.2rem; color: var(--text-secondary); }
     
     .produtos-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px; overflow-y: auto; padding-right: 8px; flex-grow: 1; }
-    .produto-card { background: var(--card-bg); border-radius: 12px; padding: 16px; border: 1px solid var(--border-color); cursor: pointer; transition: all 0.2s; display: flex; flex-direction: column; justify-content: space-between; position: relative; overflow: hidden; height: 160px; padding: 16px; }
+    .produto-card { background: var(--card-bg); border-radius: 12px; padding: 16px; border: 1px solid var(--border-color); cursor: pointer; transition: all 0.2s; display: flex; flex-direction: column; justify-content: space-between; position: relative; overflow: hidden; height: 160px; }
     .produto-card:hover { transform: translateY(-4px); border-color: var(--accent-purple); box-shadow: 0 10px 15px rgba(0,0,0,0.05); }
     .produto-card:active { transform: scale(0.98); }
     .produto-nome { font-weight: 600; font-size: 0.95rem; margin-bottom: 8px; line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
@@ -60,11 +60,10 @@
     .produto-card:hover .add-icon { opacity: 1; transform: scale(1); }
     .estoque-baixo { color: var(--accent-red); font-weight: bold; }
 
-    /* Área Direita - Carrinho/Caixa */
+    /* Área Direita - Carrinho */
     .carrinho-area { background: var(--card-bg); border-left: 1px solid var(--border-color); display: flex; flex-direction: column; height: 100%; box-shadow: -4px 0 20px rgba(0,0,0,0.05); z-index: 50; }
     .carrinho-header { padding: 24px; border-bottom: 1px solid var(--border-color); background: var(--main-bg); }
     
-    /* Busca de Cliente Estilizada */
     .cliente-search { position: relative; margin-bottom: 10px; }
     .cliente-search input { width: 100%; padding: 12px; border-radius: 8px; border: 1px solid var(--border-color); background: var(--card-bg); color: var(--text-primary); font-size: 0.95rem; }
     .cliente-suggestions { position: absolute; top: 100%; left: 0; right: 0; background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 0 0 8px 8px; max-height: 200px; overflow-y: auto; z-index: 100; box-shadow: 0 4px 12px rgba(0,0,0,0.1); display: none; }
@@ -94,7 +93,40 @@
     .pagamento-select { width: 100%; padding: 12px; border-radius: 8px; border: 2px solid var(--border-color); background: var(--main-bg); color: var(--text-primary); font-size: 1rem; margin-bottom: 16px; font-weight: 500; cursor: pointer; }
     .btn-finalizar { width: 100%; padding: 16px; background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%); color: white; border: none; border-radius: 12px; font-size: 1.1rem; font-weight: 700; cursor: pointer; transition: all 0.3s; box-shadow: 0 4px 12px rgba(124, 58, 237, 0.3); display: flex; justify-content: center; align-items: center; gap: 10px; }
     .btn-finalizar:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(124, 58, 237, 0.4); }
-    .btn-finalizar:disabled { background: var(--text-secondary); cursor: not-allowed; transform: none; box-shadow: none; opacity: 0.5; }
+    .btn-finalizar:disabled { background: var(--text-secondary); cursor: not-allowed; opacity: 0.5; box-shadow: none; }
+
+    /* --- CUPOM FISCAL (Invisível na tela, Visível na Impressão) --- */
+    #cupomFiscal { display: none; }
+
+    @media print {
+        body * { visibility: hidden; }
+        .pdv-container, .sidebar, .mobile-menu-btn { display: none !important; }
+        
+        #cupomFiscal, #cupomFiscal * { visibility: visible; }
+        #cupomFiscal {
+            display: block;
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100%; /* Ajusta para a largura do papel */
+            max-width: 80mm; /* Padrão térmico, pode ajustar */
+            padding: 10px;
+            font-family: 'Courier New', Courier, monospace;
+            color: black;
+            background: white;
+        }
+        .cupom-header { text-align: center; border-bottom: 1px dashed #000; padding-bottom: 10px; margin-bottom: 10px; }
+        .cupom-empresa { font-size: 1.2rem; font-weight: bold; text-transform: uppercase; }
+        .cupom-info { font-size: 0.8rem; margin-top: 5px; }
+        .cupom-table { width: 100%; font-size: 0.85rem; border-collapse: collapse; margin-bottom: 10px; }
+        .cupom-table th { text-align: left; border-bottom: 1px dashed #000; padding: 5px 0; }
+        .cupom-table td { padding: 4px 0; vertical-align: top; }
+        .text-right { text-align: right; }
+        .cupom-totais { border-top: 1px dashed #000; padding-top: 10px; font-size: 0.9rem; }
+        .cupom-row { display: flex; justify-content: space-between; margin-bottom: 4px; }
+        .cupom-total-final { font-weight: bold; font-size: 1.1rem; margin-top: 5px; }
+        .cupom-footer { text-align: center; margin-top: 20px; font-size: 0.8rem; border-top: 1px dashed #000; padding-top: 10px; }
+    }
 
     /* Responsividade */
     .mobile-menu-btn { display: none; }
@@ -126,8 +158,7 @@
         <span class="search-icon">🔍</span>
         <input type="text" id="searchProduto" placeholder="Buscar peça por nome ou código..." autofocus>
       </div>
-      <div class="produtos-grid" id="produtosGrid">
-        </div>
+      <div class="produtos-grid" id="produtosGrid"></div>
     </main>
 
     <aside class="carrinho-area">
@@ -175,6 +206,39 @@
     </aside>
   </div>
 
+  <div id="cupomFiscal">
+      <div class="cupom-header">
+          <div class="cupom-empresa">SIGO CASA DOS REPAROS</div>
+          <div class="cupom-info">Montanha, ES</div>
+          <div class="cupom-info" id="cupomData">Data: 01/01/2025 12:00</div>
+      </div>
+      <div style="margin-bottom: 10px; font-size: 0.9rem;">
+          <strong>Cliente:</strong> <span id="cupomCliente">Consumidor Final</span>
+      </div>
+      <table class="cupom-table">
+          <thead>
+              <tr>
+                  <th>Item</th>
+                  <th class="text-right">Qtd</th>
+                  <th class="text-right">Valor</th>
+              </tr>
+          </thead>
+          <tbody id="cupomItens">
+              </tbody>
+      </table>
+      <div class="cupom-totais">
+          <div class="cupom-row"><span>Subtotal:</span> <span id="cupomSubtotal">R$ 0,00</span></div>
+          <div class="cupom-row"><span>Desconto:</span> <span id="cupomDesconto">R$ 0,00</span></div>
+          <div class="cupom-row cupom-total-final"><span>TOTAL:</span> <span id="cupomTotal">R$ 0,00</span></div>
+          <div class="cupom-row" style="margin-top: 5px;"><span>Forma Pagto:</span> <span id="cupomPagamento">Dinheiro</span></div>
+      </div>
+      <div class="cupom-footer">
+          <p>*** NÃO É DOCUMENTO FISCAL ***</p>
+          <p>Obrigado pela preferência!</p>
+          <p>Volte Sempre</p>
+      </div>
+  </div>
+
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
@@ -182,18 +246,14 @@
   <script src="utils.js"></script>
 
   <script>
-    // Inicialização
     protegerPagina();
     const estoqueRef = database.ref("estoque");
     const clientesRef = database.ref("clientes");
     const transacoesRef = database.ref("transacoes");
     const configRef = database.ref('configuracoes');
 
-    let produtosData = [];
-    let clientesData = {};
-    let carrinho = [];
+    let produtosData = [], clientesData = {}, carrinho = [];
 
-    // Carregar Configurações (Dark Mode)
     auth.onAuthStateChanged(user => {
       if(user) {
         configRef.on('value', snapshot => {
@@ -203,29 +263,19 @@
       }
     });
 
-    // 1. CARREGAR PRODUTOS (ESTOQUE)
     estoqueRef.on("value", snapshot => {
         const data = snapshot.val() || {};
         produtosData = Object.entries(data).map(([id, item]) => ({ id, ...item }));
         renderizarVitrine();
     });
 
-    // 2. CARREGAR CLIENTES (PARA BUSCA)
-    clientesRef.on("value", snapshot => {
-        clientesData = snapshot.val() || {};
-    });
+    clientesRef.on("value", snapshot => { clientesData = snapshot.val() || {}; });
 
-    // Renderizar Vitrine
     function renderizarVitrine() {
         const grid = document.getElementById('produtosGrid');
         const termo = document.getElementById('searchProduto').value.toLowerCase();
         grid.innerHTML = '';
-
-        const filtrados = produtosData.filter(p => {
-            const nome = (p.nomePeca || '').toLowerCase();
-            const codigo = (p.codigoPeca || '').toLowerCase();
-            return nome.includes(termo) || codigo.includes(termo);
-        });
+        const filtrados = produtosData.filter(p => (p.nomePeca || '').toLowerCase().includes(termo) || (p.codigoPeca || '').toLowerCase().includes(termo));
 
         filtrados.forEach(produto => {
             const qtd = parseInt(produto.quantidade || 0);
@@ -235,44 +285,25 @@
                 <div class="produto-nome">${produto.nomePeca}</div>
                 <div class="produto-info">
                     <div class="produto-preco">${formatarMoeda(produto.valorUnitario)}</div>
-                    <div class="produto-estoque ${qtd <= 0 ? 'estoque-baixo' : ''}">
-                        ${qtd > 0 ? `Estoque: ${qtd}` : 'Sem Estoque'}
-                    </div>
+                    <div class="produto-estoque ${qtd <= 0 ? 'estoque-baixo' : ''}">${qtd > 0 ? `Estoque: ${qtd}` : 'Sem Estoque'}</div>
                 </div>
                 <div class="add-icon">+</div>
             `;
-            // Só permite adicionar se tiver estoque
-            if (qtd > 0) {
-                card.onclick = () => adicionarAoCarrinho(produto);
-            } else {
-                card.style.opacity = '0.6';
-                card.style.cursor = 'not-allowed';
-            }
+            if (qtd > 0) card.onclick = () => adicionarAoCarrinho(produto);
+            else { card.style.opacity = '0.6'; card.style.cursor = 'not-allowed'; }
             grid.appendChild(card);
         });
     }
 
     document.getElementById('searchProduto').addEventListener('input', renderizarVitrine);
 
-    // 3. LÓGICA DO CARRINHO
     function adicionarAoCarrinho(produto) {
         const itemExistente = carrinho.find(item => item.id === produto.id);
-        
         if (itemExistente) {
-            if (itemExistente.qtd < produto.quantidade) {
-                itemExistente.qtd++;
-            } else {
-                alert("Limite de estoque atingido para este item!");
-                return;
-            }
+            if (itemExistente.qtd < produto.quantidade) itemExistente.qtd++;
+            else { alert("Limite de estoque atingido!"); return; }
         } else {
-            carrinho.push({
-                id: produto.id,
-                nome: produto.nomePeca,
-                valor: parseFloat(produto.valorUnitario),
-                qtd: 1,
-                maxEstoque: produto.quantidade
-            });
+            carrinho.push({ id: produto.id, nome: produto.nomePeca, valor: parseFloat(produto.valorUnitario), qtd: 1, maxEstoque: produto.quantidade });
         }
         renderizarCarrinho();
     }
@@ -280,47 +311,26 @@
     function alterarQtd(index, delta) {
         const item = carrinho[index];
         const novaQtd = item.qtd + delta;
-        
-        if (novaQtd > 0 && novaQtd <= item.maxEstoque) {
-            item.qtd = novaQtd;
-        } else if (novaQtd > item.maxEstoque) {
-            alert("Quantidade excede o estoque atual!");
-        }
+        if (novaQtd > 0 && novaQtd <= item.maxEstoque) item.qtd = novaQtd;
+        else if (novaQtd > item.maxEstoque) alert("Quantidade excede o estoque!");
         renderizarCarrinho();
     }
 
-    function removerItem(index) {
-        carrinho.splice(index, 1);
-        renderizarCarrinho();
-    }
+    function removerItem(index) { carrinho.splice(index, 1); renderizarCarrinho(); }
 
     function renderizarCarrinho() {
         const lista = document.getElementById('carrinhoLista');
         lista.innerHTML = '';
-
         if (carrinho.length === 0) {
-            lista.innerHTML = `
-                <div style="text-align: center; color: var(--text-secondary); margin-top: 40px;">
-                    <p style="font-size: 3rem; margin-bottom: 10px;">🛒</p>
-                    <p>Seu carrinho está vazio</p>
-                </div>`;
-            atualizarTotais();
-            return;
+            lista.innerHTML = `<div style="text-align: center; color: var(--text-secondary); margin-top: 40px;"><p style="font-size: 3rem; margin-bottom: 10px;">🛒</p><p>Seu carrinho está vazio</p></div>`;
+            atualizarTotais(); return;
         }
-
         carrinho.forEach((item, index) => {
             const div = document.createElement('div');
             div.className = 'carrinho-item';
             div.innerHTML = `
-                <div class="item-info">
-                    <div class="item-nome">${item.nome}</div>
-                    <div class="item-preco">${formatarMoeda(item.valor)} un.</div>
-                </div>
-                <div class="item-qtd-control">
-                    <button class="btn-qtd" onclick="alterarQtd(${index}, -1)">-</button>
-                    <span class="item-qtd">${item.qtd}</span>
-                    <button class="btn-qtd" onclick="alterarQtd(${index}, 1)">+</button>
-                </div>
+                <div class="item-info"><div class="item-nome">${item.nome}</div><div class="item-preco">${formatarMoeda(item.valor)} un.</div></div>
+                <div class="item-qtd-control"><button class="btn-qtd" onclick="alterarQtd(${index}, -1)">-</button><span class="item-qtd">${item.qtd}</span><button class="btn-qtd" onclick="alterarQtd(${index}, 1)">+</button></div>
                 <div class="item-total">${formatarMoeda(item.valor * item.qtd)}</div>
                 <button class="btn-remove" onclick="removerItem(${index})">🗑</button>
             `;
@@ -333,75 +343,69 @@
         const subtotal = carrinho.reduce((acc, item) => acc + (item.valor * item.qtd), 0);
         const desconto = parseFloat(document.getElementById('inputDesconto').value) || 0;
         const total = Math.max(0, subtotal - desconto);
-
         document.getElementById('lblSubtotal').textContent = formatarMoeda(subtotal);
         document.getElementById('lblTotal').textContent = formatarMoeda(total);
         
-        // Habilitar/Desabilitar botão finalizar
         const btn = document.getElementById('btnFinalizar');
         btn.disabled = carrinho.length === 0;
-        if(carrinho.length > 0) {
-            btn.innerHTML = `✅ Finalizar Venda (${formatarMoeda(total)})`;
-        } else {
-            btn.innerHTML = `✅ Finalizar Venda`;
-        }
+        btn.innerHTML = carrinho.length > 0 ? `✅ Finalizar Venda (${formatarMoeda(total)})` : `✅ Finalizar Venda`;
     }
 
     document.getElementById('inputDesconto').addEventListener('input', atualizarTotais);
 
-    // 4. BUSCA DE CLIENTES (AUTOCOMPLETE)
     const clienteInput = document.getElementById('clienteInput');
     const suggestionsBox = document.getElementById('clienteSuggestions');
 
     clienteInput.addEventListener('input', function() {
         const termo = this.value.toLowerCase();
-        // Se digitar algo novo, limpa o ID para indicar cliente avulso/novo nome
         document.getElementById('clienteId').value = "";
-        
-        if (termo.length < 2) {
-            suggestionsBox.classList.remove('show');
-            return;
-        }
-
-        const matches = Object.entries(clientesData)
-            .filter(([id, c]) => c.nome.toLowerCase().includes(termo))
-            .slice(0, 5); // Max 5 sugestões
-
+        if (termo.length < 2) { suggestionsBox.classList.remove('show'); return; }
+        const matches = Object.entries(clientesData).filter(([id, c]) => c.nome.toLowerCase().includes(termo)).slice(0, 5);
         if (matches.length > 0) {
             suggestionsBox.innerHTML = '';
             matches.forEach(([id, c]) => {
                 const div = document.createElement('div');
                 div.className = 'suggestion-item';
                 div.innerHTML = `<strong>${c.nome}</strong> <small>(${c.telefone})</small>`;
-                div.onclick = () => selecionarCliente(id, c.nome);
+                div.onclick = () => { clienteInput.value = c.nome; document.getElementById('clienteId').value = id; suggestionsBox.classList.remove('show'); };
                 suggestionsBox.appendChild(div);
             });
             suggestionsBox.classList.add('show');
-        } else {
-            suggestionsBox.classList.remove('show');
-        }
+        } else { suggestionsBox.classList.remove('show'); }
     });
+    document.addEventListener('click', (e) => { if (!e.target.closest('.cliente-search')) suggestionsBox.classList.remove('show'); });
 
-    function selecionarCliente(id, nome) {
-        clienteInput.value = nome;
-        document.getElementById('clienteId').value = id;
-        suggestionsBox.classList.remove('show');
+    // Função para Preparar e Imprimir o Cupom
+    function imprimirComprovante(nomeCliente, formaPagamento, subtotal, desconto, totalFinal) {
+        document.getElementById('cupomData').textContent = new Date().toLocaleString('pt-BR');
+        document.getElementById('cupomCliente').textContent = nomeCliente;
+        document.getElementById('cupomPagamento').textContent = formaPagamento;
+        
+        const tbody = document.getElementById('cupomItens');
+        tbody.innerHTML = '';
+        
+        carrinho.forEach(item => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td>${item.nome}</td>
+                <td class="text-right">${item.qtd}</td>
+                <td class="text-right">${formatarMoeda(item.valor * item.qtd)}</td>
+            `;
+            tbody.appendChild(tr);
+        });
+
+        document.getElementById('cupomSubtotal').textContent = formatarMoeda(subtotal);
+        document.getElementById('cupomDesconto').textContent = formatarMoeda(desconto);
+        document.getElementById('cupomTotal').textContent = formatarMoeda(totalFinal);
+
+        // Aciona a impressão do navegador
+        window.print();
     }
 
-    // Fechar sugestões ao clicar fora
-    document.addEventListener('click', (e) => {
-        if (!e.target.closest('.cliente-search')) {
-            suggestionsBox.classList.remove('show');
-        }
-    });
-
-    // 5. FINALIZAR VENDA (BAIXA ESTOQUE + FINANCEIRO)
     async function finalizarVenda() {
         if (!confirm("Confirmar a venda?")) return;
-
         const btn = document.getElementById('btnFinalizar');
-        btn.disabled = true;
-        btn.textContent = "Processando...";
+        btn.disabled = true; btn.textContent = "Processando...";
 
         try {
             const updates = {};
@@ -409,34 +413,26 @@
             const dataHoje = timestamp.split('T')[0];
             const nomeCliente = document.getElementById('clienteInput').value || "Cliente Balcão";
             const formaPagamento = document.getElementById('formaPagamento').value;
-            
-            // Cálculos Finais
             const subtotal = carrinho.reduce((acc, item) => acc + (item.valor * item.qtd), 0);
             const desconto = parseFloat(document.getElementById('inputDesconto').value) || 0;
             const totalFinal = Math.max(0, subtotal - desconto);
 
-            // 1. Preparar atualização de Estoque
             let resumoItens = [];
-            
             carrinho.forEach(item => {
-                // Busca o item atualizado no 'produtosData' para garantir consistência
                 const produtoAtual = produtosData.find(p => p.id === item.id);
                 if (produtoAtual) {
-                    const novaQtd = produtoAtual.quantidade - item.qtd;
-                    // Caminho para atualizar no Firebase
-                    updates[`/estoque/${item.id}/quantidade`] = novaQtd;
+                    updates[`/estoque/${item.id}/quantidade`] = produtoAtual.quantidade - item.qtd;
                     updates[`/estoque/${item.id}/atualizadoEm`] = timestamp;
                     resumoItens.push(`${item.qtd}x ${item.nome}`);
                 }
             });
 
-            // 2. Criar Transação Financeira
             const novaTransacaoKey = transacoesRef.push().key;
-            const transacao = {
+            updates[`/transacoes/${novaTransacaoKey}`] = {
                 tipo: 'entrada',
                 descricao: `Venda PDV - ${nomeCliente}`,
                 observacoes: `Itens: ${resumoItens.join(', ')}`,
-                categoria: 'Venda de Peças', // Categoria Padrão
+                categoria: 'Venda de Peças',
                 valor: totalFinal,
                 dataTransacao: dataHoje,
                 statusTransacao: 'pago',
@@ -445,15 +441,15 @@
                 criadoEm: timestamp,
                 origem: 'pdv'
             };
-            updates[`/transacoes/${novaTransacaoKey}`] = transacao;
 
-            // 3. Enviar tudo de uma vez (Atomic Update)
             await database.ref().update(updates);
-
-            // 4. Sucesso
-            alert("✅ Venda realizada com sucesso!");
             
-            // Resetar Tela
+            // Pergunta se quer imprimir ANTES de limpar a tela
+            if(confirm("✅ Venda realizada!\n\nDeseja imprimir o comprovante?")) {
+                imprimirComprovante(nomeCliente, formaPagamento, subtotal, desconto, totalFinal);
+            }
+
+            // Reseta Tudo
             carrinho = [];
             document.getElementById('clienteInput').value = "";
             document.getElementById('clienteId').value = "";
@@ -461,17 +457,13 @@
             renderizarCarrinho();
 
         } catch (error) {
-            console.error(error);
-            alert("Erro ao processar venda: " + error.message);
+            console.error(error); alert("Erro: " + error.message);
         } finally {
-            btn.disabled = false;
-            renderizarCarrinho(); // Restaura o texto do botão
+            btn.disabled = false; renderizarCarrinho();
         }
     }
 
-    function formatarMoeda(valor) {
-      return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(valor || 0);
-    }
+    function formatarMoeda(valor) { return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(valor || 0); }
   </script>
 </body>
 </html>
