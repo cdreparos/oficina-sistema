@@ -88,18 +88,44 @@
     .btn-finalizar:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(124, 58, 237, 0.4); }
     .btn-finalizar:disabled { background: var(--text-secondary); cursor: not-allowed; opacity: 0.5; box-shadow: none; }
 
-    /* --- MOBILE HEADER --- */
+    /* --- MOBILE HEADER & TABS (NOVO) --- */
+    .mobile-header-container { display: none; } /* Escondido no PC */
+
     .mobile-header-fixed {
-        display: none; 
         position: fixed; top: 0; left: 0; right: 0;
         background: var(--sidebar-bg); color: white;
         padding: 12px 16px; z-index: 900;
-        align-items: center; justify-content: space-between;
+        display: flex; align-items: center; justify-content: space-between;
         box-shadow: 0 2px 10px rgba(0,0,0,0.2);
     }
     .mobile-header-fixed h2 { font-size: 1.1rem; margin: 0; }
     .mobile-back-btn {
         background: rgba(255,255,255,0.2); border: none; color: white; padding: 8px 12px; border-radius: 6px; font-size: 0.9rem; cursor: pointer; display: flex; align-items: center; gap: 6px;
+    }
+
+    /* Abas Mobile */
+    .mobile-tabs {
+        position: fixed; top: 55px; left: 0; right: 0;
+        background: var(--card-bg); z-index: 890;
+        display: flex; border-bottom: 1px solid var(--border-color);
+        box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    }
+    .mobile-tab {
+        flex: 1; padding: 12px; border: none; background: none;
+        font-weight: 600; color: var(--text-secondary);
+        font-size: 0.95rem; cursor: pointer;
+        border-bottom: 3px solid transparent;
+        transition: all 0.2s;
+    }
+    .mobile-tab.active {
+        color: var(--accent-purple);
+        border-bottom-color: var(--accent-purple);
+        background: rgba(139, 92, 246, 0.05);
+    }
+    .badge-count {
+        background: var(--accent-red); color: white;
+        padding: 2px 6px; border-radius: 10px; font-size: 0.75rem; margin-left: 4px;
+        vertical-align: middle;
     }
 
     /* --- MODAL SCANNER --- */
@@ -135,7 +161,7 @@
     #cupomFiscal { display: none; }
     @media print {
         body * { visibility: hidden; }
-        .pdv-container, .sidebar, .mobile-menu-btn, .mobile-header-fixed { display: none !important; }
+        .pdv-container, .sidebar, .mobile-menu-btn, .mobile-header-container { display: none !important; }
         #cupomFiscal, #cupomFiscal * { visibility: visible; }
         #cupomFiscal { display: block; position: absolute; left: 0; top: 0; width: 100%; max-width: 80mm; padding: 10px; font-family: 'Courier New', Courier, monospace; color: black; background: white; }
         .cupom-header { text-align: center; border-bottom: 1px dashed #000; padding-bottom: 10px; margin-bottom: 10px; }
@@ -149,22 +175,41 @@
         .cupom-footer { text-align: center; margin-top: 20px; font-size: 0.8rem; border-top: 1px dashed #000; padding-top: 10px; }
     }
 
-    /* --- MOBILE STYLES --- */
+    /* --- MOBILE LOGIC (RESPONSIVIDADE) --- */
     @media (max-width: 768px) { 
-        body { height: auto; overflow-y: auto; padding-bottom: 220px; }
-        .pdv-container { display: block; height: auto; padding-top: 60px; }
+        body { height: auto; overflow-y: auto; padding-bottom: 220px; background: var(--main-bg); }
+        .pdv-container { display: block; height: auto; padding-top: 110px; /* Header + Tabs */ }
         .sidebar { display: none; }
-        .mobile-header-fixed { display: flex; }
-        .vitrine-area { height: auto; overflow: visible; padding: 16px; }
-        .carrinho-area { height: auto; border: none; box-shadow: none; background: transparent; }
+        .mobile-header-container { display: block; } /* Ativa container mobile */
+
+        /* Controle de Exibição por Abas */
+        .vitrine-area { 
+            display: none; /* Controlado via JS */
+            height: auto; overflow: visible; padding: 16px; 
+        }
+        .vitrine-area.active { display: block; }
+
+        .carrinho-area { 
+            display: none; /* Controlado via JS */
+            height: auto; border: none; box-shadow: none; background: transparent; 
+        }
+        .carrinho-area.active { display: block; }
+        
         .carrinho-header { padding: 16px; background: var(--card-bg); border-radius: 12px; margin: 0 16px 16px 16px; border: 1px solid var(--border-color); }
         .carrinho-lista { padding: 0 16px; overflow: visible; }
+        
         .carrinho-footer {
             position: fixed; bottom: 0; left: 0; right: 0;
             background: var(--card-bg); border-top: 1px solid var(--border-color);
             padding: 16px; z-index: 800; box-shadow: 0 -4px 20px rgba(0,0,0,0.1);
             max-height: 220px; overflow-y: auto;
+            /* Só aparece se a aba carrinho estiver ativa ou via JS, mas vamos deixar fixo sempre que houver itens?
+               Melhor deixar visível apenas na aba carrinho para limpar a visão */
+            display: none; 
         }
+        .carrinho-area.active + .carrinho-footer, 
+        .carrinho-footer.active { display: block; }
+
         .resumo-row { font-size: 0.85rem; margin-bottom: 4px; }
         .pagamento-select { padding: 8px; margin-bottom: 8px; }
         .btn-finalizar { padding: 12px; font-size: 1rem; }
@@ -173,13 +218,18 @@
 </head>
 <body>
 
-  <header class="mobile-header-fixed">
-      <button class="mobile-back-btn" onclick="window.location.href='painel.html'">
-          ⬅ Painel
-      </button>
-      <h2>Venda Rápida</h2>
-      <div style="width: 60px;"></div> 
-  </header>
+  <div class="mobile-header-container">
+      <header class="mobile-header-fixed">
+          <button class="mobile-back-btn" onclick="window.location.href='painel.html'">⬅ Painel</button>
+          <h2>Venda Rápida</h2>
+          <div style="width: 60px;"></div> 
+      </header>
+      
+      <div class="mobile-tabs">
+          <button class="mobile-tab active" onclick="mudarAbaMobile('vitrine')">📦 Produtos</button>
+          <button class="mobile-tab" onclick="mudarAbaMobile('carrinho')">🛒 Carrinho <span id="badgeCarrinho" class="badge-count" style="display:none">0</span></button>
+      </div>
+  </div>
 
   <div class="pdv-container">
     <nav class="sidebar">
@@ -188,7 +238,7 @@
       <button class="back-btn" onclick="window.location.href='painel.html'"><span>⬅</span> Voltar ao Painel</button>
     </nav>
 
-    <main class="vitrine-area">
+    <main class="vitrine-area active" id="tabVitrine">
       <div class="search-container">
         <div class="search-bar">
             <span class="search-icon">🔍</span>
@@ -199,7 +249,7 @@
       <div class="produtos-grid" id="produtosGrid"></div>
     </main>
 
-    <aside class="carrinho-area">
+    <aside class="carrinho-area" id="tabCarrinho">
       <div class="carrinho-header">
         <h3 style="margin-bottom: 12px; color: var(--text-primary);">👤 Cliente</h3>
         <div class="cliente-search">
@@ -213,7 +263,7 @@
         <div style="text-align: center; color: var(--text-secondary); margin-top: 40px;"><p style="font-size: 3rem; margin-bottom: 10px;">🛒</p><p>Seu carrinho está vazio</p></div>
       </div>
       
-      <div class="carrinho-footer">
+      <div class="carrinho-footer" id="footerCarrinho">
         <div class="resumo-row"><span>Subtotal</span><span id="lblSubtotal">R$ 0,00</span></div>
         <div class="resumo-row" style="align-items: center;"><span>Desconto</span><input type="number" id="inputDesconto" class="input-desconto" placeholder="0,00" min="0" step="0.01"></div>
         <div class="resumo-row total"><span>TOTAL</span><span id="lblTotal" style="color: var(--accent-purple);">R$ 0,00</span></div>
@@ -230,16 +280,13 @@
 
   <div id="scannerModal">
       <div style="color: white; margin-bottom: 10px; font-size: 1.2rem;">Aponte para o QR Code</div>
-      
       <div class="scanner-wrapper">
           <div id="reader"></div>
-          
           <div id="scanSuccessOverlay">
               <div class="scan-msg" id="scanMsg">Produto Adicionado!</div>
               <button class="btn-proximo" onclick="lerProximo()">📸 Ler Próximo</button>
           </div>
       </div>
-
       <button class="btn-fechar-scanner" onclick="fecharScanner()">Fechar Câmera</button>
   </div>
 
@@ -293,8 +340,15 @@
         const grid = document.getElementById('produtosGrid');
         const termo = document.getElementById('searchProduto').value.toLowerCase();
         grid.innerHTML = '';
+        
+        // Filtra
         const filtrados = produtosData.filter(p => (p.nomePeca || '').toLowerCase().includes(termo) || (p.codigoPeca || '').toLowerCase().includes(termo));
-        filtrados.forEach(produto => {
+        
+        // LIMITA A EXIBIÇÃO A 30 ITENS PARA NÃO POLUIR A TELA (Performance Mobile)
+        // Se o usuário pesquisar, a lista se refina e mostra o que ele quer
+        const limiteExibicao = termo.length > 0 ? 100 : 30;
+        
+        filtrados.slice(0, limiteExibicao).forEach(produto => {
             const qtd = parseInt(produto.quantidade || 0);
             const card = document.createElement('div');
             card.className = 'produto-card';
@@ -307,9 +361,43 @@
             else { card.style.opacity = '0.6'; card.style.cursor = 'not-allowed'; }
             grid.appendChild(card);
         });
+        
+        // Aviso se houver mais itens ocultos
+        if(filtrados.length > limiteExibicao) {
+            const aviso = document.createElement('div');
+            aviso.style.gridColumn = "1 / -1";
+            aviso.style.textAlign = "center";
+            aviso.style.padding = "20px";
+            aviso.style.color = "var(--text-secondary)";
+            aviso.innerHTML = "Use a busca para encontrar mais produtos...";
+            grid.appendChild(aviso);
+        }
     }
     document.getElementById('searchProduto').addEventListener('input', renderizarVitrine);
 
+    // --- LÓGICA DE ABAS MOBILE ---
+    function mudarAbaMobile(aba) {
+        const tabVitrine = document.getElementById('tabVitrine');
+        const tabCarrinho = document.getElementById('tabCarrinho');
+        const footerCarrinho = document.getElementById('footerCarrinho');
+        const btns = document.querySelectorAll('.mobile-tab');
+
+        btns.forEach(b => b.classList.remove('active'));
+
+        if (aba === 'vitrine') {
+            tabVitrine.classList.add('active');
+            tabCarrinho.classList.remove('active');
+            footerCarrinho.classList.remove('active'); // Esconde footer na vitrine
+            btns[0].classList.add('active');
+        } else {
+            tabVitrine.classList.remove('active');
+            tabCarrinho.classList.add('active');
+            footerCarrinho.classList.add('active'); // Mostra footer no carrinho
+            btns[1].classList.add('active');
+        }
+    }
+
+    // --- FUNÇÕES DE CARRINHO ---
     function adicionarAoCarrinho(produto, fromScanner = false) {
         const itemExistente = carrinho.find(item => item.id === produto.id);
         if (itemExistente) {
@@ -325,6 +413,16 @@
         }
         renderizarCarrinho();
         if(fromScanner) pausarScannerComMensagem(`✅ ${produto.nomePeca}<br>Adicionado!`);
+        
+        // Feedback visual da aba carrinho no mobile
+        atualizarBadgeMobile();
+    }
+
+    function atualizarBadgeMobile() {
+        const count = carrinho.reduce((acc, item) => acc + item.qtd, 0);
+        const badge = document.getElementById('badgeCarrinho');
+        badge.innerText = count;
+        badge.style.display = count > 0 ? 'inline-block' : 'none';
     }
 
     function alterarQtd(index, delta) {
@@ -333,8 +431,13 @@
         if (novaQtd > 0 && novaQtd <= item.maxEstoque) item.qtd = novaQtd;
         else if (novaQtd > item.maxEstoque) alert("Quantidade excede o estoque!");
         renderizarCarrinho();
+        atualizarBadgeMobile();
     }
-    function removerItem(index) { carrinho.splice(index, 1); renderizarCarrinho(); }
+    function removerItem(index) { 
+        carrinho.splice(index, 1); 
+        renderizarCarrinho(); 
+        atualizarBadgeMobile();
+    }
     
     function renderizarCarrinho() {
         const lista = document.getElementById('carrinhoLista');
@@ -359,7 +462,7 @@
     }
     document.getElementById('inputDesconto').addEventListener('input', atualizarTotais);
 
-    // --- FUNÇÕES DE SCANNER (LÓGICA ATUALIZADA) ---
+    // --- FUNÇÕES DE SCANNER ---
     function abrirScanner() {
         document.getElementById('scannerModal').classList.add('active');
         document.getElementById('scanSuccessOverlay').classList.remove('show');
@@ -369,12 +472,8 @@
         html5QrcodeScanner = new Html5Qrcode("reader");
         const config = { fps: 10, qrbox: { width: 250, height: 250 } };
         
-        // Inicia câmera
         html5QrcodeScanner.start({ facingMode: "environment" }, config, onScanSuccess)
-        .catch(err => { 
-            alert("Erro ao iniciar câmera: " + err); 
-            fecharScanner(); 
-        });
+        .catch(err => { alert("Erro ao iniciar câmera: " + err); fecharScanner(); });
     }
 
     function fecharScanner() {
@@ -385,25 +484,15 @@
     }
 
     function onScanSuccess(decodedText, decodedResult) {
-        // Limpa espaços vazios da leitura
         const codigoLido = decodedText.trim();
-        
-        // Busca: Tenta pelo ID interno (Firebase) OU pelo Código Visual (SKU)
-        const produtoEncontrado = produtosData.find(p => 
-            p.id === codigoLido || 
-            (p.codigoPeca && p.codigoPeca.trim() === codigoLido)
-        );
+        const produtoEncontrado = produtosData.find(p => p.id === codigoLido || (p.codigoPeca && p.codigoPeca.trim() === codigoLido));
         
         if (produtoEncontrado) {
             adicionarAoCarrinho(produtoEncontrado, true);
         } else {
-            // Feedback de produto não encontrado
-            html5QrcodeScanner.pause(true); // Pausa para não ficar tentando ler
-            
-            // Som de erro (grave)
+            html5QrcodeScanner.pause(true);
             playErrorBeep();
-            
-            if(confirm(`Código lido: ${codigoLido}\n\nProduto não encontrado! Deseja tentar novamente?`)) {
+            if(confirm(`Código: ${codigoLido}\n\nProduto não encontrado! Tentar novamente?`)) {
                 html5QrcodeScanner.resume();
             } else {
                 fecharScanner();
@@ -424,7 +513,6 @@
         if(html5QrcodeScanner) html5QrcodeScanner.resume();
     }
 
-    // Bip de Sucesso (Agudo)
     function playBeep() {
         if (audioCtx.state === 'suspended') audioCtx.resume();
         const oscillator = audioCtx.createOscillator();
@@ -432,13 +520,12 @@
         oscillator.connect(gainNode);
         gainNode.connect(audioCtx.destination);
         oscillator.type = 'square';
-        oscillator.frequency.value = 1500; // Agudo
+        oscillator.frequency.value = 1500; 
         gainNode.gain.value = 0.1;
         oscillator.start();
         setTimeout(() => oscillator.stop(), 100); 
     }
     
-    // Bip de Erro (Grave)
     function playErrorBeep() {
         if (audioCtx.state === 'suspended') audioCtx.resume();
         const oscillator = audioCtx.createOscillator();
@@ -446,13 +533,13 @@
         oscillator.connect(gainNode);
         gainNode.connect(audioCtx.destination);
         oscillator.type = 'sawtooth';
-        oscillator.frequency.value = 200; // Grave
+        oscillator.frequency.value = 200; 
         gainNode.gain.value = 0.1;
         oscillator.start();
         setTimeout(() => oscillator.stop(), 300); 
     }
 
-    // --- MANUTENÇÃO DAS FUNÇÕES EXISTENTES ---
+    // --- CLIENTE SEARCH ---
     const clienteInput = document.getElementById('clienteInput');
     const suggestionsBox = document.getElementById('clienteSuggestions');
     clienteInput.addEventListener('input', function() {
@@ -473,6 +560,7 @@
     });
     document.addEventListener('click', (e) => { if (!e.target.closest('.cliente-search')) suggestionsBox.classList.remove('show'); });
 
+    // --- FINALIZAÇÃO ---
     function imprimirComprovante(nomeCliente, formaPagamento, subtotal, desconto, totalFinal) {
         document.getElementById('cupomData').textContent = new Date().toLocaleString('pt-BR');
         document.getElementById('cupomCliente').textContent = nomeCliente;
@@ -515,7 +603,8 @@
             };
             await database.ref().update(updates);
             if(confirm("✅ Venda realizada!\n\nDeseja imprimir o comprovante?")) imprimirComprovante(nomeCliente, formaPagamento, subtotal, desconto, totalFinal);
-            carrinho = []; document.getElementById('clienteInput').value = ""; document.getElementById('clienteId').value = ""; document.getElementById('inputDesconto').value = ""; renderizarCarrinho();
+            carrinho = []; document.getElementById('clienteInput').value = ""; document.getElementById('clienteId').value = ""; document.getElementById('inputDesconto').value = ""; 
+            renderizarCarrinho(); atualizarBadgeMobile();
         } catch (error) { console.error(error); alert("Erro: " + error.message); } finally { btn.disabled = false; renderizarCarrinho(); }
     }
     function formatarMoeda(valor) { return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(valor || 0); }
