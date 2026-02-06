@@ -67,10 +67,16 @@
         .form-group { margin-bottom: 16px; }
         .form-group label { display: block; font-size: 0.9rem; font-weight: 600; margin-bottom: 8px; }
         .form-group select, .form-group input[type="date"] { width: 100%; padding: 12px; border-radius: 8px; border: 2px solid var(--border-color); background: var(--main-bg); color: var(--text-primary); }
+        
+        .options-group { display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px; border: 1px solid var(--border-color); padding: 12px; border-radius: 8px; }
+        .options-group label { display: flex; align-items: center; gap: 8px; font-weight: 500; cursor: pointer; margin: 0; }
+        .options-group input[type="checkbox"] { width: 18px; height: 18px; accent-color: var(--accent-blue); }
+
         .btn { width: 100%; padding: 12px; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 1rem; margin-top: 8px; }
         .btn-primary { background: var(--accent-blue); color: white; }
         .btn-success { background: #10b981; color: white; } /* Cor verde para Excel */
         .btn-outline { border: 2px solid var(--accent-red); color: var(--accent-red); background: transparent; }
+        .btn-secondary { background: var(--sidebar-bg); color: white; }
         .btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
         #preview-placeholder { text-align: center; padding: 80px 20px; color: var(--text-secondary); }
@@ -85,6 +91,7 @@
         .etiqueta-info { flex-grow: 1; overflow: hidden; }
         .etiqueta-nome { font-size: 10px; font-weight: bold; line-height: 1.2; max-height: 24px; overflow: hidden; }
         .etiqueta-preco { font-size: 14px; font-weight: 800; margin-top: 2px; }
+        .etiqueta-codigo { font-size: 8px; color: #666; margin-top: 2px; }
         .etiqueta-qr { width: 40px; height: 40px; flex-shrink: 0; }
         .etiqueta-qr img { width: 100%; height: 100%; }
 
@@ -182,6 +189,11 @@
                       <div class="search-box">
                           <input type="text" id="inputBuscaProduto" placeholder="Buscar no estoque...">
                       </div>
+                      
+                      <button class="btn btn-secondary" onclick="adicionarTodoEstoque()" style="margin-bottom: 12px; font-size: 0.9rem;">
+                          📦 Adicionar Todo o Estoque à Fila
+                      </button>
+
                       <div class="search-results" id="resultadosBuscaProduto"></div>
                       
                       <h4 style="margin: 16px 0 8px; font-size: 0.9rem; color: var(--text-secondary);">Fila de Impressão</h4>
@@ -204,12 +216,19 @@
 
                   <div class="form-group" style="margin-top: 16px;">
                       <label>Tamanho da Etiqueta</label>
-                      <select id="tamanhoEtiqueta">
+                      <select id="tamanhoEtiqueta" onchange="atualizarPreviewFila()">
                           <option value="50x30">50mm x 30mm (Padrão Niimbot)</option>
                           <option value="40x30">40mm x 30mm</option>
                           <option value="30x20">30mm x 20mm</option>
                           <option value="A4">Folha A4 (Várias)</option>
                       </select>
+                  </div>
+
+                  <div class="options-group">
+                      <label style="color: var(--text-secondary); font-size: 0.85rem; margin-bottom: 8px; display: block;">O que mostrar na etiqueta:</label>
+                      <label><input type="checkbox" id="checkNome" checked onchange="atualizarPreviewFila()"> Nome do Produto</label>
+                      <label><input type="checkbox" id="checkPreco" checked onchange="atualizarPreviewFila()"> Preço (R$)</label>
+                      <label><input type="checkbox" id="checkCodigo" checked onchange="atualizarPreviewFila()"> Código Visual / SKU</label>
                   </div>
 
                   <div style="border-top: 1px solid var(--border-color); padding-top: 16px; margin-top: 16px;">
@@ -287,14 +306,13 @@
         });
     });
 
-    // --- LÓGICA DE DADOS ---
     const configRef = database.ref('configuracoes');
     const osRef = database.ref('ordens_servico');
     const estoqueRef = database.ref('estoque');
     const transacoesRef = database.ref('transacoes');
 
     let configData = {}, osData = {}, estoqueData = {}, transacoesData = {};
-    let filaImpressao = []; // Lista temporária de produtos para imprimir
+    let filaImpressao = []; 
 
     auth.onAuthStateChanged(user => {
       if(user) {
@@ -306,7 +324,7 @@
     });
 
     // ============================================================
-    // LÓGICA DA ABA ETIQUETAS (NOVA)
+    // LÓGICA ETIQUETAS
     // ============================================================
     const origemEtiqueta = document.getElementById('origemEtiqueta');
     const containerProduto = document.getElementById('busca-produto-container');
@@ -315,12 +333,16 @@
     const resultadosBuscaProduto = document.getElementById('resultadosBuscaProduto');
     const listaFila = document.getElementById('filaImpressao');
 
-    // Alternar modos (Produto x OS)
+    // Checkboxes de controle
+    const checkNome = document.getElementById('checkNome');
+    const checkPreco = document.getElementById('checkPreco');
+    const checkCodigo = document.getElementById('checkCodigo');
+
     origemEtiqueta.addEventListener('change', () => {
         if(origemEtiqueta.value === 'produto') {
             containerProduto.style.display = 'block';
             containerOS.style.display = 'none';
-            document.getElementById('btnExportarExcel').style.display = 'flex'; // Excel só faz sentido para estoque em lote
+            document.getElementById('btnExportarExcel').style.display = 'flex';
         } else {
             containerProduto.style.display = 'none';
             containerOS.style.display = 'block';
@@ -328,7 +350,6 @@
         }
     });
 
-    // Busca de Produtos
     inputBuscaProduto.addEventListener('input', function() {
         const termo = this.value.toLowerCase();
         resultadosBuscaProduto.innerHTML = '';
@@ -343,25 +364,52 @@
             div.className = 'search-item';
             div.innerHTML = `
                 <div class="item-info"><strong>${p.nomePeca}</strong><small>Cod: ${p.codigoPeca || 'N/A'}</small></div>
-                <button class="add-btn" onclick="adicionarAFila('${id}', '${p.nomePeca.replace(/'/g, "\\'")}', ${p.valorUnitario || 0})">+</button>
+                <button class="add-btn" onclick="adicionarAFila('${id}', '${p.nomePeca.replace(/'/g, "\\'")}', ${p.valorUnitario || 0}, '${p.codigoPeca || ''}')">+</button>
             `;
             resultadosBuscaProduto.appendChild(div);
         });
     });
 
-    // Gerenciamento da Fila
-    function adicionarAFila(id, nome, preco) {
+    function adicionarAFila(id, nome, preco, codigo) {
         const itemExistente = filaImpressao.find(item => item.id === id);
         if(itemExistente) {
             itemExistente.qtd++;
         } else {
-            filaImpressao.push({ id, nome, preco, qtd: 1 });
+            filaImpressao.push({ id, nome, preco, codigo, qtd: 1 });
         }
         renderizarFila();
         inputBuscaProduto.value = '';
         resultadosBuscaProduto.innerHTML = '';
         inputBuscaProduto.focus();
+        atualizarPreviewFila();
     }
+
+    // --- FUNÇÃO NOVA: ADICIONAR TUDO ---
+    window.adicionarTodoEstoque = () => {
+        if(!estoqueData) return;
+        const totalProdutos = Object.keys(estoqueData).length;
+        if(totalProdutos === 0) { alert("Estoque vazio."); return; }
+        
+        if(!confirm(`Tem certeza que deseja adicionar TODOS os ${totalProdutos} produtos do estoque à fila de impressão (1 etiqueta de cada)?`)) return;
+
+        Object.entries(estoqueData).forEach(([id, item]) => {
+            // Verifica se já está na fila para não duplicar, ou adiciona se não estiver
+            const itemExistente = filaImpressao.find(f => f.id === id);
+            if(!itemExistente) {
+                filaImpressao.push({
+                    id: id,
+                    nome: item.nomePeca || 'Produto Sem Nome',
+                    preco: item.valorUnitario || 0,
+                    codigo: item.codigoPeca || '',
+                    qtd: 1
+                });
+            }
+        });
+        
+        renderizarFila();
+        atualizarPreviewFila();
+        alert("Todos os produtos foram adicionados à fila!");
+    };
 
     function renderizarFila() {
         listaFila.innerHTML = '';
@@ -386,10 +434,12 @@
     window.atualizarQtdFila = (index, novaQtd) => {
         if(novaQtd < 1) novaQtd = 1;
         filaImpressao[index].qtd = parseInt(novaQtd);
+        atualizarPreviewFila();
     };
     window.removerDaFila = (index) => {
         filaImpressao.splice(index, 1);
         renderizarFila();
+        atualizarPreviewFila();
     };
     window.limparFila = () => {
         filaImpressao = [];
@@ -397,29 +447,25 @@
         document.getElementById('etiqueta-preview-wrapper').innerHTML = '';
     };
 
-    // 1. Exportar para Excel (Niimbot)
     window.exportarParaNiimbot = () => {
         if(filaImpressao.length === 0) { alert("A fila está vazia!"); return; }
         
-        // Prepara dados achatados (1 linha por unidade ou agrupado?)
-        // O app da Niimbot geralmente prefere 1 linha por tipo e você diz a quantidade na impressão, 
-        // ou 1 linha por etiqueta. Vamos gerar 1 linha por tipo para facilitar a importação.
-        const dadosExcel = filaImpressao.map(item => ({
-            "Nome do Produto": item.nome,
-            "Preço (R$)": formatarMoeda(item.preco),
-            "Código (ID)": item.id, // O ID será usado para gerar o QR Code no app
-            "Quantidade": item.qtd
-        }));
+        const dadosExcel = filaImpressao.map(item => {
+            const linha = {};
+            if (checkNome.checked) linha["Produto"] = item.nome;
+            if (checkPreco.checked) linha["Preco"] = formatarMoeda(item.preco);
+            if (checkCodigo.checked) linha["Codigo_Visual"] = item.codigo;
+            linha["Dados_QR"] = item.id; 
+            linha["Qtd_Impressao"] = item.qtd;
+            return linha;
+        });
 
         const ws = XLSX.utils.json_to_sheet(dadosExcel);
         const wb = XLSX.utils.book_new();
         XLSX.utils.book_append_sheet(wb, ws, "Etiquetas");
-        XLSX.writeFile(wb, "etiquetas_niimbot.xlsx");
-    };
-
-    // 2. Imprimir Direto (Gerar Preview com QR Code)
-    window.imprimirEtiquetas = () => {
-        window.print();
+        XLSX.writeFile(wb, "importacao_niimbot.xlsx");
+        
+        alert("Arquivo gerado! No app da Niimbot:\n1. Importe o Excel.\n2. Arraste as colunas.\n3. Vincule o QR Code à coluna 'Dados_QR'.");
     };
 
     window.atualizarPreviewFila = () => {
@@ -429,7 +475,6 @@
         
         wrapper.innerHTML = '';
         
-        // Define o tamanho da folha CSS para impressão
         let style = document.getElementById('dynamic-page-size');
         if(!style) { style = document.createElement('style'); style.id='dynamic-page-size'; document.head.appendChild(style); }
         
@@ -439,11 +484,16 @@
             style.innerHTML = `@page { size: ${largura}mm ${altura}mm; margin: 0; } .etiqueta-produto { margin: 0 !important; border: none !important; width: 100%; height: 100%; }`;
         }
 
-        // Gera as etiquetas
+        if(filaImpressao.length === 0) {
+            wrapper.innerHTML = '<p style="width: 100%; text-align: center; color: #666; margin-top: 50px;">Adicione itens à fila para visualizar.</p>';
+            return;
+        }
+
         filaImpressao.forEach(item => {
             for(let i=0; i < item.qtd; i++) {
                 const tag = document.createElement('div');
                 tag.className = 'etiqueta-produto';
+                
                 if(tamanho !== 'A4') {
                     tag.style.width = `${largura}mm`;
                     tag.style.height = `${altura}mm`;
@@ -452,17 +502,17 @@
                     tag.style.height = '30mm';
                 }
 
-                // Layout da Etiqueta
-                tag.innerHTML = `
-                    <div class="etiqueta-info">
-                        <div class="etiqueta-nome">${item.nome}</div>
-                        <div class="etiqueta-preco">${formatarMoeda(item.preco)}</div>
-                    </div>
-                    <div class="etiqueta-qr" id="qr-${item.id}-${i}"></div>
-                `;
+                let conteudoHTML = '<div class="etiqueta-info">';
+                if (checkNome.checked) conteudoHTML += `<div class="etiqueta-nome">${item.nome}</div>`;
+                if (checkPreco.checked) conteudoHTML += `<div class="etiqueta-preco">${formatarMoeda(item.preco)}</div>`;
+                if (checkCodigo.checked && item.codigo) conteudoHTML += `<div class="etiqueta-codigo">${item.codigo}</div>`;
+                conteudoHTML += '</div>';
+                
+                conteudoHTML += `<div class="etiqueta-qr" id="qr-${item.id}-${i}"></div>`;
+
+                tag.innerHTML = conteudoHTML;
                 wrapper.appendChild(tag);
 
-                // Gera o QR Code (usando o ID do produto)
                 new QRCode(document.getElementById(`qr-${item.id}-${i}`), {
                     text: item.id,
                     width: 40,
@@ -473,7 +523,9 @@
         });
     };
 
-    // --- LÓGICA ANTIGA DE DOCUMENTOS (MANTIDA) ---
+    window.imprimirEtiquetas = () => { window.print(); };
+
+    // --- LÓGICA ANTIGA (MANTIDA) ---
     const recentOsList = document.getElementById('recent-os-list');
     const previewContainerDoc = document.getElementById('print-preview-container-doc');
     const btnImprimirDoc = document.getElementById('btnImprimirDoc');
@@ -485,7 +537,6 @@
             .filter(([id, os]) => ['concluido', 'entregue'].includes(os.statusOS))
             .sort((a,b) => new Date(b[1].atualizadoEm || 0) - new Date(a[1].atualizadoEm || 0))
             .slice(0, 10);
-        
         recentOsList.innerHTML = '';
         osFinalizadas.forEach(([id, os]) => {
             const item = document.createElement('div');
@@ -512,14 +563,12 @@
             </div>`;
     }
 
-    // --- LÓGICA DE RELATÓRIOS (MANTIDA) ---
     const btnGerarRelatorio = document.getElementById('btnGerarRelatorio');
     btnGerarRelatorio.addEventListener('click', () => {
         const tipo = document.getElementById('tipoRelatorio').value;
         const inicio = new Date(document.getElementById('dataInicioRelatorio').value);
         const fim = new Date(document.getElementById('dataFimRelatorio').value);
-        // (Lógica simples de exemplo para manter o código funcional)
-        document.getElementById('print-preview-container-relatorio').innerHTML = `<div class="report-preview"><h2>Relatório Gerado: ${tipo}</h2><p>Período: ${inicio.toLocaleDateString()} a ${fim.toLocaleDateString()}</p><p>Dados visualizados na impressão.</p></div>`;
+        document.getElementById('print-preview-container-relatorio').innerHTML = `<div class="report-preview"><h2>Relatório: ${tipo}</h2><p>Período: ${inicio.toLocaleDateString()} a ${fim.toLocaleDateString()}</p><p>Dados gerados.</p></div>`;
         document.getElementById('btnImprimirRelatorio').disabled = false;
     });
 
