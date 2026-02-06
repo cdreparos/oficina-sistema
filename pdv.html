@@ -46,7 +46,7 @@
     }
     .btn-scan:hover { transform: scale(1.05); background: #7c3aed; }
     
-    .produtos-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px; overflow-y: auto; padding-right: 8px; flex-grow: 1; padding-bottom: 100px; } /* Padding bottom extra para mobile */
+    .produtos-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px; overflow-y: auto; padding-right: 8px; flex-grow: 1; padding-bottom: 100px; } 
     .produto-card { background: var(--card-bg); border-radius: 12px; padding: 16px; border: 1px solid var(--border-color); cursor: pointer; transition: all 0.2s; display: flex; flex-direction: column; justify-content: space-between; position: relative; overflow: hidden; height: 160px; }
     .produto-card:hover { transform: translateY(-4px); border-color: var(--accent-purple); box-shadow: 0 10px 15px rgba(0,0,0,0.05); }
     .produto-nome { font-weight: 600; font-size: 0.95rem; margin-bottom: 8px; line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
@@ -88,7 +88,7 @@
     .btn-finalizar:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(124, 58, 237, 0.4); }
     .btn-finalizar:disabled { background: var(--text-secondary); cursor: not-allowed; opacity: 0.5; box-shadow: none; }
 
-    /* --- MOBILE HEADER (Topo Fixo no Celular) --- */
+    /* --- MOBILE HEADER --- */
     .mobile-header-fixed {
         display: none; 
         position: fixed; top: 0; left: 0; right: 0;
@@ -102,34 +102,21 @@
         background: rgba(255,255,255,0.2); border: none; color: white; padding: 8px 12px; border-radius: 6px; font-size: 0.9rem; cursor: pointer; display: flex; align-items: center; gap: 6px;
     }
 
-    /* --- MODAL SCANNER E ESTRUTURA FIXA --- */
+    /* --- MODAL SCANNER --- */
     #scannerModal {
         display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
         background: rgba(0,0,0,0.95); z-index: 2000; flex-direction: column; align-items: center; justify-content: center;
     }
     #scannerModal.active { display: flex; }
     
-    /* Novo Wrapper para garantir que o overlay não seja apagado */
-    .scanner-wrapper {
-        position: relative;
-        width: 100%;
-        max-width: 500px;
-    }
-
-    #reader { 
-        width: 100%; 
-        background: black; 
-        border-radius: 12px; 
-        overflow: hidden; 
-    }
+    .scanner-wrapper { position: relative; width: 100%; max-width: 500px; }
+    #reader { width: 100%; background: black; border-radius: 12px; overflow: hidden; }
     
-    /* Overlay agora fica FORA do reader, posicionado por cima */
     #scanSuccessOverlay {
         position: absolute; top: 0; left: 0; width: 100%; height: 100%;
         background: rgba(16, 185, 129, 0.95);
         display: none; flex-direction: column; align-items: center; justify-content: center;
-        color: white; text-align: center; z-index: 10;
-        border-radius: 12px;
+        color: white; text-align: center; z-index: 10; border-radius: 12px;
     }
     #scanSuccessOverlay.show { display: flex; }
     
@@ -162,45 +149,22 @@
         .cupom-footer { text-align: center; margin-top: 20px; font-size: 0.8rem; border-top: 1px dashed #000; padding-top: 10px; }
     }
 
-    /* --- AJUSTES MOBILE EXTREMOS --- */
+    /* --- MOBILE STYLES --- */
     @media (max-width: 768px) { 
-        body { height: auto; overflow-y: auto; padding-bottom: 220px; /* Espaço para o footer fixo */ }
-        
-        .pdv-container { display: block; height: auto; padding-top: 60px; /* Espaço para o header fixo */ }
-        
+        body { height: auto; overflow-y: auto; padding-bottom: 220px; }
+        .pdv-container { display: block; height: auto; padding-top: 60px; }
         .sidebar { display: none; }
-        
-        .mobile-header-fixed { display: flex; } /* Mostra header */
-
-        .vitrine-area { 
-            height: auto; 
-            overflow: visible; 
-            padding: 16px;
-        }
-
-        .carrinho-area {
-            height: auto; 
-            border: none; 
-            box-shadow: none; 
-            background: transparent;
-        }
-        
+        .mobile-header-fixed { display: flex; }
+        .vitrine-area { height: auto; overflow: visible; padding: 16px; }
+        .carrinho-area { height: auto; border: none; box-shadow: none; background: transparent; }
         .carrinho-header { padding: 16px; background: var(--card-bg); border-radius: 12px; margin: 0 16px 16px 16px; border: 1px solid var(--border-color); }
         .carrinho-lista { padding: 0 16px; overflow: visible; }
-        
-        /* FOOTER FIXO NO RODAPÉ DO CELULAR */
         .carrinho-footer {
-            position: fixed;
-            bottom: 0; left: 0; right: 0;
-            background: var(--card-bg);
-            border-top: 1px solid var(--border-color);
-            padding: 16px;
-            z-index: 800;
-            box-shadow: 0 -4px 20px rgba(0,0,0,0.1);
+            position: fixed; bottom: 0; left: 0; right: 0;
+            background: var(--card-bg); border-top: 1px solid var(--border-color);
+            padding: 16px; z-index: 800; box-shadow: 0 -4px 20px rgba(0,0,0,0.1);
             max-height: 220px; overflow-y: auto;
         }
-        
-        /* Ajuste para itens não ficarem escondidos atrás do footer */
         .resumo-row { font-size: 0.85rem; margin-bottom: 4px; }
         .pagamento-select { padding: 8px; margin-bottom: 8px; }
         .btn-finalizar { padding: 12px; font-size: 1rem; }
@@ -214,7 +178,8 @@
           ⬅ Painel
       </button>
       <h2>Venda Rápida</h2>
-      <div style="width: 60px;"></div> </header>
+      <div style="width: 60px;"></div> 
+  </header>
 
   <div class="pdv-container">
     <nav class="sidebar">
@@ -345,7 +310,6 @@
     }
     document.getElementById('searchProduto').addEventListener('input', renderizarVitrine);
 
-    // --- FUNÇÕES DE CARRINHO ---
     function adicionarAoCarrinho(produto, fromScanner = false) {
         const itemExistente = carrinho.find(item => item.id === produto.id);
         if (itemExistente) {
@@ -371,6 +335,7 @@
         renderizarCarrinho();
     }
     function removerItem(index) { carrinho.splice(index, 1); renderizarCarrinho(); }
+    
     function renderizarCarrinho() {
         const lista = document.getElementById('carrinhoLista');
         lista.innerHTML = '';
@@ -394,7 +359,7 @@
     }
     document.getElementById('inputDesconto').addEventListener('input', atualizarTotais);
 
-    // --- FUNÇÕES DE SCANNER ---
+    // --- FUNÇÕES DE SCANNER (LÓGICA ATUALIZADA) ---
     function abrirScanner() {
         document.getElementById('scannerModal').classList.add('active');
         document.getElementById('scanSuccessOverlay').classList.remove('show');
@@ -403,8 +368,13 @@
 
         html5QrcodeScanner = new Html5Qrcode("reader");
         const config = { fps: 10, qrbox: { width: 250, height: 250 } };
+        
+        // Inicia câmera
         html5QrcodeScanner.start({ facingMode: "environment" }, config, onScanSuccess)
-        .catch(err => { alert("Erro ao iniciar câmera: " + err); fecharScanner(); });
+        .catch(err => { 
+            alert("Erro ao iniciar câmera: " + err); 
+            fecharScanner(); 
+        });
     }
 
     function fecharScanner() {
@@ -415,9 +385,30 @@
     }
 
     function onScanSuccess(decodedText, decodedResult) {
-        const produtoEncontrado = produtosData.find(p => p.id === decodedText);
-        if (produtoEncontrado) adicionarAoCarrinho(produtoEncontrado, true);
-        else console.log("Produto não encontrado.");
+        // Limpa espaços vazios da leitura
+        const codigoLido = decodedText.trim();
+        
+        // Busca: Tenta pelo ID interno (Firebase) OU pelo Código Visual (SKU)
+        const produtoEncontrado = produtosData.find(p => 
+            p.id === codigoLido || 
+            (p.codigoPeca && p.codigoPeca.trim() === codigoLido)
+        );
+        
+        if (produtoEncontrado) {
+            adicionarAoCarrinho(produtoEncontrado, true);
+        } else {
+            // Feedback de produto não encontrado
+            html5QrcodeScanner.pause(true); // Pausa para não ficar tentando ler
+            
+            // Som de erro (grave)
+            playErrorBeep();
+            
+            if(confirm(`Código lido: ${codigoLido}\n\nProduto não encontrado! Deseja tentar novamente?`)) {
+                html5QrcodeScanner.resume();
+            } else {
+                fecharScanner();
+            }
+        }
     }
 
     function pausarScannerComMensagem(mensagem) {
@@ -433,6 +424,7 @@
         if(html5QrcodeScanner) html5QrcodeScanner.resume();
     }
 
+    // Bip de Sucesso (Agudo)
     function playBeep() {
         if (audioCtx.state === 'suspended') audioCtx.resume();
         const oscillator = audioCtx.createOscillator();
@@ -440,13 +432,27 @@
         oscillator.connect(gainNode);
         gainNode.connect(audioCtx.destination);
         oscillator.type = 'square';
-        oscillator.frequency.value = 1500; 
+        oscillator.frequency.value = 1500; // Agudo
         gainNode.gain.value = 0.1;
         oscillator.start();
         setTimeout(() => oscillator.stop(), 100); 
     }
+    
+    // Bip de Erro (Grave)
+    function playErrorBeep() {
+        if (audioCtx.state === 'suspended') audioCtx.resume();
+        const oscillator = audioCtx.createOscillator();
+        const gainNode = audioCtx.createGain();
+        oscillator.connect(gainNode);
+        gainNode.connect(audioCtx.destination);
+        oscillator.type = 'sawtooth';
+        oscillator.frequency.value = 200; // Grave
+        gainNode.gain.value = 0.1;
+        oscillator.start();
+        setTimeout(() => oscillator.stop(), 300); 
+    }
 
-    // --- CLIENTE SEARCH (MANTIDO) ---
+    // --- MANUTENÇÃO DAS FUNÇÕES EXISTENTES ---
     const clienteInput = document.getElementById('clienteInput');
     const suggestionsBox = document.getElementById('clienteSuggestions');
     clienteInput.addEventListener('input', function() {
@@ -467,7 +473,6 @@
     });
     document.addEventListener('click', (e) => { if (!e.target.closest('.cliente-search')) suggestionsBox.classList.remove('show'); });
 
-    // --- FINALIZAÇÃO (MANTIDO) ---
     function imprimirComprovante(nomeCliente, formaPagamento, subtotal, desconto, totalFinal) {
         document.getElementById('cupomData').textContent = new Date().toLocaleString('pt-BR');
         document.getElementById('cupomCliente').textContent = nomeCliente;
