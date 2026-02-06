@@ -9,23 +9,14 @@
 
   <style>
     :root {
-      --sidebar-bg: #1e293b;
-      --main-bg: #e2e8f0;
-      --card-bg: #ffffff;
-      --text-primary: #1e293b;
-      --text-secondary: #64748b;
-      --accent-purple: #8b5cf6;
-      --accent-green: #10b981;
-      --accent-red: #ef4444;
+      --sidebar-bg: #1e293b; --main-bg: #e2e8f0; --card-bg: #ffffff;
+      --text-primary: #1e293b; --text-secondary: #64748b;
+      --accent-purple: #8b5cf6; --accent-green: #10b981; --accent-red: #ef4444;
       --border-color: #e2e8f0;
     }
-
     body.dark-mode {
-        --main-bg: #0f172a;
-        --card-bg: #1e293b;
-        --text-primary: #f1f5f9;
-        --text-secondary: #94a3b8;
-        --border-color: #334155;
+        --main-bg: #0f172a; --card-bg: #1e293b; --text-primary: #f1f5f9;
+        --text-secondary: #94a3b8; --border-color: #334155;
     }
 
     * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -45,8 +36,6 @@
 
     /* Área Central */
     .vitrine-area { padding: 24px; display: flex; flex-direction: column; height: 100%; overflow: hidden; }
-    
-    /* BARRA DE PESQUISA COM BOTÃO DE SCAN */
     .search-container { display: flex; gap: 10px; margin-bottom: 20px; }
     .search-bar { position: relative; flex-grow: 1; }
     .search-bar input { width: 100%; padding: 16px 20px 16px 50px; border: 2px solid var(--border-color); border-radius: 12px; font-size: 1.1rem; background: var(--card-bg); color: var(--text-primary); transition: all 0.3s; box-shadow: 0 4px 6px rgba(0,0,0,0.02); }
@@ -57,12 +46,10 @@
         background: var(--accent-purple); color: white; border: none; border-radius: 12px; width: 56px; cursor: pointer; font-size: 1.5rem; display: flex; align-items: center; justify-content: center; transition: transform 0.2s;
     }
     .btn-scan:hover { transform: scale(1.05); background: #7c3aed; }
-    .btn-scan:active { transform: scale(0.95); }
-
+    
     .produtos-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px; overflow-y: auto; padding-right: 8px; flex-grow: 1; }
     .produto-card { background: var(--card-bg); border-radius: 12px; padding: 16px; border: 1px solid var(--border-color); cursor: pointer; transition: all 0.2s; display: flex; flex-direction: column; justify-content: space-between; position: relative; overflow: hidden; height: 160px; }
     .produto-card:hover { transform: translateY(-4px); border-color: var(--accent-purple); box-shadow: 0 10px 15px rgba(0,0,0,0.05); }
-    .produto-card:active { transform: scale(0.98); }
     .produto-nome { font-weight: 600; font-size: 0.95rem; margin-bottom: 8px; line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
     .produto-info { margin-top: auto; }
     .produto-preco { font-size: 1.2rem; font-weight: 700; color: var(--accent-purple); }
@@ -71,20 +58,17 @@
     .produto-card:hover .add-icon { opacity: 1; transform: scale(1); }
     .estoque-baixo { color: var(--accent-red); font-weight: bold; }
 
-    /* Área Carrinho */
+    /* Carrinho */
     .carrinho-area { background: var(--card-bg); border-left: 1px solid var(--border-color); display: flex; flex-direction: column; height: 100%; box-shadow: -4px 0 20px rgba(0,0,0,0.05); z-index: 50; }
     .carrinho-header { padding: 24px; border-bottom: 1px solid var(--border-color); background: var(--main-bg); }
-    
     .cliente-search { position: relative; margin-bottom: 10px; }
     .cliente-search input { width: 100%; padding: 12px; border-radius: 8px; border: 1px solid var(--border-color); background: var(--card-bg); color: var(--text-primary); font-size: 0.95rem; }
     .cliente-suggestions { position: absolute; top: 100%; left: 0; right: 0; background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 0 0 8px 8px; max-height: 200px; overflow-y: auto; z-index: 100; box-shadow: 0 4px 12px rgba(0,0,0,0.1); display: none; }
     .cliente-suggestions.show { display: block; }
     .suggestion-item { padding: 10px 14px; cursor: pointer; border-bottom: 1px solid var(--border-color); transition: background 0.2s; }
     .suggestion-item:hover { background: var(--main-bg); }
-    
     .carrinho-lista { flex-grow: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 12px; }
     .carrinho-item { display: flex; justify-content: space-between; align-items: center; background: var(--main-bg); padding: 12px; border-radius: 10px; animation: slideIn 0.3s ease; }
-    @keyframes slideIn { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: translateX(0); } }
     .item-info { flex-grow: 1; }
     .item-nome { font-weight: 600; font-size: 0.9rem; margin-bottom: 4px; }
     .item-preco { font-size: 0.85rem; color: var(--text-secondary); }
@@ -95,26 +79,42 @@
     .item-total { font-weight: 700; color: var(--text-primary); font-size: 0.95rem; min-width: 70px; text-align: right; }
     .btn-remove { color: var(--text-secondary); background: none; border: none; cursor: pointer; padding: 4px; margin-left: 8px; transition: color 0.2s; }
     .btn-remove:hover { color: var(--accent-red); }
-
     .carrinho-footer { padding: 24px; border-top: 1px solid var(--border-color); background: var(--card-bg); }
     .resumo-row { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 0.9rem; color: var(--text-secondary); }
     .resumo-row.total { font-size: 1.5rem; font-weight: 800; color: var(--text-primary); margin-top: 16px; margin-bottom: 24px; align-items: center; }
     .input-desconto { width: 80px; padding: 4px 8px; border: 1px solid var(--border-color); border-radius: 4px; text-align: right; background: var(--main-bg); color: var(--text-primary); }
-    
     .pagamento-select { width: 100%; padding: 12px; border-radius: 8px; border: 2px solid var(--border-color); background: var(--main-bg); color: var(--text-primary); font-size: 1rem; margin-bottom: 16px; font-weight: 500; cursor: pointer; }
     .btn-finalizar { width: 100%; padding: 16px; background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%); color: white; border: none; border-radius: 12px; font-size: 1.1rem; font-weight: 700; cursor: pointer; transition: all 0.3s; box-shadow: 0 4px 12px rgba(124, 58, 237, 0.3); display: flex; justify-content: center; align-items: center; gap: 10px; }
     .btn-finalizar:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(124, 58, 237, 0.4); }
     .btn-finalizar:disabled { background: var(--text-secondary); cursor: not-allowed; opacity: 0.5; box-shadow: none; }
 
-    /* --- MODAL DO SCANNER --- */
+    /* --- MODAL DO SCANNER (ATUALIZADO) --- */
     #scannerModal {
         display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-        background: rgba(0,0,0,0.9); z-index: 2000; align-items: center; justify-content: center; flex-direction: column;
+        background: rgba(0,0,0,0.95); z-index: 2000; flex-direction: column; align-items: center; justify-content: center;
     }
     #scannerModal.active { display: flex; }
-    #reader { width: 100%; max-width: 500px; background: black; border-radius: 12px; overflow: hidden; }
+    #reader { width: 100%; max-width: 500px; background: black; border-radius: 12px; overflow: hidden; position: relative; }
+    
+    /* Overlay de Sucesso (O "Congelamento") */
+    #scanSuccessOverlay {
+        position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+        background: rgba(16, 185, 129, 0.9); /* Fundo Verde Transparente */
+        display: none; flex-direction: column; align-items: center; justify-content: center;
+        color: white; text-align: center; z-index: 10;
+    }
+    #scanSuccessOverlay.show { display: flex; }
+    
+    .scan-msg { font-size: 1.2rem; font-weight: bold; margin-bottom: 20px; padding: 0 20px; }
+    .btn-proximo {
+        background: white; color: #10b981; border: none; padding: 15px 30px;
+        font-size: 1.1rem; font-weight: bold; border-radius: 30px; cursor: pointer;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    }
+
     .btn-fechar-scanner {
-        margin-top: 20px; padding: 10px 20px; background: white; color: black; border: none; border-radius: 20px; font-weight: bold; cursor: pointer; font-size: 1.1rem;
+        margin-top: 20px; padding: 10px 20px; background: rgba(255,255,255,0.2); 
+        color: white; border: 1px solid white; border-radius: 20px; font-weight: bold; cursor: pointer;
     }
 
     /* --- CUPOM FISCAL --- */
@@ -123,13 +123,8 @@
         body * { visibility: hidden; }
         .pdv-container, .sidebar, .mobile-menu-btn { display: none !important; }
         #cupomFiscal, #cupomFiscal * { visibility: visible; }
-        #cupomFiscal {
-            display: block; position: absolute; left: 0; top: 0; width: 100%; max-width: 80mm;
-            padding: 10px; font-family: 'Courier New', Courier, monospace; color: black; background: white;
-        }
+        #cupomFiscal { display: block; position: absolute; left: 0; top: 0; width: 100%; max-width: 80mm; padding: 10px; font-family: 'Courier New', Courier, monospace; color: black; background: white; }
         .cupom-header { text-align: center; border-bottom: 1px dashed #000; padding-bottom: 10px; margin-bottom: 10px; }
-        .cupom-empresa { font-size: 1.2rem; font-weight: bold; text-transform: uppercase; }
-        .cupom-info { font-size: 0.8rem; margin-top: 5px; }
         .cupom-table { width: 100%; font-size: 0.85rem; border-collapse: collapse; margin-bottom: 10px; }
         .cupom-table th { text-align: left; border-bottom: 1px dashed #000; padding: 5px 0; }
         .cupom-table td { padding: 4px 0; vertical-align: top; }
@@ -154,14 +149,9 @@
 
   <div class="pdv-container">
     <nav class="sidebar">
-      <div class="sidebar-header">
-        <div class="sidebar-logo">PDV</div>
-        <h1 style="font-size: 1.2rem;">Venda Rápida</h1>
-      </div>
+      <div class="sidebar-header"><div class="sidebar-logo">PDV</div><h1>Venda Rápida</h1></div>
       <div style="flex-grow: 1;"></div>
-      <button class="back-btn" onclick="window.location.href='painel.html'">
-        <span>⬅</span> Voltar ao Painel
-      </button>
+      <button class="back-btn" onclick="window.location.href='painel.html'"><span>⬅</span> Voltar ao Painel</button>
     </nav>
 
     <main class="vitrine-area">
@@ -172,7 +162,6 @@
         </div>
         <button class="btn-scan" onclick="abrirScanner()">📷</button>
       </div>
-
       <div class="produtos-grid" id="produtosGrid"></div>
     </main>
 
@@ -185,74 +174,46 @@
             <div class="cliente-suggestions" id="clienteSuggestions"></div>
         </div>
       </div>
-
       <div class="carrinho-lista" id="carrinhoLista">
-        <div style="text-align: center; color: var(--text-secondary); margin-top: 40px;">
-            <p style="font-size: 3rem; margin-bottom: 10px;">🛒</p>
-            <p>Seu carrinho está vazio</p>
-        </div>
+        <div style="text-align: center; color: var(--text-secondary); margin-top: 40px;"><p style="font-size: 3rem; margin-bottom: 10px;">🛒</p><p>Seu carrinho está vazio</p></div>
       </div>
-
       <div class="carrinho-footer">
-        <div class="resumo-row">
-            <span>Subtotal</span>
-            <span id="lblSubtotal">R$ 0,00</span>
-        </div>
-        <div class="resumo-row" style="align-items: center;">
-            <span>Desconto</span>
-            <input type="number" id="inputDesconto" class="input-desconto" placeholder="0,00" min="0" step="0.01">
-        </div>
-        <div class="resumo-row total">
-            <span>TOTAL</span>
-            <span id="lblTotal" style="color: var(--accent-purple);">R$ 0,00</span>
-        </div>
-
+        <div class="resumo-row"><span>Subtotal</span><span id="lblSubtotal">R$ 0,00</span></div>
+        <div class="resumo-row" style="align-items: center;"><span>Desconto</span><input type="number" id="inputDesconto" class="input-desconto" placeholder="0,00" min="0" step="0.01"></div>
+        <div class="resumo-row total"><span>TOTAL</span><span id="lblTotal" style="color: var(--accent-purple);">R$ 0,00</span></div>
         <select class="pagamento-select" id="formaPagamento">
             <option value="Dinheiro">💵 Dinheiro</option>
             <option value="PIX">💠 PIX</option>
             <option value="Cartão de Débito">💳 Cartão de Débito</option>
             <option value="Cartão de Crédito">💳 Cartão de Crédito</option>
         </select>
-
-        <button class="btn-finalizar" id="btnFinalizar" onclick="finalizarVenda()">
-            ✅ Finalizar Venda
-        </button>
+        <button class="btn-finalizar" id="btnFinalizar" onclick="finalizarVenda()">✅ Finalizar Venda</button>
       </div>
     </aside>
   </div>
 
   <div id="scannerModal">
       <div style="color: white; margin-bottom: 10px; font-size: 1.2rem;">Aponte para o QR Code</div>
-      <div id="reader"></div>
+      <div id="reader">
+          <div id="scanSuccessOverlay">
+              <div class="scan-msg" id="scanMsg">Produto Adicionado!</div>
+              <button class="btn-proximo" onclick="lerProximo()">📸 Ler Próximo</button>
+          </div>
+      </div>
       <button class="btn-fechar-scanner" onclick="fecharScanner()">Fechar Câmera</button>
   </div>
 
   <div id="cupomFiscal">
-      <div class="cupom-header">
-          <div class="cupom-empresa">SIGO CASA DOS REPAROS</div>
-          <div class="cupom-info">Montanha, ES</div>
-          <div class="cupom-info" id="cupomData">Data: 01/01/2025 12:00</div>
-      </div>
-      <div style="margin-bottom: 10px; font-size: 0.9rem;">
-          <strong>Cliente:</strong> <span id="cupomCliente">Consumidor Final</span>
-      </div>
-      <table class="cupom-table">
-          <thead>
-              <tr><th>Item</th><th class="text-right">Qtd</th><th class="text-right">Valor</th></tr>
-          </thead>
-          <tbody id="cupomItens"></tbody>
-      </table>
+      <div class="cupom-header"><div class="cupom-empresa">SIGO CASA DOS REPAROS</div><div class="cupom-info">Montanha, ES</div><div class="cupom-info" id="cupomData"></div></div>
+      <div style="margin-bottom: 10px; font-size: 0.9rem;"><strong>Cliente:</strong> <span id="cupomCliente"></span></div>
+      <table class="cupom-table"><thead><tr><th>Item</th><th class="text-right">Qtd</th><th class="text-right">Valor</th></tr></thead><tbody id="cupomItens"></tbody></table>
       <div class="cupom-totais">
-          <div class="cupom-row"><span>Subtotal:</span> <span id="cupomSubtotal">R$ 0,00</span></div>
-          <div class="cupom-row"><span>Desconto:</span> <span id="cupomDesconto">R$ 0,00</span></div>
-          <div class="cupom-row cupom-total-final"><span>TOTAL:</span> <span id="cupomTotal">R$ 0,00</span></div>
-          <div class="cupom-row" style="margin-top: 5px;"><span>Forma Pagto:</span> <span id="cupomPagamento">Dinheiro</span></div>
+          <div class="cupom-row"><span>Subtotal:</span> <span id="cupomSubtotal"></span></div>
+          <div class="cupom-row"><span>Desconto:</span> <span id="cupomDesconto"></span></div>
+          <div class="cupom-row cupom-total-final"><span>TOTAL:</span> <span id="cupomTotal"></span></div>
+          <div class="cupom-row" style="margin-top: 5px;"><span>Forma Pagto:</span> <span id="cupomPagamento"></span></div>
       </div>
-      <div class="cupom-footer">
-          <p>*** NÃO É DOCUMENTO FISCAL ***</p>
-          <p>Obrigado pela preferência!</p>
-          <p>Volte Sempre</p>
-      </div>
+      <div class="cupom-footer"><p>*** NÃO É DOCUMENTO FISCAL ***</p><p>Obrigado pela preferência!</p><p>Volte Sempre</p></div>
   </div>
 
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
@@ -314,7 +275,7 @@
         if (itemExistente) {
             if (itemExistente.qtd < produto.quantidade) {
                 itemExistente.qtd++;
-                if(fromScanner) playBeep(); // Só bipa se for pelo scanner
+                if(fromScanner) playBeep();
             } else {
                 alert("Limite de estoque atingido!"); return;
             }
@@ -323,6 +284,11 @@
             if(fromScanner) playBeep();
         }
         renderizarCarrinho();
+        
+        // Se veio do scanner, mostra a tela de confirmação (Congela)
+        if(fromScanner) {
+            pausarScannerComMensagem(`✅ ${produto.nomePeca}<br>Adicionado!`);
+        }
     }
 
     function alterarQtd(index, delta) {
@@ -356,16 +322,14 @@
     }
     document.getElementById('inputDesconto').addEventListener('input', atualizarTotais);
 
-    // --- FUNÇÕES DE SCANNER (QR CODE) ---
+    // --- FUNÇÕES DE SCANNER (LÓGICA MANUAL) ---
     function abrirScanner() {
         document.getElementById('scannerModal').classList.add('active');
+        document.getElementById('scanSuccessOverlay').classList.remove('show');
         
-        // Se já tiver uma instância, não cria outra
         if (html5QrcodeScanner) return;
 
         html5QrcodeScanner = new Html5Qrcode("reader");
-        
-        // Configuração para preferir câmera traseira
         const config = { fps: 10, qrbox: { width: 250, height: 250 } };
         
         html5QrcodeScanner.start({ facingMode: "environment" }, config, onScanSuccess)
@@ -386,25 +350,37 @@
     }
 
     function onScanSuccess(decodedText, decodedResult) {
-        // decodedText é o ID do produto (conforme geramos na etiqueta)
-        console.log(`Scan result: ${decodedText}`);
-        
+        // Encontra o produto
         const produtoEncontrado = produtosData.find(p => p.id === decodedText);
         
         if (produtoEncontrado) {
-            // Adiciona ao carrinho e toca o som
+            // Adiciona (o que chama a função de pausa)
             adicionarAoCarrinho(produtoEncontrado, true);
-            
-            // Pequena pausa para evitar leituras duplicadas instantâneas
-            html5QrcodeScanner.pause(true);
-            setTimeout(() => html5QrcodeScanner.resume(), 1500);
-            
         } else {
-            console.log("Produto não encontrado no estoque.");
+            console.log("Produto não encontrado.");
+            // Opcional: Pausar e mostrar erro, mas geralmente só ignora
         }
     }
 
-    // Gerador de Som (BIP) usando Web Audio API (Não precisa de arquivo mp3)
+    // Função que congela a câmera e mostra o overlay
+    function pausarScannerComMensagem(mensagem) {
+        if(html5QrcodeScanner) {
+            html5QrcodeScanner.pause(true); // Congela o vídeo (frame atual)
+        }
+        const overlay = document.getElementById('scanSuccessOverlay');
+        document.getElementById('scanMsg').innerHTML = mensagem;
+        overlay.classList.add('show');
+    }
+
+    // Função chamada ao clicar em "Ler Próximo"
+    function lerProximo() {
+        const overlay = document.getElementById('scanSuccessOverlay');
+        overlay.classList.remove('show');
+        if(html5QrcodeScanner) {
+            html5QrcodeScanner.resume(); // Descongela o vídeo
+        }
+    }
+
     const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
     function playBeep() {
         if (audioCtx.state === 'suspended') audioCtx.resume();
@@ -413,13 +389,13 @@
         oscillator.connect(gainNode);
         gainNode.connect(audioCtx.destination);
         oscillator.type = 'square';
-        oscillator.frequency.value = 1500; // Frequência do Bip
+        oscillator.frequency.value = 1500; 
         gainNode.gain.value = 0.1;
         oscillator.start();
-        setTimeout(() => oscillator.stop(), 100); // Duração curta
+        setTimeout(() => oscillator.stop(), 100); 
     }
 
-    // --- CLIENTE SEARCH ---
+    // --- CLIENTE SEARCH (MANTIDO) ---
     const clienteInput = document.getElementById('clienteInput');
     const suggestionsBox = document.getElementById('clienteSuggestions');
     clienteInput.addEventListener('input', function() {
@@ -440,7 +416,7 @@
     });
     document.addEventListener('click', (e) => { if (!e.target.closest('.cliente-search')) suggestionsBox.classList.remove('show'); });
 
-    // --- IMPRESSÃO E FINALIZAÇÃO ---
+    // --- FINALIZAÇÃO (MANTIDO) ---
     function imprimirComprovante(nomeCliente, formaPagamento, subtotal, desconto, totalFinal) {
         document.getElementById('cupomData').textContent = new Date().toLocaleString('pt-BR');
         document.getElementById('cupomCliente').textContent = nomeCliente;
