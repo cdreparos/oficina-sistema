@@ -231,6 +231,7 @@
 
     let produtosData = [], clientesData = {}, carrinho = [];
     let html5QrcodeScanner = null;
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 
     auth.onAuthStateChanged(user => {
       if(user) {
@@ -327,6 +328,11 @@
         document.getElementById('scannerModal').classList.add('active');
         document.getElementById('scanSuccessOverlay').classList.remove('show');
         
+        // Ativa o audio context no clique do botão (exigência dos navegadores)
+        if (audioCtx.state === 'suspended') {
+            audioCtx.resume();
+        }
+        
         if (html5QrcodeScanner) return;
 
         html5QrcodeScanner = new Html5Qrcode("reader");
@@ -354,11 +360,10 @@
         const produtoEncontrado = produtosData.find(p => p.id === decodedText);
         
         if (produtoEncontrado) {
-            // Adiciona (o que chama a função de pausa)
+            // Adiciona (o que chama a função de pausa e som)
             adicionarAoCarrinho(produtoEncontrado, true);
         } else {
             console.log("Produto não encontrado.");
-            // Opcional: Pausar e mostrar erro, mas geralmente só ignora
         }
     }
 
@@ -381,7 +386,6 @@
         }
     }
 
-    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
     function playBeep() {
         if (audioCtx.state === 'suspended') audioCtx.resume();
         const oscillator = audioCtx.createOscillator();
