@@ -24,7 +24,7 @@
     
     .pdv-container { display: grid; grid-template-columns: 240px 1fr 400px; height: 100vh; }
     
-    /* Sidebar */
+    /* Sidebar (PC) */
     .sidebar { background: var(--sidebar-bg); color: #fff; display: flex; flex-direction: column; padding: 24px 16px; height: 100%; z-index: 100; }
     .sidebar-header { display: flex; align-items: center; gap: 12px; margin-bottom: 30px; }
     .sidebar-logo { width: 40px; height: 40px; background: var(--accent-purple); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; font-weight: bold; }
@@ -36,6 +36,10 @@
 
     /* Área Central */
     .vitrine-area { padding: 24px; display: flex; flex-direction: column; height: 100%; overflow: hidden; }
+    
+    /* HEADER MOBILE (NOVIDADE) */
+    .mobile-header { display: none; } /* Oculto no PC */
+
     .search-container { display: flex; gap: 10px; margin-bottom: 20px; }
     .search-bar { position: relative; flex-grow: 1; }
     .search-bar input { width: 100%; padding: 16px 20px 16px 50px; border: 2px solid var(--border-color); border-radius: 12px; font-size: 1.1rem; background: var(--card-bg); color: var(--text-primary); transition: all 0.3s; box-shadow: 0 4px 6px rgba(0,0,0,0.02); }
@@ -88,7 +92,7 @@
     .btn-finalizar:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(124, 58, 237, 0.4); }
     .btn-finalizar:disabled { background: var(--text-secondary); cursor: not-allowed; opacity: 0.5; box-shadow: none; }
 
-    /* --- MODAL DO SCANNER (ATUALIZADO) --- */
+    /* --- MODAL DO SCANNER --- */
     #scannerModal {
         display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
         background: rgba(0,0,0,0.95); z-index: 2000; flex-direction: column; align-items: center; justify-content: center;
@@ -96,10 +100,9 @@
     #scannerModal.active { display: flex; }
     #reader { width: 100%; max-width: 500px; background: black; border-radius: 12px; overflow: hidden; position: relative; }
     
-    /* Overlay de Sucesso (O "Congelamento") */
     #scanSuccessOverlay {
         position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-        background: rgba(16, 185, 129, 0.9); /* Fundo Verde Transparente */
+        background: rgba(16, 185, 129, 0.9);
         display: none; flex-direction: column; align-items: center; justify-content: center;
         color: white; text-align: center; z-index: 10;
     }
@@ -111,7 +114,6 @@
         font-size: 1.1rem; font-weight: bold; border-radius: 30px; cursor: pointer;
         box-shadow: 0 4px 10px rgba(0,0,0,0.2);
     }
-
     .btn-fechar-scanner {
         margin-top: 20px; padding: 10px 20px; background: rgba(255,255,255,0.2); 
         color: white; border: 1px solid white; border-radius: 20px; font-weight: bold; cursor: pointer;
@@ -135,11 +137,43 @@
         .cupom-footer { text-align: center; margin-top: 20px; font-size: 0.8rem; border-top: 1px dashed #000; padding-top: 10px; }
     }
 
+    /* RESPONSIVIDADE & HEADER MOBILE */
     .mobile-menu-btn { display: none; }
-    @media (max-width: 1100px) { .pdv-container { grid-template-columns: 80px 1fr 350px; } .sidebar-header h1 { display: none; } .nav-list a span:not(.nav-icon) { display: none; } }
+
+    @media (max-width: 1100px) { 
+        .pdv-container { grid-template-columns: 80px 1fr 350px; } 
+        .sidebar-header h1 { display: none; } 
+        .nav-list a span:not(.nav-icon) { display: none; } 
+    }
+
     @media (max-width: 768px) { 
         .pdv-container { grid-template-columns: 1fr; grid-template-rows: auto 1fr auto; display: block; overflow-y: auto; }
-        .sidebar { display: none; }
+        .sidebar { display: none; } /* Sidebar some no mobile */
+        
+        /* Configurações do Header Mobile */
+        .mobile-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: var(--sidebar-bg);
+            color: white;
+            padding: 16px;
+            margin: -24px -24px 20px -24px; /* Compensa o padding do vitrine-area */
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+        .mobile-back-btn {
+            background: rgba(255,255,255,0.2);
+            border: none;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+        }
+
         .carrinho-area { height: auto; border-left: none; border-top: 1px solid var(--border-color); padding-bottom: 20px; }
         .vitrine-area { height: auto; min-height: 500px; }
     }
@@ -155,6 +189,13 @@
     </nav>
 
     <main class="vitrine-area">
+      <div class="mobile-header">
+          <button class="mobile-back-btn" onclick="window.location.href='painel.html'">
+              ⬅ Voltar
+          </button>
+          <span style="font-weight: bold; font-size: 1.1rem;">PDV Mobile</span>
+          <div style="width: 40px;"></div> </div>
+
       <div class="search-container">
         <div class="search-bar">
             <span class="search-icon">🔍</span>
