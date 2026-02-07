@@ -25,10 +25,15 @@
     /* Layout Desktop Padrão */
     .pdv-container { display: grid; grid-template-columns: 240px 1fr 400px; height: 100vh; }
     
-    /* Sidebar (PC) */
+    /* Sidebar (PC) - CORREÇÃO DA LOGO AQUI */
     .sidebar { background: var(--sidebar-bg); color: #fff; display: flex; flex-direction: column; padding: 24px 16px; height: 100%; z-index: 100; }
     .sidebar-header { display: flex; align-items: center; gap: 12px; margin-bottom: 30px; }
-    .sidebar-logo { width: 40px; height: 40px; background: var(--accent-purple); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; font-weight: bold; }
+    .sidebar-logo { 
+        width: auto; min-width: 40px; padding: 0 8px; /* Ajuste para caber "PDV" */
+        height: 40px; background: var(--accent-purple); border-radius: 10px; 
+        display: flex; align-items: center; justify-content: center; 
+        font-size: 1.2rem; font-weight: bold; 
+    }
     .nav-list { list-style: none; }
     .back-btn { margin-top: auto; background: rgba(255,255,255,0.1); border: none; color: white; padding: 12px; border-radius: 8px; cursor: pointer; display: flex; align-items: center; gap: 10px; font-size: 1rem; width: 100%; }
     .back-btn:hover { background: var(--accent-red); }
@@ -60,12 +65,57 @@
     /* Área Carrinho (Desktop) */
     .carrinho-area { background: var(--card-bg); border-left: 1px solid var(--border-color); display: flex; flex-direction: column; height: 100%; box-shadow: -4px 0 20px rgba(0,0,0,0.05); z-index: 50; }
     .carrinho-header { padding: 24px; border-bottom: 1px solid var(--border-color); background: var(--main-bg); }
+    
+    /* NOVO: Seletor de Modo de Venda */
+    .sale-mode-switch {
+        display: flex; background: var(--card-bg); border: 1px solid var(--border-color);
+        border-radius: 8px; overflow: hidden; margin-bottom: 16px;
+    }
+    .sale-mode-option {
+        flex: 1; padding: 10px; text-align: center; cursor: pointer; font-weight: 600; font-size: 0.9rem;
+        transition: all 0.2s; border-bottom: 3px solid transparent;
+    }
+    .sale-mode-option.active {
+        background: rgba(139, 92, 246, 0.1); color: var(--accent-purple); border-bottom-color: var(--accent-purple);
+    }
+
+    /* NOVO: Estilo para Busca de OS */
+    .os-selector-container {
+        display: none; /* Escondido por padrão */
+        margin-bottom: 16px; position: relative;
+    }
+    .os-selector-container.show { display: block; }
+    .os-search-input {
+        width: 100%; padding: 12px; border: 2px solid var(--accent-purple); border-radius: 8px;
+        background: var(--card-bg); color: var(--text-primary);
+    }
+    .os-list-dropdown {
+        position: absolute; top: 100%; left: 0; right: 0; background: var(--card-bg);
+        border: 1px solid var(--border-color); border-radius: 8px; max-height: 250px;
+        overflow-y: auto; z-index: 100; box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    .os-item-drop {
+        padding: 12px; border-bottom: 1px solid var(--border-color); cursor: pointer;
+        display: flex; justify-content: space-between; align-items: center;
+    }
+    .os-item-drop:hover { background: var(--main-bg); }
+    .os-item-tag { 
+        font-size: 0.75rem; padding: 2px 6px; border-radius: 4px; background: #e2e8f0; color: #64748b; 
+    }
+    .selected-os-display {
+        background: #dbeafe; color: #1e40af; padding: 12px; border-radius: 8px; 
+        margin-bottom: 16px; display: none; align-items: center; justify-content: space-between;
+    }
+    .btn-remove-os { background: none; border: none; font-weight: bold; cursor: pointer; color: #1e40af; }
+
+    /* Cliente Search (mantido para venda balcão) */
     .cliente-search { position: relative; margin-bottom: 10px; }
     .cliente-search input { width: 100%; padding: 12px; border-radius: 8px; border: 1px solid var(--border-color); background: var(--card-bg); color: var(--text-primary); font-size: 0.95rem; }
     .cliente-suggestions { position: absolute; top: 100%; left: 0; right: 0; background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 0 0 8px 8px; max-height: 200px; overflow-y: auto; z-index: 100; box-shadow: 0 4px 12px rgba(0,0,0,0.1); display: none; }
     .cliente-suggestions.show { display: block; }
     .suggestion-item { padding: 10px 14px; cursor: pointer; border-bottom: 1px solid var(--border-color); transition: background 0.2s; }
     .suggestion-item:hover { background: var(--main-bg); }
+    
     .carrinho-lista { flex-grow: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 12px; }
     .carrinho-item { display: flex; justify-content: space-between; align-items: center; background: var(--main-bg); padding: 12px; border-radius: 10px; animation: slideIn 0.3s ease; }
     .item-info { flex-grow: 1; }
@@ -88,8 +138,8 @@
     .btn-finalizar:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(124, 58, 237, 0.4); }
     .btn-finalizar:disabled { background: var(--text-secondary); cursor: not-allowed; opacity: 0.5; box-shadow: none; }
 
-    /* --- MOBILE HEADER & TABS (NOVO) --- */
-    .mobile-header-container { display: none; } /* Escondido no PC */
+    /* --- MOBILE HEADER & TABS --- */
+    .mobile-header-container { display: none; } 
 
     .mobile-header-fixed {
         position: fixed; top: 0; left: 0; right: 0;
@@ -103,7 +153,6 @@
         background: rgba(255,255,255,0.2); border: none; color: white; padding: 8px 12px; border-radius: 6px; font-size: 0.9rem; cursor: pointer; display: flex; align-items: center; gap: 6px;
     }
 
-    /* Abas Mobile */
     .mobile-tabs {
         position: fixed; top: 55px; left: 0; right: 0;
         background: var(--card-bg); z-index: 890;
@@ -175,24 +224,17 @@
         .cupom-footer { text-align: center; margin-top: 20px; font-size: 0.8rem; border-top: 1px dashed #000; padding-top: 10px; }
     }
 
-    /* --- MOBILE LOGIC (RESPONSIVIDADE) --- */
+    /* --- MOBILE LOGIC --- */
     @media (max-width: 768px) { 
         body { height: auto; overflow-y: auto; padding-bottom: 220px; background: var(--main-bg); }
-        .pdv-container { display: block; height: auto; padding-top: 110px; /* Header + Tabs */ }
+        .pdv-container { display: block; height: auto; padding-top: 110px; }
         .sidebar { display: none; }
-        .mobile-header-container { display: block; } /* Ativa container mobile */
+        .mobile-header-container { display: block; }
 
-        /* Controle de Exibição por Abas */
-        .vitrine-area { 
-            display: none; /* Controlado via JS */
-            height: auto; overflow: visible; padding: 16px; 
-        }
+        .vitrine-area { display: none; height: auto; overflow: visible; padding: 16px; }
         .vitrine-area.active { display: block; }
 
-        .carrinho-area { 
-            display: none; /* Controlado via JS */
-            height: auto; border: none; box-shadow: none; background: transparent; 
-        }
+        .carrinho-area { display: none; height: auto; border: none; box-shadow: none; background: transparent; }
         .carrinho-area.active { display: block; }
         
         .carrinho-header { padding: 16px; background: var(--card-bg); border-radius: 12px; margin: 0 16px 16px 16px; border: 1px solid var(--border-color); }
@@ -202,10 +244,7 @@
             position: fixed; bottom: 0; left: 0; right: 0;
             background: var(--card-bg); border-top: 1px solid var(--border-color);
             padding: 16px; z-index: 800; box-shadow: 0 -4px 20px rgba(0,0,0,0.1);
-            max-height: 220px; overflow-y: auto;
-            /* Só aparece se a aba carrinho estiver ativa ou via JS, mas vamos deixar fixo sempre que houver itens?
-               Melhor deixar visível apenas na aba carrinho para limpar a visão */
-            display: none; 
+            max-height: 220px; overflow-y: auto; display: none; 
         }
         .carrinho-area.active + .carrinho-footer, 
         .carrinho-footer.active { display: block; }
@@ -251,12 +290,35 @@
 
     <aside class="carrinho-area" id="tabCarrinho">
       <div class="carrinho-header">
-        <h3 style="margin-bottom: 12px; color: var(--text-primary);">👤 Cliente</h3>
-        <div class="cliente-search">
-            <input type="text" id="clienteInput" placeholder="Nome do Cliente (Opcional)">
-            <input type="hidden" id="clienteId">
-            <div class="cliente-suggestions" id="clienteSuggestions"></div>
+        
+        <div class="sale-mode-switch">
+            <div class="sale-mode-option active" id="modeBalcao" onclick="setSaleMode('balcao')">🛒 Balcão</div>
+            <div class="sale-mode-option" id="modeOS" onclick="setSaleMode('os')">🛠️ Alocar OS</div>
         </div>
+
+        <div id="divClientSearch">
+            <h3 style="margin-bottom: 12px; color: var(--text-primary);">👤 Cliente</h3>
+            <div class="cliente-search">
+                <input type="text" id="clienteInput" placeholder="Nome do Cliente (Opcional)">
+                <input type="hidden" id="clienteId">
+                <div class="cliente-suggestions" id="clienteSuggestions"></div>
+            </div>
+        </div>
+
+        <div id="divOSSearch" style="display:none;">
+            <h3 style="margin-bottom: 12px; color: var(--text-primary);">🛠️ Vincular OS</h3>
+            
+            <div id="selectedOSDisplay" class="selected-os-display">
+                <span id="txtSelectedOS">OS #000 - Cliente</span>
+                <button class="btn-remove-os" onclick="limparSelecaoOS()">✕</button>
+            </div>
+
+            <div id="osInputContainer" class="os-selector-container show">
+                <input type="text" id="osSearchInput" class="os-search-input" placeholder="Buscar OS (Nome ou Nº)...">
+                <div id="osListDropdown" class="os-list-dropdown"></div>
+            </div>
+        </div>
+
       </div>
       
       <div class="carrinho-lista" id="carrinhoLista">
@@ -267,12 +329,16 @@
         <div class="resumo-row"><span>Subtotal</span><span id="lblSubtotal">R$ 0,00</span></div>
         <div class="resumo-row" style="align-items: center;"><span>Desconto</span><input type="number" id="inputDesconto" class="input-desconto" placeholder="0,00" min="0" step="0.01"></div>
         <div class="resumo-row total"><span>TOTAL</span><span id="lblTotal" style="color: var(--accent-purple);">R$ 0,00</span></div>
-        <select class="pagamento-select" id="formaPagamento">
-            <option value="Dinheiro">💵 Dinheiro</option>
-            <option value="PIX">💠 PIX</option>
-            <option value="Cartão de Débito">💳 Cartão de Débito</option>
-            <option value="Cartão de Crédito">💳 Cartão de Crédito</option>
-        </select>
+        
+        <div id="divPagamento">
+            <select class="pagamento-select" id="formaPagamento">
+                <option value="Dinheiro">💵 Dinheiro</option>
+                <option value="PIX">💠 PIX</option>
+                <option value="Cartão de Débito">💳 Cartão de Débito</option>
+                <option value="Cartão de Crédito">💳 Cartão de Crédito</option>
+            </select>
+        </div>
+
         <button class="btn-finalizar" id="btnFinalizar" onclick="finalizarVenda()">✅ Finalizar Venda</button>
       </div>
     </aside>
@@ -314,10 +380,13 @@
     const estoqueRef = database.ref("estoque");
     const clientesRef = database.ref("clientes");
     const transacoesRef = database.ref("transacoes");
+    const osRef = database.ref("ordens_servico"); // Nova referência
     const configRef = database.ref('configuracoes');
 
-    let produtosData = [], clientesData = {}, carrinho = [];
+    let produtosData = [], clientesData = {}, carrinho = [], osData = [];
     let html5QrcodeScanner = null;
+    let saleMode = 'balcao'; // 'balcao' ou 'os'
+    let selectedOsId = null;
     const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 
     auth.onAuthStateChanged(user => {
@@ -335,17 +404,20 @@
         renderizarVitrine();
     });
     clientesRef.on("value", snapshot => { clientesData = snapshot.val() || {}; });
+    
+    // Carrega OS para busca
+    osRef.on("value", snapshot => {
+        const data = snapshot.val() || {};
+        osData = Object.entries(data).map(([id, item]) => ({ id, ...item }));
+        // Se estiver no modo OS, atualiza a lista
+        if (saleMode === 'os') filtrarOS('');
+    });
 
     function renderizarVitrine() {
         const grid = document.getElementById('produtosGrid');
         const termo = document.getElementById('searchProduto').value.toLowerCase();
         grid.innerHTML = '';
-        
-        // Filtra
         const filtrados = produtosData.filter(p => (p.nomePeca || '').toLowerCase().includes(termo) || (p.codigoPeca || '').toLowerCase().includes(termo));
-        
-        // LIMITA A EXIBIÇÃO A 30 ITENS PARA NÃO POLUIR A TELA (Performance Mobile)
-        // Se o usuário pesquisar, a lista se refina e mostra o que ele quer
         const limiteExibicao = termo.length > 0 ? 100 : 30;
         
         filtrados.slice(0, limiteExibicao).forEach(produto => {
@@ -361,87 +433,145 @@
             else { card.style.opacity = '0.6'; card.style.cursor = 'not-allowed'; }
             grid.appendChild(card);
         });
-        
-        // Aviso se houver mais itens ocultos
         if(filtrados.length > limiteExibicao) {
-            const aviso = document.createElement('div');
-            aviso.style.gridColumn = "1 / -1";
-            aviso.style.textAlign = "center";
-            aviso.style.padding = "20px";
-            aviso.style.color = "var(--text-secondary)";
-            aviso.innerHTML = "Use a busca para encontrar mais produtos...";
-            grid.appendChild(aviso);
+            const aviso = document.createElement('div'); aviso.style.gridColumn = "1 / -1"; aviso.style.textAlign = "center"; aviso.style.padding = "20px"; aviso.style.color = "var(--text-secondary)"; aviso.innerHTML = "Use a busca para encontrar mais produtos..."; grid.appendChild(aviso);
         }
     }
     document.getElementById('searchProduto').addEventListener('input', renderizarVitrine);
 
-    // --- LÓGICA DE ABAS MOBILE ---
+    // --- LÓGICA DE MODOS DE VENDA ---
+    function setSaleMode(mode) {
+        saleMode = mode;
+        const btnBalcao = document.getElementById('modeBalcao');
+        const btnOS = document.getElementById('modeOS');
+        const divClient = document.getElementById('divClientSearch');
+        const divOS = document.getElementById('divOSSearch');
+        const divPagamento = document.getElementById('divPagamento');
+        const btnFinalizar = document.getElementById('btnFinalizar');
+
+        if(mode === 'balcao') {
+            btnBalcao.classList.add('active'); btnOS.classList.remove('active');
+            divClient.style.display = 'block'; divOS.style.display = 'none';
+            divPagamento.style.display = 'block';
+            btnFinalizar.innerHTML = "✅ Finalizar Venda";
+        } else {
+            btnOS.classList.add('active'); btnBalcao.classList.remove('active');
+            divClient.style.display = 'none'; divOS.style.display = 'block';
+            divPagamento.style.display = 'none'; // Não cobra agora
+            btnFinalizar.innerHTML = "🛠️ Alocar na OS";
+            filtrarOS(''); // Carrega as OS recentes
+        }
+        renderizarCarrinho();
+    }
+
+    // --- LÓGICA DE BUSCA DE OS ---
+    document.getElementById('osSearchInput').addEventListener('input', (e) => filtrarOS(e.target.value));
+    document.getElementById('osSearchInput').addEventListener('focus', () => filtrarOS(document.getElementById('osSearchInput').value));
+
+    function filtrarOS(termo) {
+        const lista = document.getElementById('osListDropdown');
+        lista.innerHTML = '';
+        const termoLower = termo.toLowerCase();
+
+        // Filtra apenas OS abertas (não finalizadas/canceladas)
+        let osAbertas = osData.filter(os => 
+            ['orcamento', 'aguardando_pecas', 'em_servico', 'em_andamento'].includes(os.statusOS)
+        );
+
+        // Se tem termo, filtra pelo termo. Se não, pega as últimas 5.
+        if (termoLower.length > 0) {
+            osAbertas = osAbertas.filter(os => 
+                (os.clienteNome || '').toLowerCase().includes(termoLower) || 
+                String(os.numeroOS).includes(termoLower)
+            );
+        } else {
+            // Ordena por data (mais recente) e pega 5
+            osAbertas.sort((a,b) => new Date(b.criadoEm || 0) - new Date(a.criadoEm || 0));
+            osAbertas = osAbertas.slice(0, 5);
+        }
+
+        if(osAbertas.length === 0) {
+            lista.innerHTML = '<div style="padding:12px; color:#666; text-align:center;">Nenhuma OS aberta encontrada</div>';
+            return;
+        }
+
+        osAbertas.forEach(os => {
+            const div = document.createElement('div');
+            div.className = 'os-item-drop';
+            div.innerHTML = `
+                <div>
+                    <strong>OS #${String(os.numeroOS).padStart(4,'0')}</strong> - ${os.clienteNome}<br>
+                    <small style="color:#666;">${os.aparelho || ''}</small>
+                </div>
+                <span class="os-item-tag">${os.statusOS}</span>
+            `;
+            div.onclick = () => selecionarOS(os);
+            lista.appendChild(div);
+        });
+    }
+
+    function selecionarOS(os) {
+        selectedOsId = os.id;
+        document.getElementById('osInputContainer').classList.remove('show');
+        document.getElementById('selectedOSDisplay').style.display = 'flex';
+        document.getElementById('txtSelectedOS').textContent = `OS #${String(os.numeroOS).padStart(4,'0')} - ${os.clienteNome}`;
+    }
+
+    function limparSelecaoOS() {
+        selectedOsId = null;
+        document.getElementById('osInputContainer').classList.add('show');
+        document.getElementById('selectedOSDisplay').style.display = 'none';
+        filtrarOS('');
+    }
+
+    // --- FUNÇÕES DE ABAS MOBILE ---
     function mudarAbaMobile(aba) {
         const tabVitrine = document.getElementById('tabVitrine');
         const tabCarrinho = document.getElementById('tabCarrinho');
         const footerCarrinho = document.getElementById('footerCarrinho');
         const btns = document.querySelectorAll('.mobile-tab');
-
         btns.forEach(b => b.classList.remove('active'));
 
         if (aba === 'vitrine') {
-            tabVitrine.classList.add('active');
-            tabCarrinho.classList.remove('active');
-            footerCarrinho.classList.remove('active'); // Esconde footer na vitrine
-            btns[0].classList.add('active');
+            tabVitrine.classList.add('active'); tabCarrinho.classList.remove('active');
+            footerCarrinho.classList.remove('active'); btns[0].classList.add('active');
         } else {
-            tabVitrine.classList.remove('active');
-            tabCarrinho.classList.add('active');
-            footerCarrinho.classList.add('active'); // Mostra footer no carrinho
-            btns[1].classList.add('active');
+            tabVitrine.classList.remove('active'); tabCarrinho.classList.add('active');
+            footerCarrinho.classList.add('active'); btns[1].classList.add('active');
         }
     }
 
-    // --- FUNÇÕES DE CARRINHO ---
+    // --- CARRINHO & SCANNER (MANTIDOS) ---
     function adicionarAoCarrinho(produto, fromScanner = false) {
         const itemExistente = carrinho.find(item => item.id === produto.id);
         if (itemExistente) {
-            if (itemExistente.qtd < produto.quantidade) {
-                itemExistente.qtd++;
-                if(fromScanner) playBeep();
-            } else {
-                alert("Limite de estoque atingido!"); return;
-            }
+            if (itemExistente.qtd < produto.quantidade) { itemExistente.qtd++; if(fromScanner) playBeep(); }
+            else { alert("Limite de estoque atingido!"); return; }
         } else {
             carrinho.push({ id: produto.id, nome: produto.nomePeca, valor: parseFloat(produto.valorUnitario), qtd: 1, maxEstoque: produto.quantidade });
             if(fromScanner) playBeep();
         }
         renderizarCarrinho();
         if(fromScanner) pausarScannerComMensagem(`✅ ${produto.nomePeca}<br>Adicionado!`);
-        
-        // Feedback visual da aba carrinho no mobile
         atualizarBadgeMobile();
     }
 
     function atualizarBadgeMobile() {
         const count = carrinho.reduce((acc, item) => acc + item.qtd, 0);
         const badge = document.getElementById('badgeCarrinho');
-        badge.innerText = count;
-        badge.style.display = count > 0 ? 'inline-block' : 'none';
+        badge.innerText = count; badge.style.display = count > 0 ? 'inline-block' : 'none';
     }
 
     function alterarQtd(index, delta) {
-        const item = carrinho[index];
-        const novaQtd = item.qtd + delta;
+        const item = carrinho[index]; const novaQtd = item.qtd + delta;
         if (novaQtd > 0 && novaQtd <= item.maxEstoque) item.qtd = novaQtd;
         else if (novaQtd > item.maxEstoque) alert("Quantidade excede o estoque!");
-        renderizarCarrinho();
-        atualizarBadgeMobile();
+        renderizarCarrinho(); atualizarBadgeMobile();
     }
-    function removerItem(index) { 
-        carrinho.splice(index, 1); 
-        renderizarCarrinho(); 
-        atualizarBadgeMobile();
-    }
+    function removerItem(index) { carrinho.splice(index, 1); renderizarCarrinho(); atualizarBadgeMobile(); }
     
     function renderizarCarrinho() {
-        const lista = document.getElementById('carrinhoLista');
-        lista.innerHTML = '';
+        const lista = document.getElementById('carrinhoLista'); lista.innerHTML = '';
         if (carrinho.length === 0) { lista.innerHTML = `<div style="text-align: center; color: var(--text-secondary); margin-top: 40px;"><p style="font-size: 3rem; margin-bottom: 10px;">🛒</p><p>Seu carrinho está vazio</p></div>`; atualizarTotais(); return; }
         carrinho.forEach((item, index) => {
             const div = document.createElement('div'); div.className = 'carrinho-item';
@@ -458,86 +588,41 @@
         document.getElementById('lblTotal').textContent = formatarMoeda(total);
         const btn = document.getElementById('btnFinalizar');
         btn.disabled = carrinho.length === 0;
-        btn.innerHTML = carrinho.length > 0 ? `✅ Finalizar Venda (${formatarMoeda(total)})` : `✅ Finalizar Venda`;
+        
+        // Texto do botão muda conforme o modo
+        if (carrinho.length > 0) {
+            btn.innerHTML = saleMode === 'balcao' 
+                ? `✅ Finalizar Venda (${formatarMoeda(total)})`
+                : `🛠️ Alocar na OS (${formatarMoeda(total)})`;
+        } else {
+            btn.innerHTML = saleMode === 'balcao' ? `✅ Finalizar Venda` : `🛠️ Alocar na OS`;
+        }
     }
     document.getElementById('inputDesconto').addEventListener('input', atualizarTotais);
 
-    // --- FUNÇÕES DE SCANNER ---
     function abrirScanner() {
         document.getElementById('scannerModal').classList.add('active');
         document.getElementById('scanSuccessOverlay').classList.remove('show');
         if (audioCtx.state === 'suspended') audioCtx.resume();
         if (html5QrcodeScanner) return;
-
         html5QrcodeScanner = new Html5Qrcode("reader");
         const config = { fps: 10, qrbox: { width: 250, height: 250 } };
-        
-        html5QrcodeScanner.start({ facingMode: "environment" }, config, onScanSuccess)
-        .catch(err => { alert("Erro ao iniciar câmera: " + err); fecharScanner(); });
+        html5QrcodeScanner.start({ facingMode: "environment" }, config, onScanSuccess).catch(err => { alert("Erro ao iniciar câmera: " + err); fecharScanner(); });
     }
-
     function fecharScanner() {
-        if (html5QrcodeScanner) {
-            html5QrcodeScanner.stop().then(() => { html5QrcodeScanner.clear(); html5QrcodeScanner = null; }).catch(err => console.error(err));
-        }
+        if (html5QrcodeScanner) { html5QrcodeScanner.stop().then(() => { html5QrcodeScanner.clear(); html5QrcodeScanner = null; }).catch(err => console.error(err)); }
         document.getElementById('scannerModal').classList.remove('active');
     }
-
     function onScanSuccess(decodedText, decodedResult) {
         const codigoLido = decodedText.trim();
         const produtoEncontrado = produtosData.find(p => p.id === codigoLido || (p.codigoPeca && p.codigoPeca.trim() === codigoLido));
-        
-        if (produtoEncontrado) {
-            adicionarAoCarrinho(produtoEncontrado, true);
-        } else {
-            html5QrcodeScanner.pause(true);
-            playErrorBeep();
-            if(confirm(`Código: ${codigoLido}\n\nProduto não encontrado! Tentar novamente?`)) {
-                html5QrcodeScanner.resume();
-            } else {
-                fecharScanner();
-            }
-        }
+        if (produtoEncontrado) adicionarAoCarrinho(produtoEncontrado, true);
+        else { html5QrcodeScanner.pause(true); playErrorBeep(); if(confirm(`Código: ${codigoLido}\n\nProduto não encontrado! Tentar novamente?`)) { html5QrcodeScanner.resume(); } else { fecharScanner(); } }
     }
-
-    function pausarScannerComMensagem(mensagem) {
-        if(html5QrcodeScanner) html5QrcodeScanner.pause(true);
-        const overlay = document.getElementById('scanSuccessOverlay');
-        document.getElementById('scanMsg').innerHTML = mensagem;
-        overlay.classList.add('show');
-    }
-
-    function lerProximo() {
-        const overlay = document.getElementById('scanSuccessOverlay');
-        overlay.classList.remove('show');
-        if(html5QrcodeScanner) html5QrcodeScanner.resume();
-    }
-
-    function playBeep() {
-        if (audioCtx.state === 'suspended') audioCtx.resume();
-        const oscillator = audioCtx.createOscillator();
-        const gainNode = audioCtx.createGain();
-        oscillator.connect(gainNode);
-        gainNode.connect(audioCtx.destination);
-        oscillator.type = 'square';
-        oscillator.frequency.value = 1500; 
-        gainNode.gain.value = 0.1;
-        oscillator.start();
-        setTimeout(() => oscillator.stop(), 100); 
-    }
-    
-    function playErrorBeep() {
-        if (audioCtx.state === 'suspended') audioCtx.resume();
-        const oscillator = audioCtx.createOscillator();
-        const gainNode = audioCtx.createGain();
-        oscillator.connect(gainNode);
-        gainNode.connect(audioCtx.destination);
-        oscillator.type = 'sawtooth';
-        oscillator.frequency.value = 200; 
-        gainNode.gain.value = 0.1;
-        oscillator.start();
-        setTimeout(() => oscillator.stop(), 300); 
-    }
+    function pausarScannerComMensagem(mensagem) { if(html5QrcodeScanner) html5QrcodeScanner.pause(true); const overlay = document.getElementById('scanSuccessOverlay'); document.getElementById('scanMsg').innerHTML = mensagem; overlay.classList.add('show'); }
+    function lerProximo() { const overlay = document.getElementById('scanSuccessOverlay'); overlay.classList.remove('show'); if(html5QrcodeScanner) html5QrcodeScanner.resume(); }
+    function playBeep() { if (audioCtx.state === 'suspended') audioCtx.resume(); const oscillator = audioCtx.createOscillator(); const gainNode = audioCtx.createGain(); oscillator.connect(gainNode); gainNode.connect(audioCtx.destination); oscillator.type = 'square'; oscillator.frequency.value = 1500; gainNode.gain.value = 0.1; oscillator.start(); setTimeout(() => oscillator.stop(), 100); }
+    function playErrorBeep() { if (audioCtx.state === 'suspended') audioCtx.resume(); const oscillator = audioCtx.createOscillator(); const gainNode = audioCtx.createGain(); oscillator.connect(gainNode); gainNode.connect(audioCtx.destination); oscillator.type = 'sawtooth'; oscillator.frequency.value = 200; gainNode.gain.value = 0.1; oscillator.start(); setTimeout(() => oscillator.stop(), 300); }
 
     // --- CLIENTE SEARCH ---
     const clienteInput = document.getElementById('clienteInput');
@@ -560,7 +645,7 @@
     });
     document.addEventListener('click', (e) => { if (!e.target.closest('.cliente-search')) suggestionsBox.classList.remove('show'); });
 
-    // --- FINALIZAÇÃO ---
+    // --- FINALIZAÇÃO UNIFICADA ---
     function imprimirComprovante(nomeCliente, formaPagamento, subtotal, desconto, totalFinal) {
         document.getElementById('cupomData').textContent = new Date().toLocaleString('pt-BR');
         document.getElementById('cupomCliente').textContent = nomeCliente;
@@ -578,15 +663,15 @@
     }
 
     async function finalizarVenda() {
-        if (!confirm("Confirmar a venda?")) return;
+        if (carrinho.length === 0) return;
         const btn = document.getElementById('btnFinalizar'); btn.disabled = true; btn.textContent = "Processando...";
+        
+        const updates = {}; 
+        const timestamp = new Date().toISOString(); 
+        const dataHoje = timestamp.split('T')[0];
+        
         try {
-            const updates = {}; const timestamp = new Date().toISOString(); const dataHoje = timestamp.split('T')[0];
-            const nomeCliente = document.getElementById('clienteInput').value || "Cliente Balcão";
-            const formaPagamento = document.getElementById('formaPagamento').value;
-            const subtotal = carrinho.reduce((acc, item) => acc + (item.valor * item.qtd), 0);
-            const desconto = parseFloat(document.getElementById('inputDesconto').value) || 0;
-            const totalFinal = Math.max(0, subtotal - desconto);
+            // 1. Baixa no Estoque (Comum aos dois modos)
             let resumoItens = [];
             carrinho.forEach(item => {
                 const produtoAtual = produtosData.find(p => p.id === item.id);
@@ -596,17 +681,78 @@
                     resumoItens.push(`${item.qtd}x ${item.nome}`);
                 }
             });
-            const novaTransacaoKey = transacoesRef.push().key;
-            updates[`/transacoes/${novaTransacaoKey}`] = {
-                tipo: 'entrada', descricao: `Venda PDV - ${nomeCliente}`, observacoes: `Itens: ${resumoItens.join(', ')}`, categoria: 'Venda de Peças',
-                valor: totalFinal, dataTransacao: dataHoje, statusTransacao: 'pago', formaPagamento: formaPagamento, criadoPor: auth.currentUser.email, criadoEm: timestamp, origem: 'pdv'
-            };
-            await database.ref().update(updates);
-            if(confirm("✅ Venda realizada!\n\nDeseja imprimir o comprovante?")) imprimirComprovante(nomeCliente, formaPagamento, subtotal, desconto, totalFinal);
-            carrinho = []; document.getElementById('clienteInput').value = ""; document.getElementById('clienteId').value = ""; document.getElementById('inputDesconto').value = ""; 
+
+            const subtotal = carrinho.reduce((acc, item) => acc + (item.valor * item.qtd), 0);
+            const desconto = parseFloat(document.getElementById('inputDesconto').value) || 0;
+            const totalFinal = Math.max(0, subtotal - desconto);
+
+            if (saleMode === 'balcao') {
+                // --- MODO BALCÃO: Gera Financeiro ---
+                if (!confirm("Confirmar a venda balcão?")) { btn.disabled = false; btn.textContent = "✅ Finalizar Venda"; return; }
+                
+                const nomeCliente = document.getElementById('clienteInput').value || "Cliente Balcão";
+                const formaPagamento = document.getElementById('formaPagamento').value;
+                const novaTransacaoKey = transacoesRef.push().key;
+                
+                updates[`/transacoes/${novaTransacaoKey}`] = {
+                    tipo: 'entrada', descricao: `Venda PDV - ${nomeCliente}`, observacoes: `Itens: ${resumoItens.join(', ')}`, categoria: 'Venda de Peças',
+                    valor: totalFinal, dataTransacao: dataHoje, statusTransacao: 'pago', formaPagamento: formaPagamento, criadoPor: auth.currentUser.email, criadoEm: timestamp, origem: 'pdv'
+                };
+                
+                await database.ref().update(updates);
+                if(confirm("✅ Venda realizada!\n\nDeseja imprimir o comprovante?")) imprimirComprovante(nomeCliente, formaPagamento, subtotal, desconto, totalFinal);
+                
+            } else {
+                // --- MODO OS: Atualiza Ordem de Serviço ---
+                if (!selectedOsId) { alert("Selecione uma OS para vincular!"); btn.disabled = false; btn.textContent = "🛠️ Alocar na OS"; return; }
+                const osAlvo = osData.find(os => os.id === selectedOsId);
+                if (!osAlvo) { alert("OS não encontrada."); btn.disabled = false; btn.textContent = "🛠️ Alocar na OS"; return; }
+                
+                if (!confirm(`Confirmar alocação de peças na OS #${osAlvo.numeroOS}?`)) { btn.disabled = false; btn.textContent = "🛠️ Alocar na OS"; return; }
+
+                // Prepara novas peças para o formato da OS
+                const novasPecas = carrinho.map(c => ({
+                    pecaId: c.id, nome: c.nome, quantidade: c.qtd, valorUnitario: c.valor
+                }));
+                
+                // Mescla com peças existentes
+                const pecasExistentes = osAlvo.pecas || [];
+                const pecasAtualizadas = [...pecasExistentes, ...novasPecas];
+                
+                // Recalcula totais da OS
+                const totalPecasOS = pecasAtualizadas.reduce((sum, p) => sum + (p.quantidade * p.valorUnitario), 0);
+                const maoObra = parseFloat(osAlvo.valorMaoObra) || 0;
+                const descontoOS = parseFloat(osAlvo.desconto) || 0;
+                // Nota: O desconto do PDV é aplicado como desconto extra na OS? 
+                // Simplificação: Vamos somar o desconto do PDV ao desconto da OS
+                const novoDescontoTotal = descontoOS + desconto;
+                const novoTotalOS = maoObra + totalPecasOS - novoDescontoTotal;
+
+                updates[`/ordens_servico/${selectedOsId}/pecas`] = pecasAtualizadas;
+                updates[`/ordens_servico/${selectedOsId}/valorPecas`] = totalPecasOS;
+                updates[`/ordens_servico/${selectedOsId}/desconto`] = novoDescontoTotal;
+                updates[`/ordens_servico/${selectedOsId}/valorTotalFinal`] = novoTotalOS;
+                updates[`/ordens_servico/${selectedOsId}/atualizadoEm`] = timestamp;
+
+                await database.ref().update(updates);
+                alert(`✅ Peças alocadas na OS #${osAlvo.numeroOS} com sucesso!`);
+            }
+
+            // Limpeza Pós-Venda
+            carrinho = []; 
+            document.getElementById('clienteInput').value = ""; document.getElementById('clienteId').value = ""; 
+            document.getElementById('inputDesconto').value = ""; 
+            limparSelecaoOS();
             renderizarCarrinho(); atualizarBadgeMobile();
-        } catch (error) { console.error(error); alert("Erro: " + error.message); } finally { btn.disabled = false; renderizarCarrinho(); }
+            
+        } catch (error) { 
+            console.error(error); alert("Erro: " + error.message); 
+        } finally { 
+            btn.disabled = false; 
+            btn.innerHTML = saleMode === 'balcao' ? `✅ Finalizar Venda` : `🛠️ Alocar na OS`;
+        }
     }
+    
     function formatarMoeda(valor) { return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(valor || 0); }
   </script>
 </body>
